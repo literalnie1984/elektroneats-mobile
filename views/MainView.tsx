@@ -38,10 +38,10 @@ const CartScreen = () => {
 		);
 };
 
-const SettingsScreen = () => {
+const MoreScreen = () => {
 		return(
 				<View style={style.container}>
-						<Text>Settings</Text>
+						<Text>More</Text>
 				</View>
 		 );
 };
@@ -98,7 +98,7 @@ const MainView = () => {
 										case "Cart":{
 												iconName=faBasketShopping;
 										} break;
-										case "Settings":{
+										case "More":{
 												iconName=faEllipsisVertical;
 										} break;
 								};
@@ -111,7 +111,7 @@ const MainView = () => {
 						<Tab.Screen name="Menu" component={MenuScreen} />
 						<Tab.Screen name="Shop" component={ShopScreen} />
 						<Tab.Screen name="Cart" component={CartScreen} />
-						<Tab.Screen name="Settings" component={SettingsScreen} />
+						<Tab.Screen name="More" component={MoreScreen} />
 				</Tab.Navigator>
 		);
 };

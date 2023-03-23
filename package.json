@@ -39,6 +39,7 @@
     "expo-linear-gradient": "~12.1.2",
     "expo-linking": "~4.0.1",
     "expo-local-authentication": "~13.2.1",
+    "expo-localization": "~14.1.1",
     "expo-navigation-bar": "~2.1.1",
     "expo-notifications": "~0.18.1",
     "expo-sharing": "~11.2.2",
