@@ -7,7 +7,7 @@ export default function App() {
   return (
     <NavigationContainer>
 		<MainView />
-		<StatusBar style="auto" translucent={false} hidden={false} animated={true} />
+		<StatusBar style="auto" translucent={false} hidden={false} animated={true} backgroundColor={'transparent'} />
 	</NavigationContainer>
   );
 }
