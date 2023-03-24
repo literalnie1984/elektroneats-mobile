@@ -1,0 +1,8 @@
+**/.expo
+**/.yarn
+**/.git
+**/node_modules
+app.json
+babel.config.js
+package.json
+tsconfig.json
