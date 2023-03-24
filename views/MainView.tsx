@@ -1,9 +1,12 @@
 import { BottomTabHeaderProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { StackHeaderProps, createStackNavigator, StackNavigationProp } from '@react-navigation/stack';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { View, Text, StyleSheet, TextStyle, RegisteredStyle, ViewStyle } from 'react-native';
+import { View, Text, StyleSheet, TextStyle, RegisteredStyle, ViewStyle, Pressable } from 'react-native';
 import { faUtensils, faTableList, faBasketShopping, faEllipsisVertical, faStore } from "@fortawesome/free-solid-svg-icons";
 import {icon} from '@fortawesome/fontawesome-svg-core';
+import {NavigationProp} from '@react-navigation/native';
 
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const OrdersScreen = () => {
@@ -50,6 +53,7 @@ interface HeaderProps {
 		style: RegisteredStyle<ViewStyle>, 
 		titleStyle: RegisteredStyle<TextStyle>,
 		title: string,
+		stackNavigation: StackNavigationProp,
 }
 
 const HeaderView = (props: HeaderProps) => {
@@ -57,17 +61,19 @@ const HeaderView = (props: HeaderProps) => {
 		<View style={props.style}>
 				<Text>K</Text>
 				<Text style={props.titleStyle}>{props.title}</Text>
-				<Text>L</Text>
+				<Pressable onPress={() => props.stackNavigation.navigate("AccountView")}>
+						<Text>L</Text>
+				</Pressable>
 		</View>
 		);
 };
 
-const MainView = () => {
+const TabsView = (props) => {
 		return(
 				<Tab.Navigator
 				screenOptions={({route}) => ({
-						header: ({ navigation, route, options }: BottomTabHeaderProps) => {
-								return <HeaderView title={route.name} style={options.headerStyle} titleStyle={options.headerTitleStyle}/>
+header: ({ navigation, route, options }: BottomTabHeaderProps) => {
+return <HeaderView title={route.name} style={options.headerStyle} titleStyle={options.headerTitleStyle} stackNavigation={props.navigation}/>
 						},
 						headerStyle: {
 								height: 60,
@@ -116,6 +122,34 @@ const MainView = () => {
 		);
 };
 
+const AccountView = () => {
+		return(
+				<View style={style.accountView}>
+						<Text style={style.text}>
+								Account Profile Icon
+						</Text>
+						<Text style={style.text}>
+								Account Profile Desc
+						</Text>
+				</View>
+		);
+};
+
+const MainView = () => {
+		return(
+				<Stack.Navigator
+						initialRouteName='TabsView'
+						screenOptions={{
+								animationTypeForReplace: "pop",
+
+						}}
+				>
+						<Stack.Screen name="TabsView" component={TabsView} options={{headerShown: false,}}/>
+						<Stack.Screen name="AccountView" component={AccountView} />
+				</Stack.Navigator>
+		);
+};
+
 const style = StyleSheet.create({
 		container: {
 				flex: 1,
@@ -125,6 +159,12 @@ const style = StyleSheet.create({
 		},
 		text:{
 				
+		},
+		accountView: {
+				flexDirection: "column",
+				flexWrap: "nowrap",
+				alignItems: "center",
+				justifyContent: "space-evenly",
 		},
 });
 
