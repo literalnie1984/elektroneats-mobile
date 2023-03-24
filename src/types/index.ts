@@ -7,4 +7,19 @@ interface HeaderProps {
   stackNavigation: any;
 }
 
-export { HeaderProps };
+interface ExpandableProps {
+  expanded: boolean;
+  height: number;
+  duration: number;
+  style?: Object;
+  afterAnimationCallback?: Function;
+  children: any;
+}
+
+interface OrderProps {
+  id: string;
+  title: string;
+  isRedeemed: boolean;
+}
+
+export { HeaderProps, ExpandableProps, OrderProps };
