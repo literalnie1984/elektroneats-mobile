@@ -14,6 +14,28 @@ export const style = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly",
   },
+  menuItem: {
+		flexDirection: "column",
+		flexWrap: "nowrap",
+		alignItems: "center",
+		justifyContent: "center",
+  },
+  menuItemContainer: {
+
+  },
+  menuItemBar:{
+		flexDirection: "row",
+		flexWrap: "nowrap",
+		alignItems: "center",
+		justifyContent: "space-between",
+		paddingHorizontal: "16",
+  },
+  menuVariant: {
+
+  },
+  menuVariantRow: {
+
+  },
 });
 
 export const orderViewStyles = StyleSheet.create({

@@ -22,4 +22,12 @@ interface OrderProps {
   isRedeemed: boolean;
 }
 
-export { HeaderProps, ExpandableProps, OrderProps };
+interface SegmentedSwitchProps {
+		segments: string[],
+		onSegmentSwitch(selectedSegment : number): void,
+		switchStyle?: RegisteredStyle<ViewStyle>,
+		segmentStyle?: RegisteredStyle<ViewStyle>,
+		selectedSegmentStyle?: RegisteredStyle<ViewStyle>,
+};
+
+export { HeaderProps, SegmentedSwitchProps, ExpandableProps, OrderProps };
