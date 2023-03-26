@@ -42,7 +42,7 @@ const OrdersView = () => {
   ];
 
   return (
-    <SafeAreaView style={orderViewStyles.container}>
+    <View style={orderViewStyles.container}>
       <SectionList
         sections={DATA}
         keyExtractor={(item) => item.id}
@@ -52,7 +52,7 @@ const OrdersView = () => {
         }}
         renderSectionHeader={({ section: { title } }) => <Text style={orderViewStyles.title}>{title}</Text>}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
