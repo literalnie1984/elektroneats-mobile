@@ -1,6 +1,5 @@
 import { RegisteredStyle, TextStyle, ViewStyle } from "react-native/types";
-import Animated, {AnimatableValue, AnimatedStyleProp} from "react-native-reanimated";
-import {AnimatedStyle} from "react-native-reanimated/lib/types/lib/reanimated2/commonTypes";
+import { AnimatableValue, AnimatedStyleProp } from "react-native-reanimated";
 
 interface HeaderProps {
   style: RegisteredStyle<ViewStyle>;
@@ -25,55 +24,86 @@ interface OrderProps {
 }
 
 interface SegmentedSwitchProps {
-		segments: string[],
-		onSegmentSwitch(selectedSegment : number): void,
-		switchHeight: number | AnimatableValue,
-		switchStyle?: ViewStyle | AnimatedStyleProp<ViewStyle>,
-		segmentStyle?: ViewStyle,
-		segmentTextStyle?: TextStyle,
-		selectedSegmentStyle?: ViewStyle,
-		isFolded: boolean,
-};
+  segments: string[];
+  onSegmentSwitch(selectedSegment: number): void;
+  switchHeight: number | AnimatableValue;
+  switchStyle?: ViewStyle | AnimatedStyleProp<ViewStyle>;
+  segmentStyle?: ViewStyle;
+  segmentTextStyle?: TextStyle;
+  selectedSegmentStyle?: ViewStyle;
+  isFolded: boolean;
+}
 
 interface MenuBlankProps {
-		containerStyle: ViewStyle,
-		windowStyle: ViewStyle,
-		iconStyle: TextStyle,
-		headingStyle: TextStyle,
-		textStyle: TextStyle,
-};
+  containerStyle: ViewStyle;
+  windowStyle: ViewStyle;
+  iconStyle: TextStyle;
+  headingStyle: TextStyle;
+  textStyle: TextStyle;
+}
 
-interface MenuVariant{
-		soup: string,
-		mainCourse: string,
-		sideDish: string,
-		beverage: string,
-};
+interface MenuVariant {
+  soup: string;
+  mainCourse: string;
+  sideDish: string;
+  beverage: string;
+}
 
 interface MenuVariantProps {
-		menu: MenuVariant,
-		style?: AnimatedStyleProp<ViewStyle>,
-		actionButtonStyle: AnimatedStyleProp<ViewStyle>,
-		isFolded: boolean,
-};
+  menu: MenuVariant;
+  style?: AnimatedStyleProp<ViewStyle>;
+  actionButtonStyle: AnimatedStyleProp<ViewStyle>;
+  isFolded: boolean;
+}
 
 interface MenuItemContainerProps {
-		containerHeight: number,
-		switchHeight: number,
-		contentHeight: number,
-		actionButtonHeight: number,
-		isFolded: boolean,
-		menuVariants: MenuVariant[],
-};
+  containerHeight: number;
+  switchHeight: number;
+  contentHeight: number;
+  actionButtonHeight: number;
+  isFolded: boolean;
+  menuVariants: MenuVariant[];
+}
 
 interface MenuItemProps {
-		dateSignature: string,
-		menuVariants: MenuVariant[],
-		containerHeight: number,
-		switchHeight: number,
-};
+  dateSignature: string;
+  menuVariants: MenuVariant[];
+  containerHeight: number;
+  switchHeight: number;
+}
 
-type Menu = { dateSignature: string, menuVariants: MenuVariant[], }[]
+type Menu = { dateSignature: string; menuVariants: MenuVariant[] }[];
 
+// DinnerView
+interface DinnerItem {
+  name: string;
+  uri: string;
+}
 
-export { HeaderProps, SegmentedSwitchProps, ExpandableProps, OrderProps, MenuItemContainerProps, MenuItemProps, MenuBlankProps, MenuVariantProps, Menu };
+interface DinnerData {
+  section: string;
+  data: DinnerItem[][];
+}
+
+interface DinnerItemProps {
+  name: string;
+  uri: string;
+  backgroundColor: string;
+  onPress: () => void;
+}
+
+type InnerIndex = number | null;
+
+interface SelectedDinnerItem {
+  section: string;
+  index: number;
+  innerIndex: InnerIndex;
+}
+
+interface DinnerSelectProps {
+  selectedIndex: InnerIndex;
+  setSelectedIndex: (innerIndex: InnerIndex) => void;
+  items: DinnerItem[];
+}
+
+export { HeaderProps, SegmentedSwitchProps, ExpandableProps, OrderProps, MenuItemContainerProps, MenuItemProps, MenuBlankProps, MenuVariantProps, Menu, DinnerData, DinnerItemProps, InnerIndex, SelectedDinnerItem, DinnerSelectProps };

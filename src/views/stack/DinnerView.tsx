@@ -34,45 +34,37 @@ interface DinnerSelectProps {
   items: DinnerItem[];
 }
 
-const placeholderUri = 'https://i.imgur.com/ejtUaJJ.png';
+const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
 const DATA: DinnerData[] = [
   {
     section: "Main dish",
     data: [
       [
-        { name: 'Kotlet schabowy panierowany', uri: placeholderUri },
-        { name: 'Zraz drobiowy', uri: placeholderUri },
-        { name: 'Kluski śląskie z sosem myśliwskim', uri: placeholderUri }
-      ]
-    ]
+        { name: "Kotlet schabowy panierowany", uri: placeholderUri },
+        { name: "Zraz drobiowy", uri: placeholderUri },
+        { name: "Kluski śląskie z sosem myśliwskim", uri: placeholderUri },
+      ],
+    ],
   },
   {
     section: "Extras",
     data: [
       [
-        { name: 'Ziemniaki', uri: placeholderUri },
-        { name: 'Ryż', uri: placeholderUri },
+        { name: "Ziemniaki", uri: placeholderUri },
+        { name: "Ryż", uri: placeholderUri },
       ],
-      [
-        { name: 'Surówka', uri: placeholderUri },
-      ],
-      [
-        { name: 'Kompot', uri: placeholderUri },
-      ],
-    ]
+      [{ name: "Surówka", uri: placeholderUri }],
+      [{ name: "Kompot", uri: placeholderUri }],
+    ],
   },
   {
     section: "Soup",
-    data: [
-      [
-        { name: 'Pomidorowa z makaronem', uri: placeholderUri },
-      ]
-    ]
-  }
+    data: [[{ name: "Pomidorowa z makaronem", uri: placeholderUri }]],
+  },
 ];
 
 const Item = ({ name, uri, backgroundColor, onPress }: DinnerItemProps) => {
-  return(
+  return (
     <TouchableOpacity onPress={onPress}>
       <View style={[dinnerViewStyles.itemView, { backgroundColor }]}>
         <Image style={dinnerViewStyles.itemImg} source={{ uri }} />
@@ -80,30 +72,30 @@ const Item = ({ name, uri, backgroundColor, onPress }: DinnerItemProps) => {
       </View>
     </TouchableOpacity>
   );
-}
+};
 
 const Select = ({ selectedIndex, setSelectedIndex, items }: DinnerSelectProps) => {
-  return(
+  return (
     <ScrollView horizontal={true} nestedScrollEnabled={false}>
       {items.map(({ name, uri }, index) => {
-        const backgroundColor = (index === selectedIndex ? '#ffffff' : '#bfbdbd');
+        const backgroundColor = index === selectedIndex ? "#ffffff" : "#bfbdbd";
 
-        return(
-          <Item 
+        return (
+          <Item
             key={index}
             onPress={() => {
-              if(selectedIndex === index) setSelectedIndex(null);
+              if (selectedIndex === index) setSelectedIndex(null);
               else setSelectedIndex(index);
             }}
-            name={name} 
-            uri={uri} 
+            name={name}
+            uri={uri}
             backgroundColor={backgroundColor}
           />
         );
       })}
     </ScrollView>
   );
-}
+};
 
 const DinnerView = () => {
   const [selectedArr, setSelectedArr] = useState<SelectedDinnerItem[]>([]);
@@ -114,22 +106,19 @@ const DinnerView = () => {
         sections={DATA}
         renderItem={(data) => {
           const changeSelected = (innerIndex: InnerIndex) => {
-            const selectedIndex = selectedArr.findIndex(obj => obj.section === data.section.section && obj.index === data.index);
-            if(selectedIndex === -1) {
-              setSelectedArr([
-                ...selectedArr,
-                { section: data.section.section,  index: data.index, innerIndex }
-              ]);
+            const selectedIndex = selectedArr.findIndex((obj) => obj.section === data.section.section && obj.index === data.index);
+            if (selectedIndex === -1) {
+              setSelectedArr([...selectedArr, { section: data.section.section, index: data.index, innerIndex }]);
             } else {
               selectedArr[selectedIndex].innerIndex = innerIndex;
               setSelectedArr([...selectedArr]);
             }
-          }
+          };
 
-          const selectedObj = selectedArr.find(obj => obj.section === data.section.section && obj.index === data.index);
+          const selectedObj = selectedArr.find((obj) => obj.section === data.section.section && obj.index === data.index);
           const selectedIndex = selectedObj ? selectedObj.innerIndex : null;
 
-          return <Select selectedIndex={selectedIndex} setSelectedIndex={changeSelected} items={data.item} />
+          return <Select selectedIndex={selectedIndex} setSelectedIndex={changeSelected} items={data.item} />;
         }}
         renderSectionHeader={({ section: { section } }) => <Text style={dinnerViewStyles.title}>{section}</Text>}
       />
