@@ -44,7 +44,6 @@ interface MenuBlankProps {
 };
 
 interface MenuVariant{
-		style: ViewStyle,
 		soup: string,
 		mainCourse: string,
 		sideDish: string,
@@ -54,13 +53,15 @@ interface MenuVariant{
 interface MenuVariantProps {
 		menu: MenuVariant,
 		style?: AnimatedStyleProp<ViewStyle>,
+		actionButtonStyle: AnimatedStyleProp<ViewStyle>,
 		isFolded: boolean,
 };
 
 interface MenuItemContainerProps {
-		containerHeight: AnimatableValue,
-		switchHeight: AnimatableValue,
-		contentHeight: AnimatableValue,
+		containerHeight: number,
+		switchHeight: number,
+		contentHeight: number,
+		actionButtonHeight: number,
 		isFolded: boolean,
 		menuVariants: MenuVariant[],
 };
@@ -72,4 +73,7 @@ interface MenuItemProps {
 		switchHeight: number,
 };
 
-export { HeaderProps, SegmentedSwitchProps, ExpandableProps, OrderProps, MenuItemContainerProps, MenuItemProps, MenuBlankProps, MenuVariantProps };
+type Menu = { dateSignature: string, menuVariants: MenuVariant[], }[]
+
+
+export { HeaderProps, SegmentedSwitchProps, ExpandableProps, OrderProps, MenuItemContainerProps, MenuItemProps, MenuBlankProps, MenuVariantProps, Menu };

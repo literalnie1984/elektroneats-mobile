@@ -6,11 +6,13 @@ import { faChevronDown, faChevronUp, faFaceSadTear } from "@fortawesome/free-sol
 import { useEffect, useState } from "react";
 import SegmentedSwitch from "../../components/SegmentedSwitch";
 import {ViewStyle} from "react-native";
-import { MenuVariantProps, MenuBlankProps, MenuItemProps, MenuItemContainerProps } from "../../types";
+import { MenuVariantProps, MenuBlankProps, MenuItemProps, MenuItemContainerProps, Menu } from "../../types";
 import {GestureHandlerRootView } from "react-native-gesture-handler";
 import { withTiming, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import Animated from "react-native-reanimated";
 import {Pressable} from "react-native";
+
+const ANIMATION_DURATION = 200;
 
 const MenuVariant = (props: MenuVariantProps) => {
 		
@@ -35,6 +37,25 @@ const MenuVariant = (props: MenuVariantProps) => {
 								<Text style={menuViewStyles.menuVariantRowTitle}>Beverage:</Text>
 								<Text style={menuViewStyles.menuVariantElement}>{props.menu.beverage}</Text>
 						</View>
+						<Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle, {display: props.isFolded ? "none" : "flex"}]}>
+								<Pressable 
+										style={
+												[menuViewStyles.menuVariantActionButton]
+										}
+										onPress={ () => console.log("xd") }
+										android_ripple={{
+												color: "#5376df",
+												borderless: false,
+												radius: 80,
+												foreground: false,
+										}}
+								>
+										<Text style={menuViewStyles.menuVariantActionButtonText}>
+												Zamów
+										</Text>
+
+								</Pressable>
+						</Animated.View>
 				</Animated.View>
 		);
 
@@ -52,7 +73,10 @@ const MenuItem = (props: MenuItemProps) => {
 
 		return(
 				<View style={menuViewStyles.menuItem}>
-								<Pressable onPress={() => handler()} style={[menuViewStyles.menuItemBar, isFolded ? menuViewStyles.menuItemBarFolded : menuViewStyles.menuItemBarUnfolded]} >
+								<Pressable 
+										onPress={() => handler()} 
+										style={[menuViewStyles.menuItemBar, isFolded ? menuViewStyles.menuItemBarFolded : menuViewStyles.menuItemBarUnfolded]} 
+								>
 								<Text style={menuViewStyles.menuItemBarDate}>{props.dateSignature}</Text>
 								<FontAwesomeIcon
 										icon={isFolded ? faChevronDown : faChevronUp}
@@ -65,6 +89,7 @@ const MenuItem = (props: MenuItemProps) => {
 										containerHeight={props.containerHeight}
 										switchHeight={props.switchHeight}
 										contentHeight={props.containerHeight - props.switchHeight}
+										actionButtonHeight={24}
 										menuVariants={props.menuVariants}
 								/>
 				</View>
@@ -73,14 +98,18 @@ const MenuItem = (props: MenuItemProps) => {
 
 const MenuItemContainer = (props: MenuItemContainerProps) => {
 		const [ selectedIndex, setSelectedIndex ] = useState(0);
-		const containerHeight = useSharedValue(props.containerHeight);
-		const switchHeight = useSharedValue(props.switchHeight);
-		const contentHeight = useSharedValue(props.contentHeight);
+
+		const containerHeight = useSharedValue(0);
+		const switchHeight = useSharedValue(0);
+		const contentHeight = useSharedValue(0);
+		const actionButtonHeight = useSharedValue(0);
+
 		
 		useEffect(() => {
-				containerHeight.value = withTiming(props.isFolded == true ? 0 : props.containerHeight, { duration: 300 });
-				switchHeight.value = withTiming(props.isFolded == true ? 0 : props.switchHeight, { duration: 300 });
-				contentHeight.value = withTiming(props.isFolded == true ? 0 : props.contentHeight, {duration: 300});
+				containerHeight.value = withTiming(props.isFolded == true ? 0 : props.containerHeight, { duration: ANIMATION_DURATION });
+				switchHeight.value = withTiming(props.isFolded == true ? 0 : props.switchHeight, { duration: ANIMATION_DURATION });
+				contentHeight.value = withTiming(props.isFolded == true ? 0 : props.contentHeight, {duration: ANIMATION_DURATION});
+				actionButtonHeight.value = withTiming(props.isFolded == true ? 0 : props.actionButtonHeight, { duration: ANIMATION_DURATION });
 		}, [props.isFolded, props.contentHeight, props.containerHeight, props.switchHeight])
 
 		const containerAnimatedStyle = useAnimatedStyle(() => {
@@ -101,6 +130,12 @@ const MenuItemContainer = (props: MenuItemContainerProps) => {
 				});
 		});
 
+		const actionButtonAnimatedStyle = useAnimatedStyle(() => {
+				return ({
+						height: actionButtonHeight.value,
+				});
+		});
+
 		return(<Animated.View style={[menuViewStyles.menuItemContainer, containerAnimatedStyle]}>
 						<SegmentedSwitch
 								switchHeight={switchHeight.value}
@@ -109,7 +144,12 @@ const MenuItemContainer = (props: MenuItemContainerProps) => {
 								onSegmentSwitch={(selectedSegment) => setSelectedIndex(selectedSegment)}
 								isFolded={props.isFolded}
 						/>
-						<MenuVariant isFolded={props.isFolded} style={contentAnimatedStyle} menu={props.menuVariants[selectedIndex]} />
+						<MenuVariant 
+								isFolded={props.isFolded} 
+								actionButtonStyle={actionButtonAnimatedStyle}
+								style={contentAnimatedStyle} 
+								menu={props.menuVariants[selectedIndex]} 
+						/>
 				</Animated.View>);
 };
 
@@ -138,7 +178,7 @@ const MenuBlank = (props: MenuBlankProps) => {
 };
 
 const MenuView = () => {
-		const menu = [
+		const menu: Menu = [
 				{
 						dateSignature: "21.03 (Czwartek)",
 						menuVariants: [
