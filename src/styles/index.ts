@@ -322,3 +322,35 @@ export const cartViewStyles = StyleSheet.create({
 				color: "#fff"
 		},
 });
+
+export const dinnerViewStyles = StyleSheet.create({
+  title: {
+    fontSize: 20,
+    color: "#808080",
+    marginLeft: 20,
+    marginBottom: 10,
+  },
+  container: {
+    width: '100%',
+    height: '100%',
+    paddingTop: 10
+  },
+  itemView: {
+    backgroundColor: '#bfbdbd',
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+    marginHorizontal: 20
+  },
+  itemImg: {
+    width: 150,
+    height: 150
+  },
+  itemTitle: {
+    fontSize: 18,
+    textAlign: 'center'
+  }
+});

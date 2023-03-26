@@ -7,6 +7,11 @@ const HeaderView = (props: HeaderProps) => {
     <View style={props.style}>
       <Text>K</Text>
       <Text style={props.titleStyle}>{props.title}</Text>
+      <Pressable style={props.titleStyle} onPress={() => props.stackNavigation.navigate("DinnerView")}>
+        <Text style={{ textAlign: "center" }}>
+            Zamów{"\n"}(Debugging)
+        </Text>
+      </Pressable>
       <Pressable onPress={() => props.stackNavigation.navigate("AccountView")}>
         <Svg height={32} width={32}>
           <Circle cx={16} cy={16} r={16} fill={"pink"} />
