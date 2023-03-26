@@ -127,6 +127,7 @@ export const menuViewStyles = StyleSheet.create({
   },
   menuVariantActionRow: {
     width: "100%",
+	height: "auto",
     flexDirection: "row",
     flexWrap: "nowrap",
     alignItems: "center",
@@ -135,15 +136,16 @@ export const menuViewStyles = StyleSheet.create({
   menuVariantActionButton: {
     backgroundColor: "#2246b6",
     borderRadius: 5,
+	padding: 10,
     flexDirection: "row",
     flexWrap: "nowrap",
     alignItems: "center",
     justifyContent: "center",
-    padding: 10,
   },
   menuVariantActionButtonText: {
     textAlign: "center",
-    color: "#fff",
+    color: "#ffffff",
+	fontSize: 16,
   },
   menuVariantElement: {
     width: "70%",
@@ -394,6 +396,39 @@ export const cartViewStyles = StyleSheet.create({
 			fontSize: 16,
 			color: "#000",
 	},
+});
+
+export const moreViewStyles = StyleSheet.create({
+		root: {
+				flex: 1,
+				flexDirection: "column",
+				flexWrap: "nowrap",
+				alignItems: "center",
+				justifyContent: "space-around",
+				marginHorizontal: "10%",
+		},
+		optionButton: {
+				width: "100%",
+				height: "auto",
+				padding: 5,
+				flexDirection: "row",
+				flexWrap: "nowrap",
+				alignItems: "center",
+				justifyContent: "center",
+				gap: 25,
+				borderTopWidth: 1,
+				borderBottomWidth: 1,
+				borderColor: "#3266fe",
+		},
+		optionButtonIcon: {
+				color: "#3266fe",
+				width: 28,
+		},
+		optionButtonLabel: {
+				color: "#3266fe",
+				fontSize: 24,
+				textAlign: "center",
+		},
 });
 
 export const dinnerViewStyles = StyleSheet.create({

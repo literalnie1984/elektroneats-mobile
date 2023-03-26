@@ -11,10 +11,14 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
 import { Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const ANIMATION_DURATION = 200;
 
 const MenuVariant = (props: MenuVariantProps) => {
+
+  const navigation = useNavigation();
+
   return (
     <Animated.View style={[menuViewStyles.menuVariant, props.style, { display: props.isFolded ? "none" : "flex" }]}>
       <View style={menuViewStyles.menuVariantRow}>
@@ -35,8 +39,8 @@ const MenuVariant = (props: MenuVariantProps) => {
       </View>
       <Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle, { display: props.isFolded ? "none" : "flex" }]}>
         <Pressable
-          style={[menuViewStyles.menuVariantActionButton]}
-          onPress={() => console.log("xd")}
+          style={menuViewStyles.menuVariantActionButton}
+          onPress={() => navigation.navigate("DinnerView")}
           android_ripple={{
             color: "#5376df",
             borderless: false,
@@ -44,7 +48,7 @@ const MenuVariant = (props: MenuVariantProps) => {
             foreground: false,
           }}
         >
-          <Text style={menuViewStyles.menuVariantActionButtonText}>Zamów</Text>
+          <Text style={menuViewStyles.menuVariantActionButtonText}>Złóż zamówienie</Text>
         </Pressable>
       </Animated.View>
     </Animated.View>
@@ -65,7 +69,7 @@ const MenuItem = (props: MenuItemProps) => {
         <Text style={menuViewStyles.menuItemBarDate}>{props.dateSignature}</Text>
         <FontAwesomeIcon icon={isFolded ? faChevronDown : faChevronUp} size={32} color={menuViewStyles.menuItemBarDate.color} />
       </Pressable>
-      <MenuItemContainer isFolded={isFolded} containerHeight={props.containerHeight} switchHeight={props.switchHeight} contentHeight={props.containerHeight - props.switchHeight} actionButtonHeight={24} menuVariants={props.menuVariants} />
+      <MenuItemContainer isFolded={isFolded} containerHeight={props.containerHeight} switchHeight={props.switchHeight} contentHeight={props.containerHeight - props.switchHeight} actionButtonHeight={40} menuVariants={props.menuVariants} />
     </View>
   );
 };
@@ -73,10 +77,10 @@ const MenuItem = (props: MenuItemProps) => {
 const MenuItemContainer = (props: MenuItemContainerProps) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const containerHeight = useSharedValue(0);
-  const switchHeight = useSharedValue(0);
-  const contentHeight = useSharedValue(0);
-  const actionButtonHeight = useSharedValue(0);
+  const containerHeight = useSharedValue(props.isFolded == true ? 0 : props.containerHeight);
+  const switchHeight = useSharedValue(props.isFolded == true ? 0 : props.switchHeight);
+  const contentHeight = useSharedValue(props.isFolded == true ? 0 : props.contentHeight);
+  const actionButtonHeight = useSharedValue(props.isFolded == true ? 0 : props.actionButtonHeight);
 
   useEffect(() => {
     containerHeight.value = withTiming(props.isFolded == true ? 0 : props.containerHeight, { duration: ANIMATION_DURATION });

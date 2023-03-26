@@ -10,7 +10,7 @@ const HeaderView = (props: HeaderProps) => {
       <Pressable style={props.titleStyle} onPress={() => props.stackNavigation.navigate("DinnerView")}>
         <Text style={{ textAlign: "center" }}>Zamów{"\n"}(Debugging)</Text>
       </Pressable>
-      <Pressable onPress={() => props.stackNavigation.navigate("AccountView")}>
+      <Pressable onPress={() => props.stackNavigation.navigate("Account")}>
         <Svg height={32} width={32}>
           <Circle cx={16} cy={16} r={16} fill={"pink"} />
           <SvgText x={16} y={20} textAnchor={"middle"} fontSize={16} stroke={"black"}>
