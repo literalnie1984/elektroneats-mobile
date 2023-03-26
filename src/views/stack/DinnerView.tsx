@@ -1,7 +1,6 @@
-import { View, Text, SectionList, ScrollView, Image } from "react-native";
+import { View, Text, SectionList, ScrollView, Image, TouchableOpacity } from "react-native";
 import { dinnerViewStyles } from "../../styles";
 import { useState } from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 interface DinnerItem {
   name: string;
