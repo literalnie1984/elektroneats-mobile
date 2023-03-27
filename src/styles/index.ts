@@ -67,6 +67,7 @@ export const menuViewStyles = StyleSheet.create({
     width: "100%",
     flexDirection: "column",
     flexWrap: "nowrap",
+	overflow: "hidden",
     alignItems: "center",
     justifyContent: "center",
     borderBottomLeftRadius: 10,
@@ -250,6 +251,7 @@ export const cartViewStyles = StyleSheet.create({
 			justifyContent: "space-around",
 			gap: 10,
 			borderRadius: 15,
+			overflow: "hidden",
 	},
 	summaryInfo: {
 			flexDirection: "column",
@@ -282,6 +284,7 @@ export const cartViewStyles = StyleSheet.create({
 			alignItems: 'center',
 			justifyContent: "center",
 			gap: 10,
+			overflow: "hidden",
 	},
 	summaryInfoRow: {
 			flexDirection: "row",
@@ -341,6 +344,7 @@ export const cartViewStyles = StyleSheet.create({
 			paddingVertical: 20,
 			borderRadius: 10,
 			backgroundColor: "#3266fe",
+			overflow: "hidden",
 	},
 	cartMealInfoBar: {
 			height: 60,

@@ -13,14 +13,14 @@ import Animated from "react-native-reanimated";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const ANIMATION_DURATION = 200;
+const ANIMATION_DURATION = 300;
 
 const MenuVariant = (props: MenuVariantProps) => {
 
   const navigation = useNavigation();
 
   return (
-    <Animated.View style={[menuViewStyles.menuVariant, props.style, { display: props.isFolded ? "none" : "flex" }]}>
+    <Animated.View style={[menuViewStyles.menuVariant, props.style]}>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Soup:</Text>
         <Text style={menuViewStyles.menuVariantElement}>{props.menu.soup}</Text>
@@ -37,10 +37,10 @@ const MenuVariant = (props: MenuVariantProps) => {
         <Text style={menuViewStyles.menuVariantRowTitle}>Beverage:</Text>
         <Text style={menuViewStyles.menuVariantElement}>{props.menu.beverage}</Text>
       </View>
-      <Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle, { display: props.isFolded ? "none" : "flex" }]}>
+      <Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle ]}>
         <Pressable
           style={menuViewStyles.menuVariantActionButton}
-          onPress={() => navigation.navigate("DinnerView")}
+          onPress={() => navigation.navigate("DinnerView", {  })}
           android_ripple={{
             color: "#5376df",
             borderless: false,

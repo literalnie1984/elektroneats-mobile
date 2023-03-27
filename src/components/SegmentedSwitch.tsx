@@ -46,8 +46,8 @@ const SegmentedSwitch = (props: SegmentedSwitchProps) => {
           }}
           style={
             index === selectedSegment
-              ? [defaultStyle.segment, props.segmentStyle, defaultStyle.selectedSegment, props.selectedSegmentStyle, { display: props.isFolded == false ? "flex" : "none" }]
-              : [defaultStyle.segment, props.segmentStyle, { display: props.isFolded == false ? "flex" : "none" }]
+              ? [defaultStyle.segment, props.segmentStyle, defaultStyle.selectedSegment, props.selectedSegmentStyle, ]
+              : [defaultStyle.segment, props.segmentStyle, ]
           }
         >
           <Text style={[defaultStyle.segmentText, props.segmentTextStyle]}>{segment}</Text>
