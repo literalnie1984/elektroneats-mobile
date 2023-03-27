@@ -11,7 +11,6 @@ npm-debug.*
 web-build/
 .yarn/
 .yarnrc.yml
-kantyna-app-api/
 
 # macOS
 .DS_Store
