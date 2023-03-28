@@ -29,8 +29,7 @@ export const menuViewStyles = StyleSheet.create({
     flexWrap: "nowrap",
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
-    height: "100%",
+	flex: 1,
   },
   menuBlankWindowStyle: {
     flexDirection: "column",

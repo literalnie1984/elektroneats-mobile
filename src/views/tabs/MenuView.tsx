@@ -6,12 +6,17 @@ import { faChevronDown, faChevronUp, faFaceSadTear } from "@fortawesome/free-sol
 import { useEffect, useState } from "react";
 import SegmentedSwitch from "../../components/SegmentedSwitch";
 import { ViewStyle } from "react-native";
-import { MenuVariantProps, MenuBlankProps, MenuItemProps, MenuItemContainerProps, Menu } from "../../types";
+import { MenuVariantProps, MenuBlankProps, MenuItemProps, MenuItemContainerProps } from "../../types";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import { withTiming, useAnimatedStyle, useSharedValue, set } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useRecoilValue } from "recoil";
+import { menuSelector, generateVariantTags, countVariants, generateBeverageString, generateExtrasString } from "../utils/menu";
+import { fetchMenu } from "../../api/menu";
+
+const API_URL = process.env.API_URL;
 
 const ANIMATION_DURATION = 300;
 
@@ -23,19 +28,19 @@ const MenuVariant = (props: MenuVariantProps) => {
     <Animated.View style={[menuViewStyles.menuVariant, props.style]}>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Soup:</Text>
-        <Text style={menuViewStyles.menuVariantElement}>{props.menu.soup}</Text>
+        <Text style={menuViewStyles.menuVariantElement}>{props.soup.name}</Text>
       </View>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Main course:</Text>
-        <Text style={menuViewStyles.menuVariantElement}>{props.menu.mainCourse}</Text>
+        <Text style={menuViewStyles.menuVariantElement}>{props.main.name}</Text>
       </View>
       <View style={menuViewStyles.menuVariantRow}>
-        <Text style={menuViewStyles.menuVariantRowTitle}>Side dish:</Text>
-        <Text style={menuViewStyles.menuVariantElement}>{props.menu.sideDish}</Text>
+        <Text style={menuViewStyles.menuVariantRowTitle}>Extras:</Text>
+        <Text style={menuViewStyles.menuVariantElement}>{generateExtrasString(props.extras)}</Text>
       </View>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Beverage:</Text>
-        <Text style={menuViewStyles.menuVariantElement}>{props.menu.beverage}</Text>
+        <Text style={menuViewStyles.menuVariantElement}>{generateBeverageString(props.beverage)}</Text>
       </View>
       <Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle ]}>
         <Pressable
@@ -69,7 +74,14 @@ const MenuItem = (props: MenuItemProps) => {
         <Text style={menuViewStyles.menuItemBarDate}>{props.dateSignature}</Text>
         <FontAwesomeIcon icon={isFolded ? faChevronDown : faChevronUp} size={32} color={menuViewStyles.menuItemBarDate.color} />
       </Pressable>
-      <MenuItemContainer isFolded={isFolded} containerHeight={props.containerHeight} switchHeight={props.switchHeight} contentHeight={props.containerHeight - props.switchHeight} actionButtonHeight={40} menuVariants={props.menuVariants} />
+      <MenuItemContainer 
+		isFolded={isFolded} 
+		containerHeight={props.containerHeight} 
+		switchHeight={props.switchHeight} 
+		contentHeight={props.containerHeight - props.switchHeight} 
+		actionButtonHeight={40} 
+		menuContent={props.menuContent} 
+      />
     </View>
   );
 };
@@ -115,8 +127,22 @@ const MenuItemContainer = (props: MenuItemContainerProps) => {
 
   return (
     <Animated.View style={[menuViewStyles.menuItemContainer, containerAnimatedStyle]}>
-      <SegmentedSwitch switchHeight={switchHeight.value} switchStyle={switchAnimatedStyle} segments={["Variant I", "Variant II", "Variant III"]} onSegmentSwitch={(selectedSegment) => setSelectedIndex(selectedSegment)} isFolded={props.isFolded} />
-      <MenuVariant isFolded={props.isFolded} actionButtonStyle={actionButtonAnimatedStyle} style={contentAnimatedStyle} menu={props.menuVariants[selectedIndex]} />
+      <SegmentedSwitch 
+		switchHeight={switchHeight.value} 
+		switchStyle={switchAnimatedStyle} 
+		segments={generateVariantTags(countVariants(props.menuContent))} 
+		onSegmentSwitch={(selectedSegment) => setSelectedIndex(selectedSegment)} 
+		isFolded={props.isFolded} />
+      <MenuVariant 
+	    isFolded={props.isFolded} 
+		actionButtonStyle={actionButtonAnimatedStyle} 
+		style={contentAnimatedStyle} 
+		menu={props.menuContent}
+		main={props.menuContent.main[selectedIndex]}
+		soup={props.menuContent.soup[selectedIndex]}
+		extras={props.menuContent.extras}
+		beverage={props.menuContent.beverage}
+      />
     </Animated.View>
   );
 };
@@ -138,79 +164,8 @@ const MenuBlank = (props: MenuBlankProps) => {
 };
 
 const MenuView = () => {
-  const menu: Menu = [
-    {
-      dateSignature: "21.03 (Czwartek)",
-      menuVariants: [
-        {
-          soup: "Zupa pomidorowa z ryżem",
-          mainCourse: "Bitki wieprzowe w sosie tzatziki",
-          sideDish: "Ziemniaki",
-          beverage: "Kompot",
-        },
-        {
-          soup: "Rosół wołowy z makaronem",
-          mainCourse: "Kotlet pożarski wieprzowy",
-          sideDish: "Ziemniaki",
-          beverage: "Kompot",
-        },
-        {
-          soup: "Barszcz czerwony z uszkami",
-          mainCourse: "Ryba po grecku",
-          sideDish: "Ryż",
-          beverage: "Kompot",
-        },
-      ],
-    },
-    {
-      dateSignature: "22.03 (Piątek)",
-      menuVariants: [
-        {
-          soup: "Zupa pomidorowa z ryżem",
-          mainCourse: "Bitki wieprzowe w sosie tzatziki",
-          sideDish: "Ziemniaki",
-          beverage: "Kompot",
-        },
-        {
-          soup: "Rosół wołowy z makaronem",
-          mainCourse: "Kotlet pożarski wieprzowy",
-          sideDish: "Ziemniaki",
-          beverage: "Kompot",
-        },
-        {
-          soup: "Barszcz czerwony z uszkami",
-          mainCourse: "Ryba po grecku",
-          sideDish: "Ryż",
-          beverage: "Kompot",
-        },
-      ],
-    },
-    {
-      dateSignature: "23.03 (Sobota)",
-      menuVariants: [
-        {
-          soup: "Zupa pomidorowa z ryżem",
-          mainCourse: "Bitki wieprzowe w sosie tzatziki",
-          sideDish: "Ziemniaki",
-          beverage: "Kompot",
-        },
-        {
-          soup: "Rosół wołowy z makaronem",
-          mainCourse: "Kotlet pożarski wieprzowy",
-          sideDish: "Ziemniaki",
-          beverage: "Kompot",
-        },
-        {
-          soup: "Barszcz czerwony z uszkami",
-          mainCourse: "Ryba po grecku",
-          sideDish: "Ryż",
-          beverage: "Kompot",
-        },
-      ],
-    },
-  ];
 
-  //const menu = Array();
+  const menu = useRecoilValue(menuSelector);
 
   return (
     <GestureHandlerRootView style={menuViewStyles.root}>
@@ -218,7 +173,7 @@ const MenuView = () => {
         <FlashList
           data={menu}
           renderItem={({ item }) => {
-            return <MenuItem dateSignature={item.dateSignature} menuVariants={item.menuVariants} containerHeight={300} switchHeight={32} />;
+            return <MenuItem dateSignature={item.dateSignature} menuContent={item.menuContent} containerHeight={300} switchHeight={32} />;
           }}
           estimatedItemSize={200}
           keyExtractor={(_, index) => index.toString()}
@@ -234,6 +189,12 @@ const MenuView = () => {
           textStyle={menuViewStyles.menuBlankTextStyle}
         />
       )}
+		<Pressable
+				style={menuViewStyles.menuVariantActionButton}
+				onPress={fetchMenu}
+		>
+				<Text style={menuViewStyles.menuVariantActionButtonText}> Fetch Menu (debug)</Text>
+		</Pressable>
     </GestureHandlerRootView>
   );
 };

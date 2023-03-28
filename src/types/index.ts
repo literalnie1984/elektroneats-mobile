@@ -23,6 +23,42 @@ interface OrderProps {
   isRedeemed: boolean;
 }
 
+//Menu props
+interface MealContent {
+		id: number,
+		image: string,
+		max_supply: number,
+		name: string,
+		price: string,
+		type: 'Main' | 'Soup',
+		week_day: number,
+};
+
+interface ExtrasContent {
+		id: number,
+		name: string,
+		price: number,
+};
+
+type Main = MealContent[];
+type Soup = MealContent[];
+type Extras = Array<Array<ExtrasContent>>;
+type Beverage = Array<Array<ExtrasContent>> | [][];
+
+interface MenuContent {
+		main: Main,
+		soup: Soup,
+		extras: Extras,
+		beverage: Beverage,
+};
+
+interface MenuItem {
+		dateSignature: string,
+		menuContent: MenuContent,
+};
+
+type MenuList =  MenuItem[];
+
 interface SegmentedSwitchProps {
   segments: string[];
   onSegmentSwitch(selectedSegment: number): void;
@@ -42,18 +78,16 @@ interface MenuBlankProps {
   textStyle: TextStyle;
 }
 
-interface MenuVariant {
-  soup: string;
-  mainCourse: string;
-  sideDish: string;
-  beverage: string;
-}
 
 interface MenuVariantProps {
-  menu: MenuVariant;
+  menu: MenuContent;
   style?: AnimatedStyleProp<ViewStyle>;
   actionButtonStyle: AnimatedStyleProp<ViewStyle>;
   isFolded: boolean;
+  main: MealContent,
+  soup: MealContent,
+  extras: Extras,
+  beverage: Beverage,
 }
 
 interface MenuItemContainerProps {
@@ -62,17 +96,15 @@ interface MenuItemContainerProps {
   contentHeight: number;
   actionButtonHeight: number;
   isFolded: boolean;
-  menuVariants: MenuVariant[];
+  menuContent: MenuContent;
 }
 
 interface MenuItemProps {
   dateSignature: string;
-  menuVariants: MenuVariant[];
+  menuContent: MenuContent;
   containerHeight: number;
   switchHeight: number;
 }
-
-type Menu = { dateSignature: string; menuVariants: MenuVariant[] }[];
 
 // DinnerView
 interface DinnerItem {
@@ -106,4 +138,4 @@ interface DinnerSelectProps {
   items: DinnerItem[];
 }
 
-export { HeaderProps, SegmentedSwitchProps, ExpandableProps, OrderProps, MenuItemContainerProps, MenuItemProps, MenuBlankProps, MenuVariantProps, Menu, DinnerData, DinnerItemProps, InnerIndex, SelectedDinnerItem, DinnerSelectProps };
+export { HeaderProps, SegmentedSwitchProps, ExpandableProps, OrderProps, MenuItemContainerProps, MenuItemProps, MenuBlankProps, MenuVariantProps, Extras, Beverage, MenuContent, MenuItem, MenuList, DinnerData, DinnerItemProps, InnerIndex, SelectedDinnerItem, DinnerSelectProps };

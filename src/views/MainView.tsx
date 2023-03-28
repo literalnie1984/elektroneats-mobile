@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import { menuAtom } from "./utils/menu";
+import { fetchMenu } from "../api/menu";
 import { createStackNavigator } from "@react-navigation/stack";
 import TabsView from "./TabsView";
 import AccountView from "./stack/AccountView";
@@ -6,6 +10,10 @@ import * as OptionsViews from './stack/optionsViews/';
 
 const Stack = createStackNavigator();
 const MainView = () => {
+
+  const [ menu, setMenu ] = useRecoilState(menuAtom);
+  useEffect(function(){ fetchMenu().then( menu_array => setMenu(menu_array) ); }, [] );
+
   return (
     <Stack.Navigator
       initialRouteName="TabsView"
