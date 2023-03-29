@@ -43,7 +43,7 @@ export const getMenu = async function () {
           }
         })
         .then((data) => {
-             console.log(data);
+          console.log(data);
           const fetchedData = data;
           const dateSignature = String(`${getDayOfWeekMnemonic(week_day)}`);
           const menuContent: MenuContent = {
