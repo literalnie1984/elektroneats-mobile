@@ -1,4 +1,5 @@
 import { MenuContent, MenuItem } from "../types";
+import { API_URL } from "@env";
 
 const getDayOfWeekMnemonic = (day: number) => {
   switch (day) {
@@ -19,8 +20,6 @@ const getDayOfWeekMnemonic = (day: number) => {
   }
 };
 
-const API_URL = process.env.API_URL;
-
 export const getMenu = async function () {
   const week_days = [0, 1, 2, 3, 4, 5];
   const fetched_values: Array<Promise<MenuItem>> = [];
@@ -28,7 +27,7 @@ export const getMenu = async function () {
 
   week_days.map(async (week_day) => {
     fetched_values.push(
-      fetch(`${API_URL}api/menu/day/${week_day}`, {
+      fetch(`${API_URL}/api/menu/day/${week_day}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +43,7 @@ export const getMenu = async function () {
           }
         })
         .then((data) => {
-          //    console.log(data);
+             console.log(data);
           const fetchedData = data;
           const dateSignature = String(`${getDayOfWeekMnemonic(week_day)}`);
           const menuContent: MenuContent = {
