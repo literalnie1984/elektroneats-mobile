@@ -142,18 +142,18 @@ interface DinnerSelectProps {
 
 interface CartItemObject {
   type: "meal" | "item";
-  totalCost: number;
+  cost: number;
   amount: number;
   data: object;
 }
 
 interface CartItemProps extends CartItemObject {
   index: number;
-  handleAmountUpdate: ( index: number, amountUpdate: number ) => void,
+  handleAmountUpdate: (index: number, amountUpdate: number) => void;
 }
 
 interface CartSummaryProps {
-  cartValue: number | null;
+  cartItems: CartItemObject[];
   cartPickupDate: Date | null;
   handlePickupDateUpdate: () => void;
   handleCartClearingRequest: () => void;

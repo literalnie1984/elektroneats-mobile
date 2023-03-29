@@ -11,7 +11,7 @@ import { CartItemObject, CartItemProps, CartPanelProps, CartSummaryProps } from 
 const ANIMATION_DURATION = 300;
 const placeholderImage = "https://i.imgur.com/ejtUaJJ.png";
 
-const CartItem = ({ index, data, type, totalCost, amount, handleAmountUpdate }: CartItemProps) => {
+const CartItem = ({ index, data, type, cost, amount, handleAmountUpdate }: CartItemProps) => {
   const ITEM_EXPANDED_HEIGHT = 150;
   const ITEM_FOLDED_HEIGHT = 80;
 
@@ -35,65 +35,54 @@ const CartItem = ({ index, data, type, totalCost, amount, handleAmountUpdate }: 
     opacity: optionsHeight.value / 100,
   }));
 
-  return(
+  return (
     <Animated.View style={[cartViewStyles.cartMeal, itemAnimatedStyle]}>
-		<Pressable style={cartViewStyles.cartMealInfoBar} onPress={() => setIsExpanded(!isExpanded)}>
-				<Animated.View style={ cartViewStyles.cartMealImageContainer }>
-						<Image style={ cartViewStyles.cartMealImage } source={{ uri: placeholderImage }} />
-				</Animated.View>
-				<Text style={cartViewStyles.cartMealName}>{`${index+1}. Obiad`}</Text>
-				<Text style={cartViewStyles.cartMealCost}>{totalCost ? `${Number(totalCost * amount).toFixed(2)} zł` : `nic`}</Text>
-				<FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} color={cartViewStyles.cartMealInfoIcon.color} size={cartViewStyles.cartMealInfoIcon.width} />
-		</Pressable>
-		<Animated.View style={[cartViewStyles.cartMealActionsBar, optionsAnimatedStyle]}>
-				<Pressable
-						style={[cartViewStyles.cartMealActionButton]}
-						onPress={mealEditHandler}
-						android_ripple={{
-								color: "#e5e5e6",
-								borderless: false,
-								radius: 100,
-								foreground: false,
-						}}
-				>
-						<Text style={cartViewStyles.cartMealActionLabel}>Sprawdź/Zmień skład</Text>
-				</Pressable>
-				<View style={cartViewStyles.cartMealAmountOptions}>
-						<Pressable
-								style={cartViewStyles.cartMealAmountButton}
-								onPressOut={ () => handleAmountUpdate(index,-1) }
-								hitSlop={10}
-						>
-								<FontAwesomeIcon
-										icon={faChevronLeft}
-										color={cartViewStyles.cartMealAmountButtonIcon.color}
-										size={cartViewStyles.cartMealAmountButtonIcon.width}
-								/>
-						</Pressable>
-						<Text style={cartViewStyles.cartMealAmountLabel}>{amount}</Text>
-						<Pressable
-								style={cartViewStyles.cartMealAmountButton}
-								onPressOut={ () => handleAmountUpdate(index, 1) }
-								hitSlop={10}
-						>
-								<FontAwesomeIcon
-										icon={faChevronRight}
-										color={cartViewStyles.cartMealAmountButtonIcon.color}
-										size={cartViewStyles.cartMealAmountButtonIcon.width}
-								/>
-						</Pressable>
-				</View>
-		</Animated.View>
+      <Pressable style={cartViewStyles.cartMealInfoBar} onPress={() => setIsExpanded(!isExpanded)}>
+        <Animated.View style={cartViewStyles.cartMealImageContainer}>
+          <Image style={cartViewStyles.cartMealImage} source={{ uri: placeholderImage }} />
+        </Animated.View>
+        <Text style={cartViewStyles.cartMealName}>{`${index + 1}. Obiad`}</Text>
+        <Text style={cartViewStyles.cartMealCost}>{cost ? `${Number(cost * amount).toFixed(2)} zł` : `nic`}</Text>
+        <FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} color={cartViewStyles.cartMealInfoIcon.color} size={cartViewStyles.cartMealInfoIcon.width} />
+      </Pressable>
+      <Animated.View style={[cartViewStyles.cartMealActionsBar, optionsAnimatedStyle]}>
+        <Pressable
+          style={[cartViewStyles.cartMealActionButton]}
+          onPress={mealEditHandler}
+          android_ripple={{
+            color: "#e5e5e6",
+            borderless: false,
+            radius: 100,
+            foreground: false,
+          }}
+        >
+          <Text style={cartViewStyles.cartMealActionLabel}>Sprawdź/Zmień skład</Text>
+        </Pressable>
+        <View style={cartViewStyles.cartMealAmountOptions}>
+          <Pressable style={cartViewStyles.cartMealAmountButton} onPressOut={() => handleAmountUpdate(index, -1)} hitSlop={10}>
+            <FontAwesomeIcon icon={faChevronLeft} color={cartViewStyles.cartMealAmountButtonIcon.color} size={cartViewStyles.cartMealAmountButtonIcon.width} />
+          </Pressable>
+          <Text style={cartViewStyles.cartMealAmountLabel}>{amount}</Text>
+          <Pressable style={cartViewStyles.cartMealAmountButton} onPressOut={() => handleAmountUpdate(index, 1)} hitSlop={10}>
+            <FontAwesomeIcon icon={faChevronRight} color={cartViewStyles.cartMealAmountButtonIcon.color} size={cartViewStyles.cartMealAmountButtonIcon.width} />
+          </Pressable>
+        </View>
+      </Animated.View>
     </Animated.View>
   );
 };
 
-const CartSummary = ({ cartValue, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded }: CartSummaryProps) => {
+const CartSummary = ({ cartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded }: CartSummaryProps) => {
   const FOLDED_HEIGHT = 40;
   const EXPANDED_HEIGHT = 225;
 
   const containerHeight = useSharedValue(EXPANDED_HEIGHT);
   const elementsHeight = useSharedValue(100);
+  const [cost, setCost] = useState<number | null>(summarizeCost(cartItems));
+
+  useEffect(() => {
+    setCost(summarizeCost(cartItems));
+  }, [cartItems]);
 
   useEffect(() => {
     containerHeight.value = withTiming(isExpanded ? EXPANDED_HEIGHT : FOLDED_HEIGHT, { duration: ANIMATION_DURATION });
@@ -125,7 +114,7 @@ const CartSummary = ({ cartValue, cartPickupDate, handlePickupDateUpdate, handle
         <Animated.View style={[cartViewStyles.summaryInfoRows, elementsAnimatedStyle]}>
           <View style={cartViewStyles.summaryInfoRow}>
             <Text style={cartViewStyles.summaryInfoRowLabel}>Suma:</Text>
-            <Text style={cartViewStyles.summaryInfoRowContent}>{cartValue ? `${cartValue} zł` : "dodaj produkty, a zobaczysz tu ich łączną wartość"}</Text>
+            <Text style={cartViewStyles.summaryInfoRowContent}>{cost ? Number(cost).toFixed(2) + " zł" : "dodaj produkty, a zobaczysz tu ich łączną wartość"}</Text>
           </View>
           <View style={cartViewStyles.summaryInfoRow}>
             <Text style={cartViewStyles.summaryInfoRowLabel}>Data odbioru:</Text>
@@ -177,7 +166,7 @@ const CartSummary = ({ cartValue, cartPickupDate, handlePickupDateUpdate, handle
 
 const CartPanelListItemSeparator = () => <View style={{ height: 20 }} />;
 
-const CartPanel = ({ data, handleAmountUpdate }: { data: CartItemObject[], handleAmountUpdate: (index: number, amountUpdate: number) => void }) => {
+const CartPanel = ({ data, handleAmountUpdate }: { data: CartItemObject[]; handleAmountUpdate: (index: number, amountUpdate: number) => void }) => {
   return (
     <View style={cartViewStyles.cartPanel}>
       <Text style={cartViewStyles.cartPanelHeaderContent}>Zawartość koszyka</Text>
@@ -185,14 +174,7 @@ const CartPanel = ({ data, handleAmountUpdate }: { data: CartItemObject[], handl
         contentContainerStyle={cartViewStyles.cartPanelList}
         data={data}
         renderItem={({ item, index }: { item: CartItemObject; index: number }) => {
-          return <CartItem 
-						index={index} 
-						totalCost={item.totalCost} 
-						data={item.data} 
-						type={item.type} 
-						amount={item.amount}
-						handleAmountUpdate={(index, amountUpdate) => handleAmountUpdate( index, amountUpdate )}
-				/>;
+          return <CartItem index={index} cost={item.cost} data={item.data} type={item.type} amount={item.amount} handleAmountUpdate={(index, amountUpdate) => handleAmountUpdate(index, amountUpdate)} />;
         }}
         estimatedItemSize={150}
         keyExtractor={(_, index) => String(index)}
@@ -278,13 +260,25 @@ const getDayOfWeekMnemonic = (day: number) => {
   }
 };
 
+const summarizeCost = (data: CartItemObject[]) => {
+  if (data.length === 0) return null;
+
+  let cost = 0;
+  data.map((item) => {
+    if (!item) return;
+    cost += item.cost * item.amount;
+  });
+
+  return cost || null;
+};
+
 const CartView = () => {
   const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
   const [date, setDate] = useState<Date | null>(null);
   const [cartItems, setCartItems] = useState<CartItemObject[] | []>([
     {
       type: "meal",
-      totalCost: 21.37,
+      cost: 21.37,
       amount: 1,
       data: {
         menu: "something",
@@ -292,7 +286,7 @@ const CartView = () => {
     },
     {
       type: "meal",
-      totalCost: 42.69,
+      cost: 42.69,
       amount: 2,
       data: {
         menu: "something",
@@ -300,7 +294,7 @@ const CartView = () => {
     },
     {
       type: "meal",
-      totalCost: 50.0,
+      cost: 50.0,
       amount: 1,
       data: {
         menu: "something",
@@ -308,7 +302,7 @@ const CartView = () => {
     },
     {
       type: "meal",
-      totalCost: 99.99,
+      cost: 99.99,
       amount: 3,
       data: {
         menu: "something",
@@ -317,55 +311,43 @@ const CartView = () => {
   ]);
 
   const updateItemAmount = (index: number, amountUpdate: number) => {
-		console.log(`Changed value of ${index} by: ${amountUpdate}`);
-		let cartList = JSON.parse(JSON.stringify(cartItems));
-		cartList[index].amount += amountUpdate;
-		if(cartList[index].amount <= 0){
-				Alert.alert(
-						"Item deletion",
-						"Are you sure you want to remove this item from cart?",
-						[
-								{ 
-										text: "Yes", 
-										onPress: () => {
-												cartList = cartList.filter( ( item: CartItemObject ) => item.amount > 0 );
-												setCartItems(cartList);
-												return;
-										}, 
-								},
-								{
-										text: "No",
-										onPress: () => { 
-												cartList[index].amount += 1;
-												setCartItems(cartList);
-												return;
-										},
-								},
-						],
-						{
-								cancelable: true,
-								onDismiss: () => { 
-										cartList[index].amount += 1;
-										setCartItems(cartList);
-										return;
-								},
-						}
-				)
-		} else setCartItems(cartList);
+    console.log(`Changed value of ${index} by: ${amountUpdate}`);
+    let cartList = JSON.parse(JSON.stringify(cartItems));
+    cartList[index].amount += amountUpdate;
+    if (cartList[index].amount <= 0) {
+      Alert.alert(
+        "Item deletion",
+        "Are you sure you want to remove this item from cart?",
+        [
+          {
+            text: "Yes",
+            onPress: () => {
+              cartList = cartList.filter((item: CartItemObject) => item.amount > 0);
+              setCartItems(cartList);
+              return;
+            },
+          },
+          {
+            text: "No",
+            onPress: () => {
+              cartList[index].amount += 1;
+              setCartItems(cartList);
+              return;
+            },
+          },
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => {
+            cartList[index].amount += 1;
+            setCartItems(cartList);
+            return;
+          },
+        }
+      );
+    } else setCartItems(cartList);
 
-		return;
-  };
-
-  const summarizeCost = (data: CartItemObject[]) => {
-    if (data.length === 0) return null;
-
-    let cost = 0;
-    data.map((item) => {
-      if (!item) return;
-      cost += item.totalCost;
-    });
-
-    return cost || null;
+    return;
   };
 
   const clearCart = () => {
@@ -373,10 +355,50 @@ const CartView = () => {
     setCartItems([]);
   };
 
+  const debugResetCart = () => {
+    setCartItems([
+      {
+        type: "meal",
+        cost: 21.37,
+        amount: 1,
+        data: {
+          menu: "something",
+        },
+      },
+      {
+        type: "meal",
+        cost: 42.69,
+        amount: 2,
+        data: {
+          menu: "something",
+        },
+      },
+      {
+        type: "meal",
+        cost: 50.0,
+        amount: 1,
+        data: {
+          menu: "something",
+        },
+      },
+      {
+        type: "meal",
+        cost: 99.99,
+        amount: 3,
+        data: {
+          menu: "something",
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={cartViewStyles.root}>
-      <CartPanel data={cartItems} handleAmountUpdate={(index, amountUpdate) => updateItemAmount(index, amountUpdate)}/>
-      <CartSummary cartValue={summarizeCost(cartItems)} cartPickupDate={date} handlePickupDateUpdate={() => showDatePicker(date, setDate)} handleCartClearingRequest={clearCart} isExpanded={isSummaryExpanded} setIsExpanded={setIsSummaryExpanded} />
+      <CartPanel data={cartItems} handleAmountUpdate={(index, amountUpdate) => updateItemAmount(index, amountUpdate)} />
+      <CartSummary cartItems={cartItems} cartPickupDate={date} handlePickupDateUpdate={() => showDatePicker(date, setDate)} handleCartClearingRequest={clearCart} isExpanded={isSummaryExpanded} setIsExpanded={setIsSummaryExpanded} />
+      <Pressable style={cartViewStyles.cartPanelDebugButton} onPress={debugResetCart}>
+        <Text style={cartViewStyles.cartPanelDebugButtonText}> Reset cart (debug)</Text>
+      </Pressable>
     </View>
   );
 };
