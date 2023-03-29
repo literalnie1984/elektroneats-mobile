@@ -6,15 +6,13 @@ import MainView from "./src/views/MainView";
 
 export default function App() {
   return (
-    <StripeProvider
-		publishableKey="jeszcze nic tu nie ma"
-	>
-    <RecoilRoot>
-      <NavigationContainer>
-        <MainView />
-        <StatusBar style="auto" translucent={false} hidden={false} animated={true} backgroundColor={"transparent"} />
-      </NavigationContainer>
-    </RecoilRoot>
-	</StripeProvider>
+    <StripeProvider publishableKey="jeszcze nic tu nie ma">
+      <RecoilRoot>
+        <NavigationContainer>
+          <MainView />
+          <StatusBar style="auto" translucent={false} hidden={false} animated={true} backgroundColor={"transparent"} />
+        </NavigationContainer>
+      </RecoilRoot>
+    </StripeProvider>
   );
 }

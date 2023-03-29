@@ -25,20 +25,20 @@ interface OrderProps {
 
 //Menu props
 interface MealContent {
-		id: number,
-		image: string,
-		max_supply: number,
-		name: string,
-		price: string,
-		type: 'Main' | 'Soup',
-		week_day: number,
-};
+  id: number;
+  image: string;
+  max_supply: number;
+  name: string;
+  price: string;
+  type: "Main" | "Soup";
+  week_day: number;
+}
 
 interface ExtrasContent {
-		id: number,
-		name: string,
-		price: number,
-};
+  id: number;
+  name: string;
+  price: number;
+}
 
 type Main = MealContent[];
 type Soup = MealContent[];
@@ -46,18 +46,18 @@ type Extras = Array<Array<ExtrasContent>>;
 type Beverage = Array<Array<ExtrasContent>> | [][];
 
 interface MenuContent {
-		main: Main,
-		soup: Soup,
-		extras: Extras,
-		beverage: Beverage,
-};
+  main: Main;
+  soup: Soup;
+  extras: Extras;
+  beverage: Beverage;
+}
 
 interface MenuItem {
-		dateSignature: string,
-		menuContent: MenuContent,
-};
+  dateSignature: string;
+  menuContent: MenuContent;
+}
 
-type MenuList =  MenuItem[];
+type MenuList = MenuItem[];
 
 interface SegmentedSwitchProps {
   segments: string[];
@@ -78,16 +78,15 @@ interface MenuBlankProps {
   textStyle: TextStyle;
 }
 
-
 interface MenuVariantProps {
   menu: MenuContent;
   style?: AnimatedStyleProp<ViewStyle>;
   actionButtonStyle: AnimatedStyleProp<ViewStyle>;
   isFolded: boolean;
-  main: MealContent,
-  soup: MealContent,
-  extras: Extras,
-  beverage: Beverage,
+  main: MealContent;
+  soup: MealContent;
+  extras: Extras;
+  beverage: Beverage;
 }
 
 interface MenuItemContainerProps {
@@ -138,4 +137,23 @@ interface DinnerSelectProps {
   items: DinnerItem[];
 }
 
-export { HeaderProps, SegmentedSwitchProps, ExpandableProps, OrderProps, MenuItemContainerProps, MenuItemProps, MenuBlankProps, MenuVariantProps, Extras, Beverage, MenuContent, MenuItem, MenuList, DinnerData, DinnerItemProps, InnerIndex, SelectedDinnerItem, DinnerSelectProps };
+export {
+  HeaderProps,
+  SegmentedSwitchProps,
+  ExpandableProps,
+  OrderProps,
+  MenuItemContainerProps,
+  MenuItemProps,
+  MenuBlankProps,
+  MenuVariantProps,
+  Extras,
+  Beverage,
+  MenuContent,
+  MenuItem,
+  MenuList,
+  DinnerData,
+  DinnerItemProps,
+  InnerIndex,
+  SelectedDinnerItem,
+  DinnerSelectProps,
+};

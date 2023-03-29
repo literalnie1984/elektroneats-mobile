@@ -21,18 +21,17 @@ const API_URL = process.env.API_URL;
 const ANIMATION_DURATION = 300;
 
 const MenuVariant = (props: MenuVariantProps) => {
-
   const navigation = useNavigation();
 
   return (
     <Animated.View style={[menuViewStyles.menuVariant, props.style]}>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Soup:</Text>
-        <Text style={menuViewStyles.menuVariantElement}>{props.soup.name}</Text>
+        <Text style={menuViewStyles.menuVariantElement}>{props?.soup?.name}</Text>
       </View>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Main course:</Text>
-        <Text style={menuViewStyles.menuVariantElement}>{props.main.name}</Text>
+        <Text style={menuViewStyles.menuVariantElement}>{props?.main?.name}</Text>
       </View>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Extras:</Text>
@@ -42,10 +41,10 @@ const MenuVariant = (props: MenuVariantProps) => {
         <Text style={menuViewStyles.menuVariantRowTitle}>Beverage:</Text>
         <Text style={menuViewStyles.menuVariantElement}>{generateBeverageString(props.beverage)}</Text>
       </View>
-      <Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle ]}>
+      <Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle]}>
         <Pressable
           style={menuViewStyles.menuVariantActionButton}
-          onPress={() => navigation.navigate("DinnerView", {  })}
+          onPress={() => navigation.navigate("DinnerView", {})}
           android_ripple={{
             color: "#5376df",
             borderless: false,
@@ -74,14 +73,7 @@ const MenuItem = (props: MenuItemProps) => {
         <Text style={menuViewStyles.menuItemBarDate}>{props.dateSignature}</Text>
         <FontAwesomeIcon icon={isFolded ? faChevronDown : faChevronUp} size={32} color={menuViewStyles.menuItemBarDate.color} />
       </Pressable>
-      <MenuItemContainer 
-		isFolded={isFolded} 
-		containerHeight={props.containerHeight} 
-		switchHeight={props.switchHeight} 
-		contentHeight={props.containerHeight - props.switchHeight} 
-		actionButtonHeight={40} 
-		menuContent={props.menuContent} 
-      />
+      <MenuItemContainer isFolded={isFolded} containerHeight={props.containerHeight} switchHeight={props.switchHeight} contentHeight={props.containerHeight - props.switchHeight} actionButtonHeight={40} menuContent={props.menuContent} />
     </View>
   );
 };
@@ -127,21 +119,22 @@ const MenuItemContainer = (props: MenuItemContainerProps) => {
 
   return (
     <Animated.View style={[menuViewStyles.menuItemContainer, containerAnimatedStyle]}>
-      <SegmentedSwitch 
-		switchHeight={switchHeight.value} 
-		switchStyle={switchAnimatedStyle} 
-		segments={generateVariantTags(countVariants(props.menuContent))} 
-		onSegmentSwitch={(selectedSegment) => setSelectedIndex(selectedSegment)} 
-		isFolded={props.isFolded} />
-      <MenuVariant 
-	    isFolded={props.isFolded} 
-		actionButtonStyle={actionButtonAnimatedStyle} 
-		style={contentAnimatedStyle} 
-		menu={props.menuContent}
-		main={props.menuContent.main[selectedIndex]}
-		soup={props.menuContent.soup[selectedIndex]}
-		extras={props.menuContent.extras}
-		beverage={props.menuContent.beverage}
+      <SegmentedSwitch
+        switchHeight={switchHeight.value}
+        switchStyle={switchAnimatedStyle}
+        segments={generateVariantTags(countVariants(props.menuContent))}
+        onSegmentSwitch={(selectedSegment) => setSelectedIndex(selectedSegment)}
+        isFolded={props.isFolded}
+      />
+      <MenuVariant
+        isFolded={props.isFolded}
+        actionButtonStyle={actionButtonAnimatedStyle}
+        style={contentAnimatedStyle}
+        menu={props.menuContent}
+        main={props.menuContent.main[selectedIndex]}
+        soup={props.menuContent.soup[selectedIndex]}
+        extras={props.menuContent.extras}
+        beverage={props.menuContent.beverage}
       />
     </Animated.View>
   );
@@ -164,7 +157,6 @@ const MenuBlank = (props: MenuBlankProps) => {
 };
 
 const MenuView = () => {
-
   const menu = useRecoilValue(menuSelector);
 
   return (
@@ -189,12 +181,9 @@ const MenuView = () => {
           textStyle={menuViewStyles.menuBlankTextStyle}
         />
       )}
-		<Pressable
-				style={menuViewStyles.menuVariantActionButton}
-				onPress={fetchMenu}
-		>
-				<Text style={menuViewStyles.menuVariantActionButtonText}> Fetch Menu (debug)</Text>
-		</Pressable>
+      <Pressable style={menuViewStyles.menuVariantActionButton} onPress={fetchMenu}>
+        <Text style={menuViewStyles.menuVariantActionButtonText}> Fetch Menu (debug)</Text>
+      </Pressable>
     </GestureHandlerRootView>
   );
 };

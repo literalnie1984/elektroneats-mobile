@@ -44,11 +44,7 @@ const SegmentedSwitch = (props: SegmentedSwitchProps) => {
             setSelectedSegment(index);
             props.onSegmentSwitch(index);
           }}
-          style={
-            index === selectedSegment
-              ? [defaultStyle.segment, props.segmentStyle, defaultStyle.selectedSegment, props.selectedSegmentStyle, ]
-              : [defaultStyle.segment, props.segmentStyle, ]
-          }
+          style={index === selectedSegment ? [defaultStyle.segment, props.segmentStyle, defaultStyle.selectedSegment, props.selectedSegmentStyle] : [defaultStyle.segment, props.segmentStyle]}
         >
           <Text style={[defaultStyle.segmentText, props.segmentTextStyle]}>{segment}</Text>
         </Pressable>

@@ -1,31 +1,21 @@
 import { StyleSheet } from "react-native";
 
 export const lookAndFeelStyle = StyleSheet.create({
-		root: {
-
-		},
+  root: {},
 });
 
 export const paymentSettingsStyle = StyleSheet.create({
-		root: {
-
-		},
+  root: {},
 });
 
 export const miscellaneousViewStyle = StyleSheet.create({
-		root: {
-
-		},
+  root: {},
 });
 
 export const securitySettingsStyle = StyleSheet.create({
-		root: {
-
-		},
+  root: {},
 });
 
 export const informationsViewStyle = StyleSheet.create({
-		root: {
-
-		},
+  root: {},
 });
