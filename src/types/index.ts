@@ -149,6 +149,7 @@ interface CartItemObject {
 
 interface CartItemProps extends CartItemObject {
   index: number;
+  handleAmountUpdate: ( index: number, amountUpdate: number ) => void,
 }
 
 interface CartSummaryProps {

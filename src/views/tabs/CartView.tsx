@@ -1,16 +1,17 @@
-import { View, Text, Pressable, Alert } from "react-native";
+import { View, Text, Pressable, Alert, Image } from "react-native";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { cartViewStyles } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faChevronUp, faChevronDown, faFaceMeh } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown, faChevronLeft, faChevronRight, faFaceMeh } from "@fortawesome/free-solid-svg-icons";
 import { FlashList } from "@shopify/flash-list";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { DateTimePickerAndroid, DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { CartItemObject, CartItemProps, CartPanelProps, CartSummaryProps } from "../../types/index";
 
 const ANIMATION_DURATION = 300;
+const placeholderImage = "https://i.imgur.com/ejtUaJJ.png";
 
-const CartItem = ({ index, data, type, totalCost, amount }: CartItemProps) => {
+const CartItem = ({ index, data, type, totalCost, amount, handleAmountUpdate }: CartItemProps) => {
   const ITEM_EXPANDED_HEIGHT = 150;
   const ITEM_FOLDED_HEIGHT = 80;
 
@@ -34,35 +35,56 @@ const CartItem = ({ index, data, type, totalCost, amount }: CartItemProps) => {
     opacity: optionsHeight.value / 100,
   }));
 
-  return type === "meal" ? (
+  return(
     <Animated.View style={[cartViewStyles.cartMeal, itemAnimatedStyle]}>
-      <Pressable style={cartViewStyles.cartMealInfoBar} onPress={() => setIsExpanded(!isExpanded)}>
-        <Text style={cartViewStyles.cartMealName}>{`${index}. Obiad`}</Text>
-        <Text style={cartViewStyles.cartMealCost}>{totalCost ? `${totalCost} zł` : `nic`}</Text>
-        <FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} color={cartViewStyles.cartMealInfoIcon.color} size={cartViewStyles.cartMealInfoIcon.width} />
-      </Pressable>
-      <Animated.View style={[cartViewStyles.cartMealActionsBar, optionsAnimatedStyle]}>
-        <Pressable
-          style={[cartViewStyles.cartMealActionButton]}
-          onPress={mealEditHandler}
-          android_ripple={{
-            color: "#e5e5e6",
-            borderless: false,
-            radius: 100,
-            foreground: false,
-          }}
-        >
-          <Text style={cartViewStyles.cartMealActionLabel}>Sprawdź/Zmień skład</Text>
-        </Pressable>
-        <View style={cartViewStyles.cartMealOptions}>
-          <Text>TODO</Text>
-        </View>
-      </Animated.View>
+		<Pressable style={cartViewStyles.cartMealInfoBar} onPress={() => setIsExpanded(!isExpanded)}>
+				<Animated.View style={ cartViewStyles.cartMealImageContainer }>
+						<Image style={ cartViewStyles.cartMealImage } source={{ uri: placeholderImage }} />
+				</Animated.View>
+				<Text style={cartViewStyles.cartMealName}>{`${index+1}. Obiad`}</Text>
+				<Text style={cartViewStyles.cartMealCost}>{totalCost ? `${Number(totalCost * amount).toFixed(2)} zł` : `nic`}</Text>
+				<FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} color={cartViewStyles.cartMealInfoIcon.color} size={cartViewStyles.cartMealInfoIcon.width} />
+		</Pressable>
+		<Animated.View style={[cartViewStyles.cartMealActionsBar, optionsAnimatedStyle]}>
+				<Pressable
+						style={[cartViewStyles.cartMealActionButton]}
+						onPress={mealEditHandler}
+						android_ripple={{
+								color: "#e5e5e6",
+								borderless: false,
+								radius: 100,
+								foreground: false,
+						}}
+				>
+						<Text style={cartViewStyles.cartMealActionLabel}>Sprawdź/Zmień skład</Text>
+				</Pressable>
+				<View style={cartViewStyles.cartMealAmountOptions}>
+						<Pressable
+								style={cartViewStyles.cartMealAmountButton}
+								onPressOut={ () => handleAmountUpdate(index,-1) }
+								hitSlop={10}
+						>
+								<FontAwesomeIcon
+										icon={faChevronLeft}
+										color={cartViewStyles.cartMealAmountButtonIcon.color}
+										size={cartViewStyles.cartMealAmountButtonIcon.width}
+								/>
+						</Pressable>
+						<Text style={cartViewStyles.cartMealAmountLabel}>{amount}</Text>
+						<Pressable
+								style={cartViewStyles.cartMealAmountButton}
+								onPressOut={ () => handleAmountUpdate(index, 1) }
+								hitSlop={10}
+						>
+								<FontAwesomeIcon
+										icon={faChevronRight}
+										color={cartViewStyles.cartMealAmountButtonIcon.color}
+										size={cartViewStyles.cartMealAmountButtonIcon.width}
+								/>
+						</Pressable>
+				</View>
+		</Animated.View>
     </Animated.View>
-  ) : (
-    <View>
-      <Text>TODO</Text>
-    </View>
   );
 };
 
@@ -155,7 +177,7 @@ const CartSummary = ({ cartValue, cartPickupDate, handlePickupDateUpdate, handle
 
 const CartPanelListItemSeparator = () => <View style={{ height: 20 }} />;
 
-const CartPanel = ({ data }: { data: CartItemObject[] }) => {
+const CartPanel = ({ data, handleAmountUpdate }: { data: CartItemObject[], handleAmountUpdate: (index: number, amountUpdate: number) => void }) => {
   return (
     <View style={cartViewStyles.cartPanel}>
       <Text style={cartViewStyles.cartPanelHeaderContent}>Zawartość koszyka</Text>
@@ -163,7 +185,14 @@ const CartPanel = ({ data }: { data: CartItemObject[] }) => {
         contentContainerStyle={cartViewStyles.cartPanelList}
         data={data}
         renderItem={({ item, index }: { item: CartItemObject; index: number }) => {
-          return <CartItem index={index + 1} totalCost={item.totalCost} data={item.data} type={item.type} amount={item.amount} />;
+          return <CartItem 
+						index={index} 
+						totalCost={item.totalCost} 
+						data={item.data} 
+						type={item.type} 
+						amount={item.amount}
+						handleAmountUpdate={(index, amountUpdate) => handleAmountUpdate( index, amountUpdate )}
+				/>;
         }}
         estimatedItemSize={150}
         keyExtractor={(_, index) => String(index)}
@@ -287,6 +316,46 @@ const CartView = () => {
     },
   ]);
 
+  const updateItemAmount = (index: number, amountUpdate: number) => {
+		console.log(`Changed value of ${index} by: ${amountUpdate}`);
+		let cartList = JSON.parse(JSON.stringify(cartItems));
+		cartList[index].amount += amountUpdate;
+		if(cartList[index].amount <= 0){
+				Alert.alert(
+						"Item deletion",
+						"Are you sure you want to remove this item from cart?",
+						[
+								{ 
+										text: "Yes", 
+										onPress: () => {
+												cartList = cartList.filter( ( item: CartItemObject ) => item.amount > 0 );
+												setCartItems(cartList);
+												return;
+										}, 
+								},
+								{
+										text: "No",
+										onPress: () => { 
+												cartList[index].amount += 1;
+												setCartItems(cartList);
+												return;
+										},
+								},
+						],
+						{
+								cancelable: true,
+								onDismiss: () => { 
+										cartList[index].amount += 1;
+										setCartItems(cartList);
+										return;
+								},
+						}
+				)
+		} else setCartItems(cartList);
+
+		return;
+  };
+
   const summarizeCost = (data: CartItemObject[]) => {
     if (data.length === 0) return null;
 
@@ -306,7 +375,7 @@ const CartView = () => {
 
   return (
     <View style={cartViewStyles.root}>
-      <CartPanel data={cartItems} />
+      <CartPanel data={cartItems} handleAmountUpdate={(index, amountUpdate) => updateItemAmount(index, amountUpdate)}/>
       <CartSummary cartValue={summarizeCost(cartItems)} cartPickupDate={date} handlePickupDateUpdate={() => showDatePicker(date, setDate)} handleCartClearingRequest={clearCart} isExpanded={isSummaryExpanded} setIsExpanded={setIsSummaryExpanded} />
     </View>
   );
