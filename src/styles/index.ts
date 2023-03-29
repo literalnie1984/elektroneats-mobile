@@ -457,6 +457,46 @@ export const cartViewStyles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
   },
+  cartItem: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    backgroundColor: "#3266fe",
+    overflow: "hidden",
+  },
+  cartItemImageContainer: {
+    width: "40%",
+    height: "100%",
+    flexWrap: "nowrap",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cartItemImage: {
+    height: 100,
+    width: 100,
+  },
+  cartItemMainContainer: {
+    height: "100%",
+    width: "60%",
+    paddingVertical: 15,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cartItemInfoBar: {
+    width: "auto",
+    height: "auto",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "space-around",
+    gap: 25,
+  },
 });
 
 export const moreViewStyles = StyleSheet.create({

@@ -17,6 +17,7 @@ const CartItem = ({ index, data, type, cost, amount, handleAmountUpdate }: CartI
 
   const height = useSharedValue(ITEM_EXPANDED_HEIGHT);
   const optionsHeight = useSharedValue(100);
+  const imageHeight = useSharedValue(100);
   const [isExpanded, setIsExpanded] = useState(true);
 
   const mealEditHandler = () => {
@@ -26,6 +27,7 @@ const CartItem = ({ index, data, type, cost, amount, handleAmountUpdate }: CartI
   useEffect(() => {
     height.value = withTiming(isExpanded ? ITEM_EXPANDED_HEIGHT : ITEM_FOLDED_HEIGHT, { duration: ANIMATION_DURATION });
     optionsHeight.value = withTiming(isExpanded ? 100 : 0, { duration: ANIMATION_DURATION });
+    imageHeight.value = withTiming(isExpanded ? 150 : 80, { duration: ANIMATION_DURATION });
   }, [isExpanded]);
 
   const itemAnimatedStyle = useAnimatedStyle(() => ({ height: height.value }));
@@ -34,8 +36,12 @@ const CartItem = ({ index, data, type, cost, amount, handleAmountUpdate }: CartI
     display: optionsHeight.value === 0 ? "none" : "flex",
     opacity: optionsHeight.value / 100,
   }));
+  const imageAnimatedStyle = useAnimatedStyle(() => ({
+    height: imageHeight.value,
+    width: imageHeight.value,
+  }));
 
-  return (
+  return type === "meal" ? (
     <Animated.View style={[cartViewStyles.cartMeal, itemAnimatedStyle]}>
       <Pressable style={cartViewStyles.cartMealInfoBar} onPress={() => setIsExpanded(!isExpanded)}>
         <Animated.View style={cartViewStyles.cartMealImageContainer}>
@@ -67,6 +73,30 @@ const CartItem = ({ index, data, type, cost, amount, handleAmountUpdate }: CartI
             <FontAwesomeIcon icon={faChevronRight} color={cartViewStyles.cartMealAmountButtonIcon.color} size={cartViewStyles.cartMealAmountButtonIcon.width} />
           </Pressable>
         </View>
+      </Animated.View>
+    </Animated.View>
+  ) : (
+    <Animated.View style={[cartViewStyles.cartItem, itemAnimatedStyle]}>
+      <Animated.View style={cartViewStyles.cartItemImageContainer}>
+        <Animated.Image style={[cartViewStyles.cartItemImage, imageAnimatedStyle]} source={{ uri: placeholderImage }} />
+      </Animated.View>
+      <Animated.View style={cartViewStyles.cartItemMainContainer}>
+        <Pressable style={cartViewStyles.cartItemInfoBar} onPress={() => setIsExpanded(!isExpanded)}>
+          <Text style={cartViewStyles.cartMealName}>{`${index + 1}. Przedmiot`}</Text>
+          <FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} color={cartViewStyles.cartMealInfoIcon.color} size={cartViewStyles.cartMealInfoIcon.width} />
+        </Pressable>
+        <Animated.View style={[cartViewStyles.cartMealActionsBar, optionsAnimatedStyle]}>
+          <View style={cartViewStyles.cartMealAmountOptions}>
+            <Text style={cartViewStyles.cartMealCost}>{cost ? `${Number(cost * amount).toFixed(2)} zł` : `nic`}</Text>
+            <Pressable style={cartViewStyles.cartMealAmountButton} onPressOut={() => handleAmountUpdate(index, -1)} hitSlop={10}>
+              <FontAwesomeIcon icon={faChevronLeft} color={cartViewStyles.cartMealAmountButtonIcon.color} size={cartViewStyles.cartMealAmountButtonIcon.width} />
+            </Pressable>
+            <Text style={cartViewStyles.cartMealAmountLabel}>{amount}</Text>
+            <Pressable style={cartViewStyles.cartMealAmountButton} onPressOut={() => handleAmountUpdate(index, 1)} hitSlop={10}>
+              <FontAwesomeIcon icon={faChevronRight} color={cartViewStyles.cartMealAmountButtonIcon.color} size={cartViewStyles.cartMealAmountButtonIcon.width} />
+            </Pressable>
+          </View>
+        </Animated.View>
       </Animated.View>
     </Animated.View>
   );
@@ -108,7 +138,7 @@ const CartSummary = ({ cartItems, cartPickupDate, handlePickupDateUpdate, handle
     <Animated.View style={[cartViewStyles.summary, containerAnimatedStyle]}>
       <Pressable style={cartViewStyles.summaryInfoHeader} onPress={() => setIsExpanded(!isExpanded)}>
         <Text style={cartViewStyles.summaryInfoHeaderContent}>Podsumowanie</Text>
-        <FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} color={cartViewStyles.summaryInfoHeaderIcon.color} size={cartViewStyles.summaryInfoHeaderIcon.width} />
+        <FontAwesomeIcon icon={isExpanded ? faChevronDown : faChevronUp} color={cartViewStyles.summaryInfoHeaderIcon.color} size={cartViewStyles.summaryInfoHeaderIcon.width} />
       </Pressable>
       <View style={cartViewStyles.summaryInfo}>
         <Animated.View style={[cartViewStyles.summaryInfoRows, elementsAnimatedStyle]}>
@@ -302,6 +332,14 @@ const CartView = () => {
     },
     {
       type: "meal",
+      cost: 99.99,
+      amount: 3,
+      data: {
+        menu: "something",
+      },
+    },
+    {
+      type: "item",
       cost: 99.99,
       amount: 3,
       data: {
