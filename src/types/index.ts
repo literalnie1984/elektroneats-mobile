@@ -1,5 +1,6 @@
 import { RegisteredStyle, TextStyle, ViewStyle } from "react-native/types";
 import { AnimatableValue, AnimatedStyleProp } from "react-native-reanimated";
+import { SetStateAction, Dispatch } from "react";
 
 interface HeaderProps {
   style: RegisteredStyle<ViewStyle>;
@@ -137,6 +138,33 @@ interface DinnerSelectProps {
   items: DinnerItem[];
 }
 
+//CartView
+
+interface CartItemObject {
+  type: "meal" | "item";
+  totalCost: number;
+  amount: number;
+  data: object;
+}
+
+interface CartItemProps extends CartItemObject {
+  index: number;
+}
+
+interface CartSummaryProps {
+  cartValue: number | null;
+  cartPickupDate: Date | null;
+  handlePickupDateUpdate: () => void;
+  handleCartClearingRequest: () => void;
+  isExpanded: boolean;
+  setIsExpanded: Dispatch<SetStateAction<boolean>>;
+}
+
+interface CartPanelProps {
+  isSummaryExpanded: boolean;
+  data: CartItemObject[];
+}
+
 export {
   HeaderProps,
   SegmentedSwitchProps,
@@ -146,6 +174,8 @@ export {
   MenuItemProps,
   MenuBlankProps,
   MenuVariantProps,
+  Main,
+  Soup,
   Extras,
   Beverage,
   MenuContent,
@@ -156,4 +186,8 @@ export {
   InnerIndex,
   SelectedDinnerItem,
   DinnerSelectProps,
+  CartItemObject,
+  CartItemProps,
+  CartSummaryProps,
+  CartPanelProps,
 };

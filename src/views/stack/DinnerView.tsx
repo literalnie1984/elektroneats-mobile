@@ -1,5 +1,7 @@
 import { View, Text, SectionList, ScrollView, Image, TouchableOpacity } from "react-native";
 import { dinnerViewStyles } from "../../styles";
+import { Main, Soup, Extras, Beverage } from "../../types/index";
+import { unwrapMenuToSections } from "../utils/dinner";
 import { useState } from "react";
 
 interface DinnerItem {
@@ -96,8 +98,9 @@ const Select = ({ selectedIndex, setSelectedIndex, items }: DinnerSelectProps) =
   );
 };
 
-const DinnerView = () => {
+const DinnerView = ({ route, navigation }) => {
   const [selectedArr, setSelectedArr] = useState<SelectedDinnerItem[]>([]);
+  const { mains: Main, soups: Soup, extras: Extras, beverages: Beverage } = unwrapMenuToSections(route.params.menu);
 
   return (
     <View style={dinnerViewStyles.container}>

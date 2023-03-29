@@ -215,13 +215,13 @@ export const cartViewStyles = StyleSheet.create({
     width: "100%",
     flex: 1,
     backgroundColor: "#2347b6",
-    flexDirection: "column",
-    flexWrap: "nowrap",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    gap: 15,
     borderRadius: 15,
-    padding: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 25,
+    gap: 10,
+  },
+  cartPanelList: {
+    backgroundColor: "#2347b6",
   },
   cartPanelHeader: {
     flexDirection: "row",
@@ -239,6 +239,29 @@ export const cartViewStyles = StyleSheet.create({
   cartPanelHeaderIcon: {
     color: "#fff",
     width: 36,
+  },
+  cartPanelBlank: {
+    width: "auto",
+    height: "auto",
+    padding: 25,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+  cartPanelBlankIcon: {
+    color: "#fff",
+    width: 64,
+  },
+  cartPanelBlankHeader: {
+    textAlign: "center",
+    fontSize: 32,
+    color: "#fff",
+  },
+  cartPanelBlankText: {
+    textAlign: "center",
+    fontSize: 18,
+    color: "#fff",
   },
   summary: {
     width: "100%",
@@ -290,15 +313,12 @@ export const cartViewStyles = StyleSheet.create({
     flexWrap: "nowrap",
     alignItems: "center",
     justifyContent: "flex-start",
-    textAlign: "left",
-    fontSize: 16,
     paddingHorizontal: 15,
-    color: "#fff",
   },
   summaryInfoRowLabel: {
     fontWeight: "bold",
     fontSize: 16,
-    textAlign: "left",
+    textAlign: "center",
     color: "#fff",
     width: "40%",
   },
@@ -322,11 +342,12 @@ export const cartViewStyles = StyleSheet.create({
   },
   summaryActionLabel: {
     textAlign: "center",
-    fontSize: 18,
+    fontSize: 14,
     color: "#fff",
   },
   cartMealRoot: {
     width: "100%",
+    flex: 1,
     borderRadius: 10,
     flexDirection: "column",
     flexWrap: "nowrap",
@@ -334,8 +355,8 @@ export const cartViewStyles = StyleSheet.create({
     justifyContent: "center",
   },
   cartMeal: {
-    height: "100%",
     width: "100%",
+    height: "100%",
     flexDirection: "column",
     flexWrap: "nowrap",
     alignItems: "center",
@@ -348,6 +369,7 @@ export const cartViewStyles = StyleSheet.create({
   cartMealInfoBar: {
     height: 60,
     width: "100%",
+    flexShrink: 1,
     flexDirection: "row",
     flexWrap: "nowrap",
     alignItems: "center",
@@ -378,6 +400,7 @@ export const cartViewStyles = StyleSheet.create({
   cartMealActionsBar: {
     height: "auto",
     width: "100%",
+    flexShrink: 1,
     flexDirection: "row",
     flexWrap: "nowrap",
     alignItems: "center",

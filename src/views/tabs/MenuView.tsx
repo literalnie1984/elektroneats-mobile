@@ -8,7 +8,7 @@ import SegmentedSwitch from "../../components/SegmentedSwitch";
 import { ViewStyle } from "react-native";
 import { MenuVariantProps, MenuBlankProps, MenuItemProps, MenuItemContainerProps } from "../../types";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { withTiming, useAnimatedStyle, useSharedValue, set } from "react-native-reanimated";
+import { withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -42,7 +42,7 @@ const MenuVariant = (props: MenuVariantProps) => {
       <Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle]}>
         <Pressable
           style={menuViewStyles.menuVariantActionButton}
-          onPress={() => navigation.navigate("DinnerView", {})}
+          onPress={() => navigation.navigate("DinnerView", { menu: props.menu })}
           android_ripple={{
             color: "#5376df",
             borderless: false,

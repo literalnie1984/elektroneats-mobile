@@ -1,20 +1,26 @@
-import { View, Text, Pressable } from "react-native";
-import { useState, useEffect } from "react";
+import { View, Text, Pressable, Alert } from "react-native";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { cartViewStyles } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown, faFaceMeh } from "@fortawesome/free-solid-svg-icons";
 import { FlashList } from "@shopify/flash-list";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { DateTimePickerAndroid, DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { CartItemObject, CartItemProps, CartPanelProps, CartSummaryProps } from "../../types/index";
 
 const ANIMATION_DURATION = 300;
 
-const CartItem = (props) => {
+const CartItem = ({ index, data, type, totalCost, amount }: CartItemProps) => {
   const ITEM_EXPANDED_HEIGHT = 150;
   const ITEM_FOLDED_HEIGHT = 80;
 
   const height = useSharedValue(ITEM_EXPANDED_HEIGHT);
   const optionsHeight = useSharedValue(100);
   const [isExpanded, setIsExpanded] = useState(true);
+
+  const mealEditHandler = () => {
+    console.log("bruh");
+  };
 
   useEffect(() => {
     height.value = withTiming(isExpanded ? ITEM_EXPANDED_HEIGHT : ITEM_FOLDED_HEIGHT, { duration: ANIMATION_DURATION });
@@ -28,17 +34,17 @@ const CartItem = (props) => {
     opacity: optionsHeight.value / 100,
   }));
 
-  return props.type === "meal" ? (
+  return type === "meal" ? (
     <Animated.View style={[cartViewStyles.cartMeal, itemAnimatedStyle]}>
       <Pressable style={cartViewStyles.cartMealInfoBar} onPress={() => setIsExpanded(!isExpanded)}>
-        <Text style={cartViewStyles.cartMealName}>Obiad 1</Text>
-        <Text style={cartViewStyles.cartMealCost}>21.37zł</Text>
+        <Text style={cartViewStyles.cartMealName}>{`${index}. Obiad`}</Text>
+        <Text style={cartViewStyles.cartMealCost}>{totalCost ? `${totalCost} zł` : `nic`}</Text>
         <FontAwesomeIcon icon={isExpanded ? faChevronUp : faChevronDown} color={cartViewStyles.cartMealInfoIcon.color} size={cartViewStyles.cartMealInfoIcon.width} />
       </Pressable>
       <Animated.View style={[cartViewStyles.cartMealActionsBar, optionsAnimatedStyle]}>
         <Pressable
           style={[cartViewStyles.cartMealActionButton]}
-          onPress={props.mealEditHandler}
+          onPress={mealEditHandler}
           android_ripple={{
             color: "#e5e5e6",
             borderless: false,
@@ -60,11 +66,10 @@ const CartItem = (props) => {
   );
 };
 
-const CartSummary = (props) => {
+const CartSummary = ({ cartValue, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded }: CartSummaryProps) => {
   const FOLDED_HEIGHT = 40;
   const EXPANDED_HEIGHT = 225;
 
-  const [isExpanded, setIsExpanded] = useState(true);
   const containerHeight = useSharedValue(EXPANDED_HEIGHT);
   const elementsHeight = useSharedValue(100);
 
@@ -83,6 +88,7 @@ const CartSummary = (props) => {
     return {
       transform: [{ scaleY: elementsHeight.value / 100 }, { translateY: 100 - elementsHeight.value }],
       opacity: elementsHeight.value / 100,
+      overflow: "hidden",
       display: containerHeight.value !== FOLDED_HEIGHT ? "flex" : "none",
     };
   });
@@ -97,11 +103,11 @@ const CartSummary = (props) => {
         <Animated.View style={[cartViewStyles.summaryInfoRows, elementsAnimatedStyle]}>
           <View style={cartViewStyles.summaryInfoRow}>
             <Text style={cartViewStyles.summaryInfoRowLabel}>Suma:</Text>
-            <Text style={cartViewStyles.summaryInfoRowContent}>{props.cartValue}</Text>
+            <Text style={cartViewStyles.summaryInfoRowContent}>{cartValue ? `${cartValue} zł` : "dodaj produkty, a zobaczysz tu ich łączną wartość"}</Text>
           </View>
           <View style={cartViewStyles.summaryInfoRow}>
             <Text style={cartViewStyles.summaryInfoRowLabel}>Data odbioru:</Text>
-            <Text style={cartViewStyles.summaryInfoRowContent}>{props.cartPickupDate}</Text>
+            <Text style={cartViewStyles.summaryInfoRowContent}>{cartPickupDate === null ? "BRAK. Ustaw ją zanim sfinalizujesz zakup!" : parseDateToString(cartPickupDate)}</Text>
           </View>
         </Animated.View>
       </View>
@@ -126,7 +132,19 @@ const CartSummary = (props) => {
             radius: 80,
             foreground: false,
           }}
-          onPress={() => console.log("bywa")}
+          onPress={handlePickupDateUpdate}
+        >
+          <Text style={cartViewStyles.summaryActionLabel}>Zmień datę odbioru</Text>
+        </Pressable>
+        <Pressable
+          style={cartViewStyles.summaryActionButton}
+          android_ripple={{
+            color: "#2d56d2",
+            borderless: false,
+            radius: 80,
+            foreground: false,
+          }}
+          onPress={handleCartClearingRequest}
         >
           <Text style={cartViewStyles.summaryActionLabel}>Wyczyść</Text>
         </Pressable>
@@ -135,33 +153,161 @@ const CartSummary = (props) => {
   );
 };
 
-const CartPanel = (props) => {
+const CartPanelListItemSeparator = () => <View style={{ height: 20 }} />;
+
+const CartPanel = ({ data }: { data: CartItemObject[] }) => {
   return (
     <View style={cartViewStyles.cartPanel}>
-      <Pressable style={cartViewStyles.cartPanelHeader}>
-        <Text style={cartViewStyles.cartPanelHeaderContent}>Zawartość koszyka</Text>
-      </Pressable>
-      <CartItem type={"meal"} />
-      <CartItem type={"meal"} />
-      <CartItem type={"meal"} />
+      <Text style={cartViewStyles.cartPanelHeaderContent}>Zawartość koszyka</Text>
+      <FlashList
+        contentContainerStyle={cartViewStyles.cartPanelList}
+        data={data}
+        renderItem={({ item, index }: { item: CartItemObject; index: number }) => {
+          return <CartItem index={index + 1} totalCost={item.totalCost} data={item.data} type={item.type} amount={item.amount} />;
+        }}
+        estimatedItemSize={150}
+        keyExtractor={(_, index) => String(index)}
+        ListEmptyComponent={<CartPanelBlank />}
+        ItemSeparatorComponent={CartPanelListItemSeparator}
+        drawDistance={15}
+      />
     </View>
   );
 };
 
-/**
-		<FlashList 
-								data={}
-								renderItem={}
-								ListEmptyComponent={}
-								ListHeaderComponent={<Text style={cartViewStyles.cartPanelHeader}>Twoje zamówienia</Text>}
-						/>
-**/
+const CartPanelBlank = () => {
+  return (
+    <View style={cartViewStyles.cartPanelBlank}>
+      <FontAwesomeIcon icon={faFaceMeh} color={cartViewStyles.cartPanelBlankIcon.color} size={cartViewStyles.cartPanelBlankIcon.width} />
+      <Text style={cartViewStyles.cartPanelBlankHeader}>Twój koszyk jest pusty</Text>
+      <Text style={cartViewStyles.cartPanelBlankText}>Śmiało! Dodaj swoje ulubione produkty i spróbuj mnie wypełnić</Text>
+    </View>
+  );
+};
+
+const showDatePicker = (currentDate: Date | null, setDate: Dispatch<SetStateAction<Date | null>>) => {
+  try {
+    DateTimePickerAndroid.open({
+      value: currentDate || new Date(),
+      mode: "date",
+      is24Hour: true,
+      onChange: (event: DateTimePickerEvent, date?: Date | undefined) => {
+        if (event.type === "set") {
+          if (date) {
+            if (date.getDay() === 0) {
+              throw new Error("Date exceeds range Monday - Saturday");
+            }
+            DateTimePickerAndroid.open({
+              mode: "time",
+              value: date,
+              is24Hour: true,
+              onChange: (event: DateTimePickerEvent, time?: Date | undefined) => {
+                if (event.type === "set") {
+                  if (time) setDate(time);
+                } else {
+                  throw new Error("Time picking dismissed");
+                }
+              },
+            });
+          }
+        } else {
+          throw new Error("Date picking dismissed");
+        }
+      },
+    });
+  } catch (error: any) {
+    console.log(error.message);
+    Alert.alert("Date error", String(error.message), [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
+  }
+};
+
+const parseDateToString = (date: Date) => {
+  let date_string = "";
+  date_string += `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth()).padStart(2, "0")}.${date.getFullYear()} `;
+  date_string += `(${getDayOfWeekMnemonic(date.getDay())}) - `;
+  date_string += `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+
+  return date_string;
+};
+
+const getDayOfWeekMnemonic = (day: number) => {
+  switch (day) {
+    case 1:
+      return "Poniedziałek";
+    case 2:
+      return "Wtorek";
+    case 3:
+      return "Środa";
+    case 4:
+      return "Czwartek";
+    case 5:
+      return "Piątek";
+    case 6:
+      return "Sobota";
+    default:
+      return undefined;
+  }
+};
 
 const CartView = () => {
+  const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
+  const [date, setDate] = useState<Date | null>(null);
+  const [cartItems, setCartItems] = useState<CartItemObject[] | []>([
+    {
+      type: "meal",
+      totalCost: 21.37,
+      amount: 1,
+      data: {
+        menu: "something",
+      },
+    },
+    {
+      type: "meal",
+      totalCost: 42.69,
+      amount: 2,
+      data: {
+        menu: "something",
+      },
+    },
+    {
+      type: "meal",
+      totalCost: 50.0,
+      amount: 1,
+      data: {
+        menu: "something",
+      },
+    },
+    {
+      type: "meal",
+      totalCost: 99.99,
+      amount: 3,
+      data: {
+        menu: "something",
+      },
+    },
+  ]);
+
+  const summarizeCost = (data: CartItemObject[]) => {
+    if (data.length === 0) return null;
+
+    let cost = 0;
+    data.map((item) => {
+      if (!item) return;
+      cost += item.totalCost;
+    });
+
+    return cost || null;
+  };
+
+  const clearCart = () => {
+    console.log("Cart cleared");
+    setCartItems([]);
+  };
+
   return (
     <View style={cartViewStyles.root}>
-      <CartPanel />
-      <CartSummary cartValue={21.37} cartPickupDate={"coś"} />
+      <CartPanel data={cartItems} />
+      <CartSummary cartValue={summarizeCost(cartItems)} cartPickupDate={date} handlePickupDateUpdate={() => showDatePicker(date, setDate)} handleCartClearingRequest={clearCart} isExpanded={isSummaryExpanded} setIsExpanded={setIsSummaryExpanded} />
     </View>
   );
 };
