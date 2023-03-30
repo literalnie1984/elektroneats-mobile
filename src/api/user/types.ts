@@ -17,4 +17,3 @@ export interface ChangePasswordBody {
   oldPassword: string;
 }
 
-export type JWT = string;

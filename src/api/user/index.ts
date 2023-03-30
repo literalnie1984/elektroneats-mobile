@@ -1,5 +1,6 @@
 import { fetchForStatus, fetchForText, fetchWithJWT } from "../fetch";
-import { ChangePasswordBody, FetchedUserData, JWT, UserLoginBody, UserRegisterBody } from "./types";
+import { JWT } from "../types";
+import { ChangePasswordBody, FetchedUserData, UserLoginBody, UserRegisterBody } from "./types";
 
 const registerUser = async (body: UserRegisterBody): Promise<boolean> => {
   return await fetchForStatus({ path: `user/register`, method: "POST", body });
