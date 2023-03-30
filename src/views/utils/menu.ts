@@ -1,7 +1,6 @@
 import { Beverage, MenuContent } from "../../types/index";
 import { atom, selector } from "recoil";
 import { MenuList } from "../../types/index";
-import { getMenu, debugParseMenuJSON } from "../../api/menu";
 import { Extras } from "../../types/index";
 
 export const menuAtom = atom({ key: "menu", default: [] as MenuList });

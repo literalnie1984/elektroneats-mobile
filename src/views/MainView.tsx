@@ -1,19 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { menuAtom } from "./utils/menu";
-import { fetchMenu } from "../api/menu";
 import { createStackNavigator } from "@react-navigation/stack";
 import TabsView from "./TabsView";
 import AccountView from "./stack/AccountView";
 import DinnerView from "./stack/DinnerView";
 import * as OptionsViews from "./stack/optionsViews/";
 import LoginView from "./LoginView";
+import { getWeeklyMenu } from "../api";
 
 const Stack = createStackNavigator();
 const MainView = () => {
   const [menu, setMenu] = useRecoilState(menuAtom);
-  useEffect(function () {
-    fetchMenu().then((menu_array) => setMenu(menu_array));
+
+  useEffect(() => {
+    getWeeklyMenu().then((menu) => setMenu(menu));
   }, []);
 
   return (

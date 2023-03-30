@@ -14,7 +14,6 @@ import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useRecoilValue } from "recoil";
 import { menuSelector, generateVariantTags, countVariants, generateBeverageString, generateExtrasString } from "../utils/menu";
-import { fetchMenu } from "../../api/menu";
 
 const ANIMATION_DURATION = 300;
 
