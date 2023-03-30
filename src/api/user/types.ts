@@ -16,4 +16,3 @@ export interface ChangePasswordBody {
   newPassword: string;
   oldPassword: string;
 }
-
