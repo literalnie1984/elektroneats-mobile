@@ -1,10 +1,9 @@
 import { API_URL } from "@env";
-import { WeekdayNumber } from "./types";
 
 // API_URL >> MUST << end with the slash!
 export const formatURL = (path: string) => API_URL + path;
 
-export const getDayOfWeekMnemonic = (day: WeekdayNumber) => {
+export const getDayOfWeekMnemonic = (day: number) => {
   switch (day) {
     case 0:
       return "Poniedziałek";

@@ -1,5 +1,4 @@
 import { fetchForJSON } from "../fetch";
-import { WeekdayNumber } from "../types";
 import { DailyMenu, FetchedDinner, WeeklyMenu } from "./types";
 import { parseFetchedDinners } from "./utils";
 
@@ -13,7 +12,7 @@ const getTodaysMenu = async (): Promise<DailyMenu | null> => {
   return data ? parseFetchedDinners(data) : data;
 };
 
-const getMenuByDay = async (day: WeekdayNumber): Promise<DailyMenu | null> => {
+const getMenuByDay = async (day: number): Promise<DailyMenu | null> => {
   const data = await fetchForJSON<FetchedDinner[]>(`menu/day/${day}`);
   return data ? parseFetchedDinners(data) : data;
 };
