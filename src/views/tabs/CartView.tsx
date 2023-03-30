@@ -65,11 +65,11 @@ const CartItem = ({ index, data, type, cost, amount, handleAmountUpdate }: CartI
           <Text style={cartViewStyles.cartMealActionLabel}>Sprawdź/Zmień skład</Text>
         </Pressable>
         <View style={cartViewStyles.cartMealAmountOptions}>
-          <Pressable style={cartViewStyles.cartMealAmountButton} onPressOut={() => handleAmountUpdate(index, -1)} hitSlop={10}>
+          <Pressable style={cartViewStyles.cartMealAmountButton} onPress={() => handleAmountUpdate(index, -1)} hitSlop={10}>
             <FontAwesomeIcon icon={faChevronLeft} color={cartViewStyles.cartMealAmountButtonIcon.color} size={cartViewStyles.cartMealAmountButtonIcon.width} />
           </Pressable>
           <Text style={cartViewStyles.cartMealAmountLabel}>{amount}</Text>
-          <Pressable style={cartViewStyles.cartMealAmountButton} onPressOut={() => handleAmountUpdate(index, 1)} hitSlop={10}>
+          <Pressable style={cartViewStyles.cartMealAmountButton} onPress={() => handleAmountUpdate(index, 1)} hitSlop={10}>
             <FontAwesomeIcon icon={faChevronRight} color={cartViewStyles.cartMealAmountButtonIcon.color} size={cartViewStyles.cartMealAmountButtonIcon.width} />
           </Pressable>
         </View>
@@ -88,11 +88,11 @@ const CartItem = ({ index, data, type, cost, amount, handleAmountUpdate }: CartI
         <Animated.View style={[cartViewStyles.cartMealActionsBar, optionsAnimatedStyle]}>
           <View style={cartViewStyles.cartMealAmountOptions}>
             <Text style={cartViewStyles.cartMealCost}>{cost ? `${Number(cost * amount).toFixed(2)} zł` : `nic`}</Text>
-            <Pressable style={cartViewStyles.cartMealAmountButton} onPressOut={() => handleAmountUpdate(index, -1)} hitSlop={10}>
+            <Pressable style={cartViewStyles.cartMealAmountButton} onPress={() => handleAmountUpdate(index, -1)} hitSlop={10}>
               <FontAwesomeIcon icon={faChevronLeft} color={cartViewStyles.cartMealAmountButtonIcon.color} size={cartViewStyles.cartMealAmountButtonIcon.width} />
             </Pressable>
             <Text style={cartViewStyles.cartMealAmountLabel}>{amount}</Text>
-            <Pressable style={cartViewStyles.cartMealAmountButton} onPressOut={() => handleAmountUpdate(index, 1)} hitSlop={10}>
+            <Pressable style={cartViewStyles.cartMealAmountButton} onPress={() => handleAmountUpdate(index, 1)} hitSlop={10}>
               <FontAwesomeIcon icon={faChevronRight} color={cartViewStyles.cartMealAmountButtonIcon.color} size={cartViewStyles.cartMealAmountButtonIcon.width} />
             </Pressable>
           </View>
@@ -226,40 +226,43 @@ const CartPanelBlank = () => {
   );
 };
 
-const showDatePicker = (currentDate: Date | null, setDate: Dispatch<SetStateAction<Date | null>>) => {
-  try {
-    DateTimePickerAndroid.open({
-      value: currentDate || new Date(),
-      mode: "date",
-      is24Hour: true,
-      onChange: (event: DateTimePickerEvent, date?: Date | undefined) => {
-        if (event.type === "set") {
-          if (date) {
-            if (date.getDay() === 0) {
-              throw new Error("Date exceeds range Monday - Saturday");
-            }
-            DateTimePickerAndroid.open({
-              mode: "time",
-              value: date,
-              is24Hour: true,
-              onChange: (event: DateTimePickerEvent, time?: Date | undefined) => {
-                if (event.type === "set") {
-                  if (time) setDate(time);
-                } else {
-                  throw new Error("Time picking dismissed");
-                }
-              },
-            });
+const showDatePicker = (currentDate: Date | null, setDate: Dispatch<SetStateAction<Date | null>>, cartItems: CartItemObject[]) => {
+  DateTimePickerAndroid.open({
+    value: currentDate || new Date(),
+    mode: "date",
+    is24Hour: true,
+    onChange: (event: DateTimePickerEvent, date?: Date | undefined) => {
+      if (event.type === "set") {
+        if (date) {
+          if (date.getDay() === 0) {
+            Alert.alert("Date error", "Date exceeds range Monday - Saturday", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
+            return;
           }
-        } else {
-          throw new Error("Date picking dismissed");
+          if (!verifyPickupDates(cartItems, date)) {
+            Alert.alert("Date error", "You cannot select this date: week days mismatch", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
+            return;
+          }
+          DateTimePickerAndroid.open({
+            mode: "time",
+            value: date,
+            is24Hour: true,
+            onChange: (event: DateTimePickerEvent, time?: Date | undefined) => {
+              if (event.type === "set") {
+                if (time) setDate(time);
+              } else {
+                Alert.alert("Date error", "Time picking dismissed", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
+                return;
+              }
+            },
+          });
         }
-      },
-    });
-  } catch (error: any) {
-    console.log(error.message);
-    Alert.alert("Date error", String(error.message), [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
-  }
+      } else {
+        Alert.alert("Date error", "Date picking dismissed", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
+        return;
+      }
+    },
+  });
+  return;
 };
 
 const parseDateToString = (date: Date) => {
@@ -302,6 +305,21 @@ const summarizeCost = (data: CartItemObject[]) => {
   return cost || null;
 };
 
+const verifyPickupDates = (data: CartItemObject[], newDate: Date) => {
+  try {
+    data.map((item) => {
+      if (item.type === "meal") {
+        if (newDate.getDay() !== item.data.week_day + 1) {
+          throw new Error("Week days mismatched");
+        }
+      }
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 const CartView = () => {
   const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
   const [date, setDate] = useState<Date | null>(null);
@@ -312,6 +330,7 @@ const CartView = () => {
       amount: 1,
       data: {
         menu: "something",
+        week_day: 2,
       },
     },
     {
@@ -320,6 +339,7 @@ const CartView = () => {
       amount: 2,
       data: {
         menu: "something",
+        week_day: 2,
       },
     },
     {
@@ -328,6 +348,7 @@ const CartView = () => {
       amount: 1,
       data: {
         menu: "something",
+        week_day: 2,
       },
     },
     {
@@ -336,6 +357,7 @@ const CartView = () => {
       amount: 3,
       data: {
         menu: "something",
+        week_day: 2,
       },
     },
     {
@@ -401,6 +423,7 @@ const CartView = () => {
         amount: 1,
         data: {
           menu: "something",
+          week_day: 2,
         },
       },
       {
@@ -409,6 +432,7 @@ const CartView = () => {
         amount: 2,
         data: {
           menu: "something",
+          week_day: 2,
         },
       },
       {
@@ -417,10 +441,20 @@ const CartView = () => {
         amount: 1,
         data: {
           menu: "something",
+          week_day: 2,
         },
       },
       {
         type: "meal",
+        cost: 99.99,
+        amount: 3,
+        data: {
+          menu: "something",
+          week_day: 2,
+        },
+      },
+      {
+        type: "item",
         cost: 99.99,
         amount: 3,
         data: {
@@ -433,7 +467,7 @@ const CartView = () => {
   return (
     <View style={cartViewStyles.root}>
       <CartPanel data={cartItems} handleAmountUpdate={(index, amountUpdate) => updateItemAmount(index, amountUpdate)} />
-      <CartSummary cartItems={cartItems} cartPickupDate={date} handlePickupDateUpdate={() => showDatePicker(date, setDate)} handleCartClearingRequest={clearCart} isExpanded={isSummaryExpanded} setIsExpanded={setIsSummaryExpanded} />
+      <CartSummary cartItems={cartItems} cartPickupDate={date} handlePickupDateUpdate={() => showDatePicker(date, setDate, cartItems)} handleCartClearingRequest={clearCart} isExpanded={isSummaryExpanded} setIsExpanded={setIsSummaryExpanded} />
       <Pressable style={cartViewStyles.cartPanelDebugButton} onPress={debugResetCart}>
         <Text style={cartViewStyles.cartPanelDebugButtonText}> Reset cart (debug)</Text>
       </Pressable>
