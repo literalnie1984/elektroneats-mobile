@@ -1,10 +1,23 @@
+import { FetchParams } from "./types";
 import { formatURL } from "./utils";
 
-export async function fetchForJSON<T>(path: string, error?: Function): Promise<T | null> {
+const headers = {
+  "Accept": "application/json",
+  "Content-Type": "application/json",
+};
+
+export async function fetchForJSON<T>({ path, method, token, body, error }: FetchParams): Promise<T | null> {
   try {
     const url = formatURL(path);
-    const res = await fetch(url);
-    if (res.status !== 200) throw new Error();
+    const res = await fetch(url, {
+      method: method ?? "GET",
+      headers: {
+        ...headers, 
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(body),
+    });
+    if (res.status !== 200) throw res;
 
     const data: T = await res.json();
     return data;
@@ -14,55 +27,18 @@ export async function fetchForJSON<T>(path: string, error?: Function): Promise<T
   }
 }
 
-interface FetchWithJWTParams {
-  path: string;
-  token: string;
-  body?: object;
-  method?: string;
-  error?: Function;
-}
-
-export async function fetchWithJWT<T>({ path, token, method, body, error }: FetchWithJWTParams) {
+export async function fetchForText({ path, method, token, body, error }: FetchParams): Promise<string | null> {
   try {
     const url = formatURL(path);
     const res = await fetch(url, {
-      method,
+      method: method ?? "GET",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        ...headers, 
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(body),
     });
-    if (res.status !== 200) return null;
-
-    const data: T = await res.json();
-    return data;
-  } catch (err) {
-    error?.();
-    return null;
-  }
-}
-
-interface FetchForTextParams {
-  path: string;
-  body: object;
-  method?: string;
-  error?: Function;
-}
-
-export async function fetchForText({ path, method, body, error }: FetchForTextParams): Promise<string | null> {
-  try {
-    const url = formatURL(path);
-    const res = await fetch(url, {
-      method,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-    if (res.status !== 200) throw new Error();
+    if (res.status !== 200) throw res;
 
     const data = await res.text();
     return data;
@@ -72,21 +48,14 @@ export async function fetchForText({ path, method, body, error }: FetchForTextPa
   }
 }
 
-interface FetchForStatus {
-  path: string;
-  body: object;
-  method?: string;
-  error?: Function;
-}
-
-export async function fetchForStatus({ path, method, body, error }: FetchForStatus): Promise<boolean> {
+export async function fetchForSuccess({ path, method, token, body, error }: FetchParams): Promise<boolean> {
   try {
     const url = formatURL(path);
     const res = await fetch(url, {
-      method,
+      method: method ?? "GET",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        ...headers, 
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(body),
     });
