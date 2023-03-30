@@ -9,13 +9,13 @@ const reduceProps = (obj: FetchedDinnerItem): DinnerItem => {
   };
 };
 
-export const parseFetchedDinners = (dinners: FetchedDinner[]): DailyMenu => {
-  const weekDay: number = dinners[0][0].weekDay;
+export const parseFetchedDinners = (data: FetchedDinner[]): DailyMenu => {
+  const weekDay: number = data[0].dinner.weekDay;
 
   const main: DinnerItem[] = [];
   let soup: DinnerItem | null = null;
-  dinners.forEach((dinner) => {
-    const fetchedMeal = dinner[0];
+  data.forEach((item) => {
+    const fetchedMeal = item.dinner;
     const meal = reduceProps(fetchedMeal);
 
     switch (fetchedMeal.type) {
@@ -32,7 +32,7 @@ export const parseFetchedDinners = (dinners: FetchedDinner[]): DailyMenu => {
   const fillers: DinnerItem[] = [];
   const salads: DinnerItem[] = [];
   const beverages: DinnerItem[] = [];
-  dinners[0][1].forEach((fetchedExtra) => {
+  data[0].extras.forEach((fetchedExtra) => {
     const extra = reduceProps(fetchedExtra);
 
     switch (fetchedExtra.type) {
