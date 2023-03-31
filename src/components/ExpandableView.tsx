@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Animated } from "react-native";
-import { ExpandableProps } from "../../types";
+import { ExpandableProps } from "../types";
 
 const ExpandableView = (props: ExpandableProps) => {
   const [height] = useState(new Animated.Value(0));
