@@ -80,6 +80,7 @@ export interface SegmentedSwitchProps {
 
 // DinnerView
 export interface DinnerData {
+  id: number;
   section: string;
   data: DinnerItem[][];
 }
@@ -92,11 +93,10 @@ export interface DinnerItemProps {
 
 export type InnerIndex = number | null;
 
-export interface SelectedDinnerItem {
-  section: string;
-  index: number;
-  innerIndex: InnerIndex;
-}
+// [sectionId, index, innerIndex]
+export type SelectedDinnerItem = [number, number, InnerIndex];
+
+export type DinnerViewSelection = SelectedDinnerItem[];
 
 export interface DinnerSelectProps {
   selectedIndex: InnerIndex;
@@ -107,20 +107,43 @@ export interface DinnerSelectProps {
 export type DinnerViewProps = NativeStackScreenProps<RootStackParamList, "DinnerView">;
 
 //CartView
-export interface CartItemObject {
-  type: "meal" | "item";
+export enum CartItemType {
+  Dinner = "dinner",
+  Item = "item"
+}
+
+export interface CartItemBase {
+  type: CartItemType;
   cost: number;
   amount: number;
   data: object;
 }
 
-export interface CartItemProps extends CartItemObject {
+export interface CartItemDinnerObject {
+  selection: DinnerViewSelection,
+  weekday: number;
+}
+
+export interface CartItemDinner extends CartItemBase {
+  type: CartItemType.Dinner;
+  data: CartItemDinnerObject;
+}
+
+export interface CartItemItem extends CartItemBase {
+  type: CartItemType.Item;
+  data: object; 
+}
+
+export type CartItem = CartItemDinner | CartItemItem;
+
+export interface CartItemProps extends CartItemBase {
   index: number;
   handleAmountUpdate: (index: number, amountUpdate: number) => void;
 }
 
 export interface CartSummaryProps {
-  cartItems: CartItemObject[];
+  cartItems: CartItem[];
+  setCartItems: any;
   cartPickupDate: Date | null;
   handlePickupDateUpdate: () => void;
   handleCartClearingRequest: () => void;
@@ -130,5 +153,5 @@ export interface CartSummaryProps {
 
 export interface CartPanelProps {
   isSummaryExpanded: boolean;
-  data: CartItemObject[];
+  data: CartItem[];
 }

@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Alert, Image } from "react-native";
+import { View, Text, Pressable, Alert, Image, ToastAndroid } from "react-native";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { cartViewStyles } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -6,12 +6,18 @@ import { faChevronUp, faChevronDown, faChevronLeft, faChevronRight, faFaceMeh } 
 import { FlashList } from "@shopify/flash-list";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { DateTimePickerAndroid, DateTimePickerEvent } from "@react-native-community/datetimepicker";
-import { CartItemObject, CartItemProps, CartPanelProps, CartSummaryProps } from "../../types/index";
+import { CartItem, CartItemProps, CartItemType, CartPanelProps, CartSummaryProps } from "../../types/index";
+import { getDayOfWeekMnemonic } from "../../api/utils";
+import { cartItemsAtom, convertCartItemsForApi } from "../utils/cart";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { createOrders } from "../../api";
+import { userTokenSelector } from "../utils/user";
+import { menuSelector } from "../utils/menu";
 
 const ANIMATION_DURATION = 300;
 const placeholderImage = "https://i.imgur.com/ejtUaJJ.png";
 
-const CartItem = ({ index, data, type, cost, amount, handleAmountUpdate }: CartItemProps) => {
+const CartItemView = ({ index, data, type, cost, amount, handleAmountUpdate }: CartItemProps) => {
   const ITEM_EXPANDED_HEIGHT = 150;
   const ITEM_FOLDED_HEIGHT = 80;
 
@@ -41,7 +47,7 @@ const CartItem = ({ index, data, type, cost, amount, handleAmountUpdate }: CartI
     width: imageHeight.value,
   }));
 
-  return type === "meal" ? (
+  return type === CartItemType.Dinner ? (
     <Animated.View style={[cartViewStyles.cartMeal, itemAnimatedStyle]}>
       <Pressable style={cartViewStyles.cartMealInfoBar} onPress={() => setIsExpanded(!isExpanded)}>
         <Animated.View style={cartViewStyles.cartMealImageContainer}>
@@ -102,13 +108,15 @@ const CartItem = ({ index, data, type, cost, amount, handleAmountUpdate }: CartI
   );
 };
 
-const CartSummary = ({ cartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded }: CartSummaryProps) => {
+const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded }: CartSummaryProps) => {
   const FOLDED_HEIGHT = 40;
   const EXPANDED_HEIGHT = 225;
 
   const containerHeight = useSharedValue(EXPANDED_HEIGHT);
   const elementsHeight = useSharedValue(100);
   const [cost, setCost] = useState<number | null>(summarizeCost(cartItems));
+  const token = useRecoilValue(userTokenSelector);
+  const menu = useRecoilValue(menuSelector);
 
   useEffect(() => {
     setCost(summarizeCost(cartItems));
@@ -118,6 +126,43 @@ const CartSummary = ({ cartItems, cartPickupDate, handlePickupDateUpdate, handle
     containerHeight.value = withTiming(isExpanded ? EXPANDED_HEIGHT : FOLDED_HEIGHT, { duration: ANIMATION_DURATION });
     elementsHeight.value = withTiming(isExpanded ? 100 : 0, { duration: ANIMATION_DURATION });
   }, [isExpanded]);
+
+  const handleOrdering = async () => {
+    // debugging
+    const cpd = cartPickupDate ?? new Date();
+    
+    // if(!cartPickupDate) return ToastAndroid.show('You must select pickup date before doing that!', ToastAndroid.SHORT);
+    if(!menu) return console.log('no menu');
+
+    const body = convertCartItemsForApi(menu, cartItems, cpd);
+    if(!body) return console.log('convertion went wrong');
+    
+    if(!token) return console.log('no token');
+
+    let error = '';
+    const hasSucceed = await createOrders(body, token, (res) => {
+      console.log(res.status);
+
+      switch (res.status) {
+        case 400:
+          error = "Dodanie zamówienia nie powiodło się";
+          break;
+        case 500:
+          error = "Wystąpił błąd serwera";
+          break;
+        default:
+          error = `Wystąpił nieokreślony błąd (${res.status})`;
+          break;
+      }
+
+      ToastAndroid.show(error, ToastAndroid.SHORT);
+    });
+
+    if(hasSucceed) {
+      setCartItems([]);
+      ToastAndroid.show("Order has been added", ToastAndroid.SHORT);
+    }
+  }
 
   const containerAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -161,7 +206,7 @@ const CartSummary = ({ cartItems, cartPickupDate, handlePickupDateUpdate, handle
             radius: 100,
             foreground: false,
           }}
-          onPress={() => console.log("aha")}
+          onPress={handleOrdering}
         >
           <Text style={cartViewStyles.summaryActionLabel}>Zamawiam i płacę</Text>
         </Pressable>
@@ -196,15 +241,15 @@ const CartSummary = ({ cartItems, cartPickupDate, handlePickupDateUpdate, handle
 
 const CartPanelListItemSeparator = () => <View style={{ height: 20 }} />;
 
-const CartPanel = ({ data, handleAmountUpdate }: { data: CartItemObject[]; handleAmountUpdate: (index: number, amountUpdate: number) => void }) => {
+const CartPanel = ({ data, handleAmountUpdate }: { data: CartItem[]; handleAmountUpdate: (index: number, amountUpdate: number) => void }) => {
   return (
     <View style={cartViewStyles.cartPanel}>
       <Text style={cartViewStyles.cartPanelHeaderContent}>Zawartość koszyka</Text>
       <FlashList
         contentContainerStyle={cartViewStyles.cartPanelList}
         data={data}
-        renderItem={({ item, index }: { item: CartItemObject; index: number }) => {
-          return <CartItem index={index} cost={item.cost} data={item.data} type={item.type} amount={item.amount} handleAmountUpdate={(index, amountUpdate) => handleAmountUpdate(index, amountUpdate)} />;
+        renderItem={({ item, index }: { item: CartItem; index: number }) => {
+          return <CartItemView index={index} cost={item.cost} data={item.data} type={item.type} amount={item.amount} handleAmountUpdate={(index, amountUpdate) => handleAmountUpdate(index, amountUpdate)} />;
         }}
         estimatedItemSize={150}
         keyExtractor={(_, index) => String(index)}
@@ -226,7 +271,7 @@ const CartPanelBlank = () => {
   );
 };
 
-const showDatePicker = (currentDate: Date | null, setDate: Dispatch<SetStateAction<Date | null>>, cartItems: CartItemObject[]) => {
+const showDatePicker = (currentDate: Date | null, setDate: Dispatch<SetStateAction<Date | null>>, cartItems: CartItem[]) => {
   DateTimePickerAndroid.open({
     value: currentDate || new Date(),
     mode: "date",
@@ -274,26 +319,7 @@ const parseDateToString = (date: Date) => {
   return date_string;
 };
 
-const getDayOfWeekMnemonic = (day: number) => {
-  switch (day) {
-    case 1:
-      return "Poniedziałek";
-    case 2:
-      return "Wtorek";
-    case 3:
-      return "Środa";
-    case 4:
-      return "Czwartek";
-    case 5:
-      return "Piątek";
-    case 6:
-      return "Sobota";
-    default:
-      return undefined;
-  }
-};
-
-const summarizeCost = (data: CartItemObject[]) => {
+const summarizeCost = (data: CartItem[]) => {
   if (data.length === 0) return null;
 
   let cost = 0;
@@ -305,11 +331,11 @@ const summarizeCost = (data: CartItemObject[]) => {
   return cost || null;
 };
 
-const verifyPickupDates = (data: CartItemObject[], newDate: Date) => {
+const verifyPickupDates = (data: CartItem[], newDate: Date) => {
   try {
     data.map((item) => {
-      if (item.type === "meal") {
-        if (newDate.getDay() !== item.data.week_day + 1) {
+      if (item.type === CartItemType.Dinner) {
+        if (newDate.getDay() !== item.data.weekday + 1) {
           throw new Error("Week days mismatched");
         }
       }
@@ -323,52 +349,7 @@ const verifyPickupDates = (data: CartItemObject[], newDate: Date) => {
 const CartView = () => {
   const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
   const [date, setDate] = useState<Date | null>(null);
-  const [cartItems, setCartItems] = useState<CartItemObject[] | []>([
-    {
-      type: "meal",
-      cost: 21.37,
-      amount: 1,
-      data: {
-        menu: "something",
-        week_day: 2,
-      },
-    },
-    {
-      type: "meal",
-      cost: 42.69,
-      amount: 2,
-      data: {
-        menu: "something",
-        week_day: 2,
-      },
-    },
-    {
-      type: "meal",
-      cost: 50.0,
-      amount: 1,
-      data: {
-        menu: "something",
-        week_day: 2,
-      },
-    },
-    {
-      type: "meal",
-      cost: 99.99,
-      amount: 3,
-      data: {
-        menu: "something",
-        week_day: 2,
-      },
-    },
-    {
-      type: "item",
-      cost: 99.99,
-      amount: 3,
-      data: {
-        menu: "something",
-      },
-    },
-  ]);
+  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
 
   const updateItemAmount = (index: number, amountUpdate: number) => {
     console.log(`Changed value of ${index} by: ${amountUpdate}`);
@@ -382,7 +363,7 @@ const CartView = () => {
           {
             text: "Yes",
             onPress: () => {
-              cartList = cartList.filter((item: CartItemObject) => item.amount > 0);
+              cartList = cartList.filter((item: CartItem) => item.amount > 0);
               setCartItems(cartList);
               return;
             },
@@ -418,47 +399,47 @@ const CartView = () => {
   const debugResetCart = () => {
     setCartItems([
       {
-        type: "meal",
+        type: CartItemType.Dinner,
         cost: 21.37,
         amount: 1,
         data: {
-          menu: "something",
-          week_day: 2,
+          selection: [],
+          weekday: 2
         },
       },
       {
-        type: "meal",
+        type: CartItemType.Dinner,
         cost: 42.69,
         amount: 2,
         data: {
-          menu: "something",
-          week_day: 2,
+          selection: [],
+          weekday: 2,
         },
       },
       {
-        type: "meal",
+        type: CartItemType.Dinner,
         cost: 50.0,
         amount: 1,
         data: {
-          menu: "something",
-          week_day: 2,
+          selection: [],
+          weekday: 2,
         },
       },
       {
-        type: "meal",
+        type: CartItemType.Dinner,
         cost: 99.99,
         amount: 3,
         data: {
-          menu: "something",
-          week_day: 2,
+          selection: [],
+          weekday: 2,
         },
       },
       {
-        type: "item",
+        type: CartItemType.Item,
         cost: 99.99,
         amount: 3,
         data: {
-          menu: "something",
+          menu: "something"
         },
       },
     ]);
@@ -467,7 +448,7 @@ const CartView = () => {
   return (
     <View style={cartViewStyles.root}>
       <CartPanel data={cartItems} handleAmountUpdate={(index, amountUpdate) => updateItemAmount(index, amountUpdate)} />
-      <CartSummary cartItems={cartItems} cartPickupDate={date} handlePickupDateUpdate={() => showDatePicker(date, setDate, cartItems)} handleCartClearingRequest={clearCart} isExpanded={isSummaryExpanded} setIsExpanded={setIsSummaryExpanded} />
+      <CartSummary cartItems={cartItems} setCartItems={setCartItems} cartPickupDate={date} handlePickupDateUpdate={() => showDatePicker(date, setDate, cartItems)} handleCartClearingRequest={clearCart} isExpanded={isSummaryExpanded} setIsExpanded={setIsSummaryExpanded} />
       <Pressable style={cartViewStyles.cartPanelDebugButton} onPress={debugResetCart}>
         <Text style={cartViewStyles.cartPanelDebugButtonText}> Reset cart (debug)</Text>
       </Pressable>
