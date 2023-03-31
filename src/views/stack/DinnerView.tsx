@@ -21,7 +21,7 @@ const DinnerSelect = ({ selectedIndex, setSelectedIndex, items }: DinnerSelectPr
     <ScrollView horizontal={true} nestedScrollEnabled={false}>
       {items.map((item, index) => {
         const backgroundColor = index === selectedIndex ? "#ffffff" : "#bfbdbd";
-        
+
         return (
           <DinnerItemView
             key={item.id}
@@ -44,12 +44,7 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
 
   const sections: DinnerData[] = [
     { section: "Main dish", data: [dailyMenu.main] },
-    { section: "Extras", data: [
-        dailyMenu.extras.fillers, 
-        dailyMenu.extras.salads, 
-        dailyMenu.extras.beverages
-      ] 
-    },
+    { section: "Extras", data: [dailyMenu.extras.fillers, dailyMenu.extras.salads, dailyMenu.extras.beverages] },
     { section: "Soup", data: [[dailyMenu.soup]] },
   ];
 

@@ -6,7 +6,7 @@ export const menuAtom = atom<WeeklyMenu | null>({ key: "menu", default: null });
 
 export const menuSelector = selector({
   key: "menuGet",
-  get: async () => await getWeeklyMenu()
+  get: async () => await getWeeklyMenu(),
 });
 
 export const generateVariantTags = function (dailyMenu: DailyMenu) {

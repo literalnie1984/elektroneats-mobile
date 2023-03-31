@@ -27,8 +27,8 @@ export interface FetchedExtra extends FetchedDinnerItem {
 }
 
 export type FetchedDinner = {
-  dinner: FetchedMeal,
-  extras: FetchedExtra[]
+  dinner: FetchedMeal;
+  extras: FetchedExtra[];
 };
 
 export interface DinnerItem {

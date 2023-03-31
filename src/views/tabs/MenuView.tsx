@@ -26,8 +26,8 @@ const MenuVariant = (props: MenuVariantProps) => {
   const { beverages, fillers, salads } = extras;
   const allExtras = [...fillers, ...salads];
 
-  const allExtrasStr = allExtras.map(i => i.name).join(',');
-  const beveragesStr = beverages.map(i => i.name).join(',');
+  const allExtrasStr = allExtras.map((i) => i.name).join(",");
+  const beveragesStr = beverages.map((i) => i.name).join(",");
 
   return (
     <Animated.View style={[menuViewStyles.menuVariant, props.style]}>
@@ -79,15 +79,7 @@ const MenuItem = (props: MenuItemProps) => {
         <Text style={menuViewStyles.menuItemBarDate}>{props.dateSignature}</Text>
         <FontAwesomeIcon icon={isFolded ? faChevronDown : faChevronUp} size={32} color={menuViewStyles.menuItemBarDate.color} />
       </Pressable>
-      <MenuItemContainer 
-        dailyMenu={props.dailyMenu} 
-
-        isFolded={isFolded} 
-        containerHeight={props.containerHeight} 
-        switchHeight={props.switchHeight} 
-        contentHeight={props.containerHeight - props.switchHeight} 
-        actionButtonHeight={40} 
-      />
+      <MenuItemContainer dailyMenu={props.dailyMenu} isFolded={isFolded} containerHeight={props.containerHeight} switchHeight={props.switchHeight} contentHeight={props.containerHeight - props.switchHeight} actionButtonHeight={40} />
     </View>
   );
 };
@@ -133,21 +125,8 @@ const MenuItemContainer = (props: MenuItemContainerProps) => {
 
   return (
     <Animated.View style={[menuViewStyles.menuItemContainer, containerAnimatedStyle]}>
-      <SegmentedSwitch
-        switchHeight={switchHeight.value}
-        switchStyle={switchAnimatedStyle}
-        segments={generateVariantTags(props.dailyMenu)}
-        onSegmentSwitch={(selectedSegment) => setSelectedIndex(selectedSegment)}
-        isFolded={props.isFolded}
-      />
-      <MenuVariant
-        dailyMenu={props.dailyMenu}
-        selectedIndex={selectedIndex}
-
-        isFolded={props.isFolded}
-        actionButtonStyle={actionButtonAnimatedStyle}
-        style={contentAnimatedStyle}
-      />
+      <SegmentedSwitch switchHeight={switchHeight.value} switchStyle={switchAnimatedStyle} segments={generateVariantTags(props.dailyMenu)} onSegmentSwitch={(selectedSegment) => setSelectedIndex(selectedSegment)} isFolded={props.isFolded} />
+      <MenuVariant dailyMenu={props.dailyMenu} selectedIndex={selectedIndex} isFolded={props.isFolded} actionButtonStyle={actionButtonAnimatedStyle} style={contentAnimatedStyle} />
     </Animated.View>
   );
 };
@@ -177,13 +156,7 @@ const MenuView = () => {
         <FlashList
           data={menu}
           renderItem={({ item }) => {
-            return <MenuItem 
-              dateSignature={getDayOfWeekMnemonic(item.weekDay)!} 
-              dailyMenu={item} 
-
-              containerHeight={300} 
-              switchHeight={32} 
-            />;
+            return <MenuItem dateSignature={getDayOfWeekMnemonic(item.weekDay)!} dailyMenu={item} containerHeight={300} switchHeight={32} />;
           }}
           estimatedItemSize={200}
           keyExtractor={(_, index) => index.toString()}

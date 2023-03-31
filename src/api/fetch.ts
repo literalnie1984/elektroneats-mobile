@@ -2,7 +2,7 @@ import { FetchParams } from "./types";
 import { formatURL } from "./utils";
 
 const headers = {
-  "Accept": "application/json",
+  Accept: "application/json",
   "Content-Type": "application/json",
 };
 
@@ -13,8 +13,8 @@ export async function fetchForJSON<T>({ path, method, token, body, error }: Fetc
     const res = await fetch(url, {
       method: method ?? "GET",
       headers: {
-        ...headers, 
-        "Authorization": `Bearer ${token}`
+        ...headers,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     });
@@ -35,8 +35,8 @@ export async function fetchForText({ path, method, token, body, error }: FetchPa
     const res = await fetch(url, {
       method: method ?? "GET",
       headers: {
-        ...headers, 
-        "Authorization": `Bearer ${token}`
+        ...headers,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     });
@@ -57,8 +57,8 @@ export async function fetchForSuccess({ path, method, token, body, error }: Fetc
     const res = await fetch(url, {
       method: method ?? "GET",
       headers: {
-        ...headers, 
-        "Authorization": `Bearer ${token}`
+        ...headers,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     });

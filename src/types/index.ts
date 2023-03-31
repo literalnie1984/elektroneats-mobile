@@ -2,12 +2,12 @@ import { RegisteredStyle, TextStyle, ViewStyle } from "react-native/types";
 import { AnimatableValue, AnimatedStyleProp } from "react-native-reanimated";
 import { SetStateAction, Dispatch } from "react";
 import { DailyMenu, DinnerItem } from "../api/menu/types";
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
   [key: string]: any;
   DinnerView: { dailyMenu: DailyMenu };
-}
+};
 
 export interface HeaderProps {
   style: RegisteredStyle<ViewStyle>;
@@ -104,8 +104,7 @@ export interface DinnerSelectProps {
   items: DinnerItem[];
 }
 
-export type DinnerViewProps = NativeStackScreenProps<RootStackParamList, 'DinnerView'>;
-
+export type DinnerViewProps = NativeStackScreenProps<RootStackParamList, "DinnerView">;
 
 //CartView
 export interface CartItemObject {
