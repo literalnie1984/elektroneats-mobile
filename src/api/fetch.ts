@@ -9,6 +9,7 @@ const headers = {
 export async function fetchForJSON<T>({ path, method, token, body, error }: FetchParams): Promise<T | null> {
   try {
     const url = formatURL(path);
+    console.log(`${method}: ${url}`);
     const res = await fetch(url, {
       method: method ?? "GET",
       headers: {
@@ -30,6 +31,7 @@ export async function fetchForJSON<T>({ path, method, token, body, error }: Fetc
 export async function fetchForText({ path, method, token, body, error }: FetchParams): Promise<string | null> {
   try {
     const url = formatURL(path);
+    console.log(`${method}: ${url}`);
     const res = await fetch(url, {
       method: method ?? "GET",
       headers: {
@@ -51,6 +53,7 @@ export async function fetchForText({ path, method, token, body, error }: FetchPa
 export async function fetchForSuccess({ path, method, token, body, error }: FetchParams): Promise<boolean> {
   try {
     const url = formatURL(path);
+    console.log(`${method}: ${url}`);
     const res = await fetch(url, {
       method: method ?? "GET",
       headers: {

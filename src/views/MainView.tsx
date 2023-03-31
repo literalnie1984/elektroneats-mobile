@@ -8,8 +8,9 @@ import DinnerView from "./stack/DinnerView";
 import * as OptionsViews from "./stack/optionsViews/";
 import LoginView from "./LoginView";
 import { getWeeklyMenu } from "../api";
+import { RootStackParamList } from "../types";
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 const MainView = () => {
   const [menu, setMenu] = useRecoilState(menuAtom);
 

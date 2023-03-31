@@ -1,15 +1,22 @@
 import { RegisteredStyle, TextStyle, ViewStyle } from "react-native/types";
 import { AnimatableValue, AnimatedStyleProp } from "react-native-reanimated";
 import { SetStateAction, Dispatch } from "react";
+import { DailyMenu, DinnerItem } from "../api/menu/types";
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-interface HeaderProps {
+export type RootStackParamList = {
+  [key: string]: any;
+  DinnerView: { dailyMenu: DailyMenu };
+}
+
+export interface HeaderProps {
   style: RegisteredStyle<ViewStyle>;
   titleStyle: RegisteredStyle<TextStyle>;
   title: string;
   stackNavigation: any;
 }
 
-interface ExpandableProps {
+export interface ExpandableProps {
   expanded: boolean;
   height: number;
   duration: number;
@@ -18,49 +25,49 @@ interface ExpandableProps {
   children: any;
 }
 
-interface OrderProps {
+export interface OrderProps {
   id: string;
   title: string;
   isRedeemed: boolean;
 }
 
 //Menu props
-interface MealContent {
-  id: number;
-  image: string;
-  max_supply: number;
-  name: string;
-  price: string;
-  type: "Main" | "Soup";
-  week_day: number;
-}
-
-interface ExtrasContent {
-  id: number;
-  name: string;
-  price: number;
-}
-
-type Main = MealContent[];
-type Soup = MealContent[];
-type Extras = Array<Array<ExtrasContent>>;
-type Beverage = Array<Array<ExtrasContent>> | [][];
-
-interface MenuContent {
-  main: Main;
-  soup: Soup;
-  extras: Extras;
-  beverage: Beverage;
-}
-
-interface MenuItem {
+export interface MenuItemProps {
   dateSignature: string;
-  menuContent: MenuContent;
+  dailyMenu: DailyMenu;
+
+  containerHeight: number;
+  switchHeight: number;
 }
 
-type MenuList = MenuItem[];
+export interface MenuItemContainerProps {
+  dailyMenu: DailyMenu;
 
-interface SegmentedSwitchProps {
+  containerHeight: number;
+  switchHeight: number;
+  contentHeight: number;
+  actionButtonHeight: number;
+  isFolded: boolean;
+}
+
+export interface MenuBlankProps {
+  containerStyle: ViewStyle;
+  windowStyle: ViewStyle;
+  iconStyle: TextStyle;
+  headingStyle: TextStyle;
+  textStyle: TextStyle;
+}
+
+export interface MenuVariantProps {
+  dailyMenu: DailyMenu;
+  selectedIndex: number;
+
+  style?: AnimatedStyleProp<ViewStyle>;
+  actionButtonStyle: AnimatedStyleProp<ViewStyle>;
+  isFolded: boolean;
+}
+
+export interface SegmentedSwitchProps {
   segments: string[];
   onSegmentSwitch(selectedSegment: number): void;
   switchHeight: number | AnimatableValue;
@@ -71,88 +78,49 @@ interface SegmentedSwitchProps {
   isFolded: boolean;
 }
 
-interface MenuBlankProps {
-  containerStyle: ViewStyle;
-  windowStyle: ViewStyle;
-  iconStyle: TextStyle;
-  headingStyle: TextStyle;
-  textStyle: TextStyle;
-}
-
-interface MenuVariantProps {
-  menu: MenuContent;
-  style?: AnimatedStyleProp<ViewStyle>;
-  actionButtonStyle: AnimatedStyleProp<ViewStyle>;
-  isFolded: boolean;
-  main: MealContent;
-  soup: MealContent;
-  extras: Extras;
-  beverage: Beverage;
-}
-
-interface MenuItemContainerProps {
-  containerHeight: number;
-  switchHeight: number;
-  contentHeight: number;
-  actionButtonHeight: number;
-  isFolded: boolean;
-  menuContent: MenuContent;
-}
-
-interface MenuItemProps {
-  dateSignature: string;
-  menuContent: MenuContent;
-  containerHeight: number;
-  switchHeight: number;
-}
-
 // DinnerView
-interface DinnerItem {
-  name: string;
-  uri: string;
-}
-
-interface DinnerData {
+export interface DinnerData {
   section: string;
   data: DinnerItem[][];
 }
 
-interface DinnerItemProps {
-  name: string;
-  uri: string;
+export interface DinnerItemProps {
+  item: DinnerItem;
   backgroundColor: string;
   onPress: () => void;
 }
 
-type InnerIndex = number | null;
+export type InnerIndex = number | null;
 
-interface SelectedDinnerItem {
+export interface SelectedDinnerItem {
   section: string;
   index: number;
   innerIndex: InnerIndex;
 }
 
-interface DinnerSelectProps {
+export interface DinnerSelectProps {
   selectedIndex: InnerIndex;
   setSelectedIndex: (innerIndex: InnerIndex) => void;
   items: DinnerItem[];
 }
 
-//CartView
+export type DinnerViewProps = NativeStackScreenProps<RootStackParamList, 'DinnerView'>;
 
-interface CartItemObject {
+
+//CartView
+export interface CartItemObject {
   type: "meal" | "item";
   cost: number;
   amount: number;
   data: object;
 }
 
-interface CartItemProps extends CartItemObject {
+export interface CartItemProps extends CartItemObject {
   index: number;
   handleAmountUpdate: (index: number, amountUpdate: number) => void;
 }
 
-interface CartSummaryProps {
+export interface CartSummaryProps {
   cartItems: CartItemObject[];
   cartPickupDate: Date | null;
   handlePickupDateUpdate: () => void;
@@ -161,34 +129,7 @@ interface CartSummaryProps {
   setIsExpanded: Dispatch<SetStateAction<boolean>>;
 }
 
-interface CartPanelProps {
+export interface CartPanelProps {
   isSummaryExpanded: boolean;
   data: CartItemObject[];
 }
-
-export {
-  HeaderProps,
-  SegmentedSwitchProps,
-  ExpandableProps,
-  OrderProps,
-  MenuItemContainerProps,
-  MenuItemProps,
-  MenuBlankProps,
-  MenuVariantProps,
-  Main,
-  Soup,
-  Extras,
-  Beverage,
-  MenuContent,
-  MenuItem,
-  MenuList,
-  DinnerData,
-  DinnerItemProps,
-  InnerIndex,
-  SelectedDinnerItem,
-  DinnerSelectProps,
-  CartItemObject,
-  CartItemProps,
-  CartSummaryProps,
-  CartPanelProps,
-};
