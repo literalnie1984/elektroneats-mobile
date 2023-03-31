@@ -2317,6 +2317,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-async-storage/async-storage@npm:1.17.11":
+  version: 1.17.11
+  resolution: "@react-native-async-storage/async-storage@npm:1.17.11"
+  dependencies:
+    merge-options: ^3.0.4
+  peerDependencies:
+    react-native: ^0.0.0-0 || 0.60 - 0.71 || 1000.0.0
+  checksum: 691f2b74498160d0b532f673402d8affeecb28b005b1c6d6fa2e7c87f89ab3068177e8e2d2686738306e7592a39c6d7148aa4c426b7e8e149c43a336ad446648
+  languageName: node
+  linkType: hard
+
 "@react-native-community/cli-clean@npm:^10.1.1":
   version: 10.1.1
   resolution: "@react-native-community/cli-clean@npm:10.1.1"
@@ -2994,6 +3005,25 @@ __metadata:
   version: 0.2.0
   resolution: "@types/react-native-dotenv@npm:0.2.0"
   checksum: 23d59b8ebd35e8fe693531f9c630f7518cb149c06694c8c35fc3b628ac8e8e26cc602cec9372447873fbbb13bf0c40bbd951ba5306c1b83b169cc3a927cb935f
+  languageName: node
+  linkType: hard
+
+"@types/react-native-vector-icons@npm:^6.4.13":
+  version: 6.4.13
+  resolution: "@types/react-native-vector-icons@npm:6.4.13"
+  dependencies:
+    "@types/react": "*"
+    "@types/react-native": ^0.70
+  checksum: e954807f7229a84ba6aa15c6952a987e0b45406e501131c0d73fdaa3fe634301d466e22eec8bb23d9c509eb39043fae9cad4ca685b125dc4d6d603dc46b789f7
+  languageName: node
+  linkType: hard
+
+"@types/react-native@npm:^0.70":
+  version: 0.70.13
+  resolution: "@types/react-native@npm:0.70.13"
+  dependencies:
+    "@types/react": "*"
+  checksum: 2ff157f24b5e7c3c3bf22556b4ea206029e0f4c52607c77f1ff0f91228478e11b6cd4b76322db8ea0be3d118b39b0bde7893e43013fff3e3191866a064857d8c
   languageName: node
   linkType: hard
 
@@ -4522,6 +4552,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cliui@npm:^7.0.2":
+  version: 7.0.4
+  resolution: "cliui@npm:7.0.4"
+  dependencies:
+    string-width: ^4.2.0
+    strip-ansi: ^6.0.0
+    wrap-ansi: ^7.0.0
+  checksum: ce2e8f578a4813806788ac399b9e866297740eecd4ad1823c27fd344d78b22c5f8597d548adbcc46f0573e43e21e751f39446c5a5e804a12aace402b7a315d7f
+  languageName: node
+  linkType: hard
+
 "cliui@npm:^8.0.1":
   version: 8.0.1
   resolution: "cliui@npm:8.0.1"
@@ -5851,6 +5892,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-app-loading@npm:^2.1.1":
+  version: 2.2.1
+  resolution: "expo-app-loading@npm:2.2.1"
+  dependencies:
+    expo-splash-screen: ~0.18.0
+  checksum: 362f69c4195a2d57031c8c13502f765dec3bc05d9e2db22f18bb0d3ea53de5c4b716b6c9fe9eb9ab3422be69924664e25ff162fe80680ffc31465711130deedb
+  languageName: node
+  linkType: hard
+
 "expo-application@npm:~5.1.0, expo-application@npm:~5.1.1":
   version: 5.1.1
   resolution: "expo-application@npm:5.1.1"
@@ -6142,7 +6192,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-splash-screen@npm:~0.18.1":
+"expo-splash-screen@npm:~0.18.0, expo-splash-screen@npm:~0.18.1":
   version: 0.18.1
   resolution: "expo-splash-screen@npm:0.18.1"
   dependencies:
@@ -7765,6 +7815,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-plain-obj@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "is-plain-obj@npm:2.1.0"
+  checksum: cec9100678b0a9fe0248a81743041ed990c2d4c99f893d935545cfbc42876cbe86d207f3b895700c690ad2fa520e568c44afc1605044b535a7820c1d40e38daa
+  languageName: node
+  linkType: hard
+
 "is-plain-obj@npm:^3.0.0":
   version: 3.0.0
   resolution: "is-plain-obj@npm:3.0.0"
@@ -8235,6 +8292,7 @@ __metadata:
     "@fortawesome/free-regular-svg-icons": ^6.3.0
     "@fortawesome/free-solid-svg-icons": ^6.3.0
     "@fortawesome/react-native-fontawesome": ^0.3.0
+    "@react-native-async-storage/async-storage": 1.17.11
     "@react-native-community/datetimepicker": 6.7.3
     "@react-native-community/slider": 4.4.2
     "@react-native-masked-view/masked-view": 0.2.8
@@ -8248,7 +8306,9 @@ __metadata:
     "@types/react": ~18.0.27
     "@types/react-fontawesome": ^1.6.5
     "@types/react-native-dotenv": ^0.2.0
+    "@types/react-native-vector-icons": ^6.4.13
     expo: ~48.0.9
+    expo-app-loading: ^2.1.1
     expo-application: ~5.1.1
     expo-asset: ~8.9.1
     expo-auth-session: ~4.0.3
@@ -8283,11 +8343,13 @@ __metadata:
     react-native-async-storage: ^0.0.1
     react-native-dotenv: ^3.4.8
     react-native-gesture-handler: ~2.9.0
+    react-native-loading-spinner-overlay: ^3.0.1
     react-native-pager-view: 6.1.2
     react-native-reanimated: ~2.14.4
     react-native-safe-area-context: 4.5.0
     react-native-screens: ~3.20.0
     react-native-svg: 13.4.0
+    react-native-vector-icons: ^9.2.0
     react-native-view-shot: 3.5.0
     react-native-web: ~0.18.10
     react-native-webview: 11.26.0
@@ -8681,6 +8743,15 @@ __metadata:
   version: 1.0.1
   resolution: "merge-descriptors@npm:1.0.1"
   checksum: 5abc259d2ae25bb06d19ce2b94a21632583c74e2a9109ee1ba7fd147aa7362b380d971e0251069f8b3eb7d48c21ac839e21fa177b335e82c76ec172e30c31a26
+  languageName: node
+  linkType: hard
+
+"merge-options@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "merge-options@npm:3.0.4"
+  dependencies:
+    is-plain-obj: ^2.1.0
+  checksum: d86ddb3dd6e85d558dbf25dc944f3527b6bacb944db3fdda6e84a3f59c4e4b85231095f58b835758b9a57708342dee0f8de0dffa352974a48221487fe9f4584f
   languageName: node
   linkType: hard
 
@@ -11100,6 +11171,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-loading-spinner-overlay@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "react-native-loading-spinner-overlay@npm:3.0.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: d9e5e10bc6170084c162e717a94db7bd60a35eb8110614529caa501790ab9ddfb551239d2e9120aaa15048bfd0af03da8bed0d1ea09e7ebb88a4b39d88ed6878
+  languageName: node
+  linkType: hard
+
 "react-native-pager-view@npm:6.1.2":
   version: 6.1.2
   resolution: "react-native-pager-view@npm:6.1.2"
@@ -11162,6 +11243,19 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: e630c057d6a0947c4d729538f643585a1fd9380975c1cf9adffad7647822b35219a9e1e60407f422b2b70592ed7f7e8766fab15df74f9cfce0b1c8a1c3544676
+  languageName: node
+  linkType: hard
+
+"react-native-vector-icons@npm:^9.2.0":
+  version: 9.2.0
+  resolution: "react-native-vector-icons@npm:9.2.0"
+  dependencies:
+    prop-types: ^15.7.2
+    yargs: ^16.1.1
+  bin:
+    fa5-upgrade: bin/fa5-upgrade.sh
+    generate-icon: bin/generate-icon.js
+  checksum: 222baf88c3f269234c08a41680e6400a4bf1f4c170f7c2ffac34b2c1c089cdb1084223db2a7d9cc54ee212eec20ff1478f3f482df19062e3057c328642da0be2
   languageName: node
   linkType: hard
 
@@ -13845,6 +13939,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"yargs-parser@npm:^20.2.2":
+  version: 20.2.9
+  resolution: "yargs-parser@npm:20.2.9"
+  checksum: 8bb69015f2b0ff9e17b2c8e6bfe224ab463dd00ca211eece72a4cd8a906224d2703fb8a326d36fdd0e68701e201b2a60ed7cf81ce0fd9b3799f9fe7745977ae3
+  languageName: node
+  linkType: hard
+
 "yargs-parser@npm:^21.1.1":
   version: 21.1.1
   resolution: "yargs-parser@npm:21.1.1"
@@ -13868,6 +13969,21 @@ __metadata:
     y18n: ^4.0.0
     yargs-parser: ^18.1.2
   checksum: 40b974f508d8aed28598087720e086ecd32a5fd3e945e95ea4457da04ee9bdb8bdd17fd91acff36dc5b7f0595a735929c514c40c402416bbb87c03f6fb782373
+  languageName: node
+  linkType: hard
+
+"yargs@npm:^16.1.1":
+  version: 16.2.0
+  resolution: "yargs@npm:16.2.0"
+  dependencies:
+    cliui: ^7.0.2
+    escalade: ^3.1.1
+    get-caller-file: ^2.0.5
+    require-directory: ^2.1.1
+    string-width: ^4.2.0
+    y18n: ^5.0.5
+    yargs-parser: ^20.2.2
+  checksum: b14afbb51e3251a204d81937c86a7e9d4bdbf9a2bcee38226c900d00f522969ab675703bee2a6f99f8e20103f608382936034e64d921b74df82b63c07c5e8f59
   languageName: node
   linkType: hard
 

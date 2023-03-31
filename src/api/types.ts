@@ -1,9 +1,10 @@
 export type JWT = string;
 
+export type ErrorFunction = (res: Response) => void;
 export interface FetchParams {
   path: string;
   method?: string;
   token?: JWT;
   body?: object;
-  error?: Function;
+  error?: ErrorFunction;
 }

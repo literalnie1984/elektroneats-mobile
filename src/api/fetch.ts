@@ -23,7 +23,7 @@ export async function fetchForJSON<T>({ path, method, token, body, error }: Fetc
     const data: T = await res.json();
     return data;
   } catch (err) {
-    error?.();
+    error?.(err as Response);
     return null;
   }
 }
@@ -45,7 +45,7 @@ export async function fetchForText({ path, method, token, body, error }: FetchPa
     const data = await res.text();
     return data;
   } catch (err) {
-    error?.();
+    error?.(err as Response);
     return null;
   }
 }
@@ -63,9 +63,10 @@ export async function fetchForSuccess({ path, method, token, body, error }: Fetc
       body: JSON.stringify(body),
     });
 
+    error?.(res);
     return res.ok;
   } catch (err) {
-    error?.();
+    error?.(err as Response);
     return false;
   }
 }

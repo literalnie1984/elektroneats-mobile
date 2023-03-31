@@ -8,14 +8,21 @@ import ShopScreen from "./tabs/ShopView";
 import CartScreen from "./tabs/CartView";
 import MoreScreen from "./tabs/MoreView";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { useEffect } from "react";
 
 const Tab = createBottomTabNavigator();
-const TabsView = (props: { navigation: any }) => {
+const TabsView = ({ navigation }: any) => {
+  useEffect(() => {
+    navigation.addListener("beforeRemove", (e: any) => {
+      e.preventDefault();
+    });
+  }, [navigation]);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         header: ({ navigation, route, options }: BottomTabHeaderProps) => {
-          return <HeaderView title={route.name} style={options.headerStyle as any} titleStyle={options.headerTitleStyle as any} stackNavigation={props.navigation} />;
+          return <HeaderView title={route.name} style={options.headerStyle as any} titleStyle={options.headerTitleStyle as any} stackNavigation={navigation} />;
         },
         headerStyle: {
           height: 60,
