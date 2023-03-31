@@ -6,43 +6,51 @@ import { faChevronDown, faChevronUp, faFaceSadTear } from "@fortawesome/free-sol
 import { useEffect, useState } from "react";
 import SegmentedSwitch from "../../components/SegmentedSwitch";
 import { ViewStyle } from "react-native";
-import { MenuVariantProps, MenuBlankProps, MenuItemProps, MenuItemContainerProps } from "../../types";
+import { MenuVariantProps, MenuBlankProps, MenuItemProps, MenuItemContainerProps, RootStackParamList } from "../../types";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useRecoilValue } from "recoil";
-import { menuSelector, generateVariantTags, countVariants, generateBeverageString, generateExtrasString } from "../utils/menu";
-import { fetchMenu } from "../../api/menu";
+import { menuSelector, generateVariantTags } from "../utils/menu";
+import { getDayOfWeekMnemonic } from "../../api/utils";
+import { getWeeklyMenu } from "../../api";
 
 const ANIMATION_DURATION = 300;
 
 const MenuVariant = (props: MenuVariantProps) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<RootStackParamList>();
+
+  const { main, soup, extras } = props.dailyMenu;
+  const { beverages, fillers, salads } = extras;
+  const allExtras = [...fillers, ...salads];
+
+  const allExtrasStr = allExtras.map((i) => i.name).join(",");
+  const beveragesStr = beverages.map((i) => i.name).join(",");
 
   return (
     <Animated.View style={[menuViewStyles.menuVariant, props.style]}>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Soup:</Text>
-        <Text style={menuViewStyles.menuVariantElement}>{props?.soup?.name}</Text>
+        <Text style={menuViewStyles.menuVariantElement}>{soup.name}</Text>
       </View>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Main course:</Text>
-        <Text style={menuViewStyles.menuVariantElement}>{props?.main?.name}</Text>
+        <Text style={menuViewStyles.menuVariantElement}>{main[props.selectedIndex].name}</Text>
       </View>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Extras:</Text>
-        <Text style={menuViewStyles.menuVariantElement}>{generateExtrasString(props.extras)}</Text>
+        <Text style={menuViewStyles.menuVariantElement}>{allExtrasStr}</Text>
       </View>
       <View style={menuViewStyles.menuVariantRow}>
         <Text style={menuViewStyles.menuVariantRowTitle}>Beverage:</Text>
-        <Text style={menuViewStyles.menuVariantElement}>{generateBeverageString(props.beverage)}</Text>
+        <Text style={menuViewStyles.menuVariantElement}>{beveragesStr}</Text>
       </View>
       <Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle]}>
         <Pressable
           style={menuViewStyles.menuVariantActionButton}
-          onPress={() => navigation.navigate("DinnerView", { menu: props.menu })}
+          onPress={() => navigation.navigate("DinnerView", { dailyMenu: props.dailyMenu })}
           android_ripple={{
             color: "#5376df",
             borderless: false,
@@ -71,7 +79,7 @@ const MenuItem = (props: MenuItemProps) => {
         <Text style={menuViewStyles.menuItemBarDate}>{props.dateSignature}</Text>
         <FontAwesomeIcon icon={isFolded ? faChevronDown : faChevronUp} size={32} color={menuViewStyles.menuItemBarDate.color} />
       </Pressable>
-      <MenuItemContainer isFolded={isFolded} containerHeight={props.containerHeight} switchHeight={props.switchHeight} contentHeight={props.containerHeight - props.switchHeight} actionButtonHeight={40} menuContent={props.menuContent} />
+      <MenuItemContainer dailyMenu={props.dailyMenu} isFolded={isFolded} containerHeight={props.containerHeight} switchHeight={props.switchHeight} contentHeight={props.containerHeight - props.switchHeight} actionButtonHeight={40} />
     </View>
   );
 };
@@ -117,23 +125,8 @@ const MenuItemContainer = (props: MenuItemContainerProps) => {
 
   return (
     <Animated.View style={[menuViewStyles.menuItemContainer, containerAnimatedStyle]}>
-      <SegmentedSwitch
-        switchHeight={switchHeight.value}
-        switchStyle={switchAnimatedStyle}
-        segments={generateVariantTags(countVariants(props.menuContent))}
-        onSegmentSwitch={(selectedSegment) => setSelectedIndex(selectedSegment)}
-        isFolded={props.isFolded}
-      />
-      <MenuVariant
-        isFolded={props.isFolded}
-        actionButtonStyle={actionButtonAnimatedStyle}
-        style={contentAnimatedStyle}
-        menu={props.menuContent}
-        main={props.menuContent.main[selectedIndex]}
-        soup={props.menuContent.soup[selectedIndex]}
-        extras={props.menuContent.extras}
-        beverage={props.menuContent.beverage}
-      />
+      <SegmentedSwitch switchHeight={switchHeight.value} switchStyle={switchAnimatedStyle} segments={generateVariantTags(props.dailyMenu)} onSegmentSwitch={(selectedSegment) => setSelectedIndex(selectedSegment)} isFolded={props.isFolded} />
+      <MenuVariant dailyMenu={props.dailyMenu} selectedIndex={selectedIndex} isFolded={props.isFolded} actionButtonStyle={actionButtonAnimatedStyle} style={contentAnimatedStyle} />
     </Animated.View>
   );
 };
@@ -159,11 +152,11 @@ const MenuView = () => {
 
   return (
     <GestureHandlerRootView style={menuViewStyles.root}>
-      {menu.length > 0 ? (
+      {menu !== null ? (
         <FlashList
           data={menu}
           renderItem={({ item }) => {
-            return <MenuItem dateSignature={item.dateSignature} menuContent={item.menuContent} containerHeight={300} switchHeight={32} />;
+            return <MenuItem dateSignature={getDayOfWeekMnemonic(item.weekDay)!} dailyMenu={item} containerHeight={300} switchHeight={32} />;
           }}
           estimatedItemSize={200}
           keyExtractor={(_, index) => index.toString()}
@@ -179,7 +172,7 @@ const MenuView = () => {
           textStyle={menuViewStyles.menuBlankTextStyle}
         />
       )}
-      <Pressable style={menuViewStyles.menuVariantActionButton} onPress={fetchMenu}>
+      <Pressable style={menuViewStyles.menuVariantActionButton} onPress={getWeeklyMenu}>
         <Text style={menuViewStyles.menuVariantActionButtonText}> Fetch Menu (debug)</Text>
       </Pressable>
     </GestureHandlerRootView>

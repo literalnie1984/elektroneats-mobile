@@ -3,7 +3,6 @@ import { StatusBar } from "expo-status-bar";
 import { RecoilRoot } from "recoil";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import MainView from "./src/views/MainView";
-import { API_URL } from "@env";
 
 export default function App() {
   return (

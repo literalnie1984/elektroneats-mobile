@@ -1,8 +1,9 @@
 import { View, Text, Pressable } from "react-native";
 import { moreViewStyles } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faPalette, faWallet, faEllipsis, faFingerprint, faInfo } from "@fortawesome/free-solid-svg-icons";
+import { faPalette, faWallet, faEllipsis, faFingerprint, faInfo, IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../../types";
 
 const options = [
   {
@@ -33,7 +34,7 @@ const options = [
 ];
 
 const OptionButton = (props) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<RootStackParamList>();
 
   return (
     <Pressable
