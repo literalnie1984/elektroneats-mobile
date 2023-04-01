@@ -115,7 +115,7 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
   const containerHeight = useSharedValue(EXPANDED_HEIGHT);
   const elementsHeight = useSharedValue(100);
   const [cost, setCost] = useState<number | null>(summarizeCost(cartItems));
-  const token = useRecoilValue(userTokenSelector);
+  const accessToken = useRecoilValue(userTokenSelector);
   const menu = useRecoilValue(menuSelector);
 
   useEffect(() => {
@@ -137,10 +137,10 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
     const body = convertCartItemsForApi(menu, cartItems, cpd);
     if(!body) return console.log('convertion went wrong');
     
-    if(!token) return console.log('no token');
+    if(!accessToken) return console.log('no token');
 
     let error = '';
-    const hasSucceed = await createOrders(body, token, (res) => {
+    const hasSucceed = await createOrders(body, accessToken, (res) => {
       console.log(res.status);
 
       switch (res.status) {

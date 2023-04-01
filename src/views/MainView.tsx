@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { menuAtom } from "./utils/menu";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -11,10 +11,8 @@ import { RootStackParamList } from "../types";
 import LoginScreen from "./screens/LoginScreen";
 import RegistrationScreen from "./screens/RegistrationScreen";
 import EmailConfirmationScreen from "./screens/EmailConfirmationScreen";
-import { userTokenAtom } from "./utils/user";
+import { userTokensAtom } from "./utils/user";
 import * as SplashScreen from "expo-splash-screen";
-import AppLoading from "expo-app-loading";
-import { View } from "react-native";
 import * as SecureStore from "expo-secure-store";
 
 SplashScreen.preventAutoHideAsync();
@@ -22,7 +20,7 @@ SplashScreen.preventAutoHideAsync();
 const Stack = createStackNavigator<RootStackParamList>();
 const MainView = () => {
   const [menu, setMenu] = useRecoilState(menuAtom);
-  const [token, setToken] = useRecoilState(userTokenAtom);
+  const [tokens, setTokens] = useRecoilState(userTokensAtom);
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
   const [appIsReady, setAppIsReady] = useState(false);
 
@@ -36,11 +34,11 @@ const MainView = () => {
       if (data) {
         console.log("token has been found in securestore and saved successfully");
         setInitialRoute("TabsView");
+        setTokens(JSON.parse(data));
       } else {
         console.log("no token in securestore");
         setInitialRoute("LoginScreen");
       }
-      setToken(data);
       setAppIsReady(true);
     });
   }, []);

@@ -16,3 +16,8 @@ export interface ChangePasswordBody {
   newPassword: string;
   oldPassword: string;
 }
+
+export interface UserTokens {
+  accessToken: string;
+  refreshToken: string;
+}

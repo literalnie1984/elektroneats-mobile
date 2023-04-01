@@ -9,7 +9,7 @@ import { COLORS } from "../colors";
 import { loginUser } from "../../api";
 import { UserLoginBody } from "../../api/user/types";
 import { useRecoilState } from "recoil";
-import { userTokenAtom } from "../utils/user";
+import { userTokensAtom } from "../utils/user";
 import * as SecureStore from "expo-secure-store";
 
 interface Errors {
@@ -22,7 +22,7 @@ const LoginScreen = ({ navigation }: any) => {
   const [errors, setErrors] = useState<Errors>({ email: null, password: null });
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
-  const [token, setToken] = useRecoilState(userTokenAtom);
+  const [tokens, setTokens] = useRecoilState(userTokensAtom);
 
   const validate = async () => {
     Keyboard.dismiss();
@@ -82,8 +82,8 @@ const LoginScreen = ({ navigation }: any) => {
 
     if (data) {
       console.log(data);
-      setToken(data);
-      if (rememberMe) await SecureStore.setItemAsync("token", data);
+      setTokens(data);
+      if (rememberMe) await SecureStore.setItemAsync("token", JSON.stringify(tokens));
       navigation.navigate("TabsView");
     }
   };
