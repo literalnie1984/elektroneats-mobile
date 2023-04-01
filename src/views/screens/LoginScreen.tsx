@@ -23,7 +23,7 @@ const LoginScreen = ({ navigation }: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [tokens, setTokens] = useRecoilState(userTokensAtom);
-
+ 
   const validate = async () => {
     Keyboard.dismiss();
 
