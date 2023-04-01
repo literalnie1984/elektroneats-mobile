@@ -13,6 +13,8 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { createOrders } from "../../api";
 import { userTokenSelector } from "../utils/user";
 import { menuSelector } from "../utils/menu";
+import {Modal} from "react-native";
+import PaymentView from "../../components/PaymentView";
 
 const ANIMATION_DURATION = 300;
 const placeholderImage = "https://i.imgur.com/ejtUaJJ.png";
@@ -108,7 +110,7 @@ const CartItemView = ({ index, data, type, cost, amount, handleAmountUpdate }: C
   );
 };
 
-const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded }: CartSummaryProps) => {
+const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDateUpdate, handleOrder, handleCartClearingRequest, isExpanded, setIsExpanded }: CartSummaryProps) => {
   const FOLDED_HEIGHT = 40;
   const EXPANDED_HEIGHT = 225;
 
@@ -130,6 +132,8 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
   const handleOrdering = async () => {
     // debugging
     const cpd = cartPickupDate ?? new Date();
+   
+	handleOrder(cartItems, cartPickupDate);
     
     // if(!cartPickupDate) return ToastAndroid.show('You must select pickup date before doing that!', ToastAndroid.SHORT);
     if(!menu) return console.log('no menu');
@@ -159,9 +163,11 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
     });
 
     if(hasSucceed) {
+      handleOrder(cartItems, cartPickupDate);
       setCartItems([]);
       ToastAndroid.show("Order has been added", ToastAndroid.SHORT);
     }
+    
   }
 
   const containerAnimatedStyle = useAnimatedStyle(() => {
@@ -313,7 +319,7 @@ const showDatePicker = (currentDate: Date | null, setDate: Dispatch<SetStateActi
 const parseDateToString = (date: Date) => {
   let date_string = "";
   date_string += `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth()).padStart(2, "0")}.${date.getFullYear()} `;
-  date_string += `(${getDayOfWeekMnemonic(date.getDay())}) - `;
+  date_string += `(${getDayOfWeekMnemonic(date.getDay() - 1)}) - `;
   date_string += `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
 
   return date_string;
@@ -350,6 +356,8 @@ const CartView = () => {
   const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
   const [date, setDate] = useState<Date | null>(null);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [cartOrder, setCartOrder] = useState<{ order: cartItem[], pickupDate: Date } | null >(null)
 
   const updateItemAmount = (index: number, amountUpdate: number) => {
     console.log(`Changed value of ${index} by: ${amountUpdate}`);
@@ -448,10 +456,13 @@ const CartView = () => {
   return (
     <View style={cartViewStyles.root}>
       <CartPanel data={cartItems} handleAmountUpdate={(index, amountUpdate) => updateItemAmount(index, amountUpdate)} />
-      <CartSummary cartItems={cartItems} setCartItems={setCartItems} cartPickupDate={date} handlePickupDateUpdate={() => showDatePicker(date, setDate, cartItems)} handleCartClearingRequest={clearCart} isExpanded={isSummaryExpanded} setIsExpanded={setIsSummaryExpanded} />
+      <CartSummary cartItems={cartItems} setCartItems={setCartItems} cartPickupDate={date} handlePickupDateUpdate={() => showDatePicker(date, setDate, cartItems)} handleCartClearingRequest={clearCart} handleOrder={( order: CartItem[], pickupDate: Date ) => { setShowPaymentModal(!showPaymentModal); setCartOrder({ order: order, pickupDate: pickupDate, }); }} isExpanded={isSummaryExpanded} setIsExpanded={setIsSummaryExpanded} />
       <Pressable style={cartViewStyles.cartPanelDebugButton} onPress={debugResetCart}>
         <Text style={cartViewStyles.cartPanelDebugButtonText}> Reset cart (debug)</Text>
       </Pressable>
+	  <Modal 
+		visible={showPaymentModal}
+	  ><PaymentView cartValue={ summarizeCost(cartItems) } /></Modal>
     </View>
   );
 };

@@ -26,8 +26,8 @@ const MenuVariant = (props: MenuVariantProps) => {
   const { beverages, fillers, salads } = extras;
   const allExtras = [...fillers, ...salads];
 
-  const allExtrasStr = allExtras.map((i) => i.name).join(",");
-  const beveragesStr = beverages.map((i) => i.name).join(",");
+  const allExtrasStr = allExtras.map((i) => i.name).join(", ");
+  const beveragesStr = beverages.map((i) => i.name).join(", ");
 
   return (
     <Animated.View style={[menuViewStyles.menuVariant, props.style]}>
