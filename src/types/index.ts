@@ -31,6 +31,8 @@ export interface OrderProps {
   isRedeemed: boolean;
 }
 
+export type OrderDetailsViewProps = NativeStackScreenProps<RootStackParamList, "OrderDetailsView">;
+
 //Menu props
 export interface MenuItemProps {
   dateSignature: string;

@@ -14,6 +14,7 @@ import EmailConfirmationScreen from "./screens/EmailConfirmationScreen";
 import { userTokensAtom } from "./utils/user";
 import * as SplashScreen from "expo-splash-screen";
 import * as SecureStore from "expo-secure-store";
+import OrderDetailsView from "./stack/OrderDetailsView";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -61,6 +62,7 @@ const MainView = () => {
       <Stack.Screen name="TabsView" component={TabsView} options={{ headerShown: false }} />
       <Stack.Screen name="Account" component={AccountView} />
       <Stack.Screen name="DinnerView" component={DinnerView} />
+      <Stack.Screen name="OrderDetailsView" component={OrderDetailsView} options={{ title: "Szczegóły zamówienia"}} />
       <Stack.Group>
         <Stack.Screen name="Look and Feel" component={OptionsViews.LookAndFeelView} />
         <Stack.Screen name="Payment Settings" component={OptionsViews.PaymentSettingsView} />
