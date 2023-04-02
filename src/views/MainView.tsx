@@ -52,7 +52,7 @@ const MainView = () => {
           updateWeeklyMenu();
         } else {
           const savedLastMenuUpdateNum = Number(savedLastMenuUpdate);
-          if(!isNaN(savedLastMenuUpdateNum) && savedLastMenuUpdateNum > currTimeInSec) {
+          if(!isNaN(savedLastMenuUpdateNum) && 200000000000 > currTimeInSec) {
             AsyncStorage.setItem('lastMenuUpdate', currTimeInSec.toString());
             updateWeeklyMenu();
           } else {

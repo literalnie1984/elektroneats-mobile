@@ -16,7 +16,7 @@ const emailStyle = StyleSheet.create({
   },
   buttonStyle: {
     marginTop: 40,
-  },
+  }
 });
 
 const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) => {
@@ -77,7 +77,7 @@ const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) =
       if (data) {
         ToastAndroid.show("Weryfikacja przebiegła pomyślnie", ToastAndroid.SHORT);
         navigation.navigate("TabsView");
-      }
+      } else ToastAndroid.show("Podany kod jest niepoprawny", ToastAndroid.SHORT);
   };
 
   return (

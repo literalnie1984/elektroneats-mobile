@@ -1,4 +1,4 @@
-import { DailyMenu, DinnerItem, FetchedDinner, FetchedDinnerItem, FetchedExtraType, FetchedMealType } from "./types";
+import { DailyMenu, DinnerItem, FetchedDinnerItem, FetchedExtra, FetchedExtraType, FetchedMealType, FetchedWeeklyMenu, WeeklyMenu } from "./types";
 
 const reduceProps = (obj: FetchedDinnerItem): DinnerItem => {
   return {
@@ -9,55 +9,31 @@ const reduceProps = (obj: FetchedDinnerItem): DinnerItem => {
   };
 };
 
-export const parseFetchedDinners = (data: FetchedDinner[]): DailyMenu => {
-  const week_day: number = data[0].dinner.week_day;
+export const parseFetchedWeeklyMenu = ({ response, extras }: FetchedWeeklyMenu): WeeklyMenu => {
+  const dailyMenus: DailyMenu[] = [];
 
-  const main: DinnerItem[] = [];
-  let soup: DinnerItem | null = null;
-  data.forEach((item) => {
-    const fetchedMeal = item.dinner;
-    const meal = reduceProps(fetchedMeal);
+  response.forEach(singleMenu => {
+    if(singleMenu.dinners.length === 0) return;
+    const weekDay: number = singleMenu.dinners[0].weekDay;
 
-    switch (fetchedMeal.type) {
-      case FetchedMealType.Main:
-        main.push(meal);
-        break;
+    const mappedExtras = singleMenu.extrasIds.map(id => extras.find(i => i.id === id));
+    const safeExtras = mappedExtras.filter(i => i !== undefined) as FetchedExtra[];
 
-      case FetchedMealType.Soup:
-        soup = meal;
-        break;
-    }
+    const fillers: DinnerItem[] = safeExtras.filter(i => i.type === FetchedExtraType.Filler).map(reduceProps);
+    const salads: DinnerItem[] = safeExtras.filter(i => i.type === FetchedExtraType.Salad).map(reduceProps);
+    const beverages: DinnerItem[] = safeExtras.filter(i => i.type === FetchedExtraType.Beverage).map(reduceProps);
+
+    dailyMenus.push({
+      main: singleMenu.dinners.filter((i) => i.type === FetchedMealType.Main).map(reduceProps),
+      soup: singleMenu.dinners.filter((i) => i.type === FetchedMealType.Soup).map(reduceProps)[0],
+      extras: {
+        fillers,
+        salads,
+        beverages
+      },
+      weekDay
+    });
   });
 
-  const fillers: DinnerItem[] = [];
-  const salads: DinnerItem[] = [];
-  const beverages: DinnerItem[] = [];
-  data[0].extras.forEach((fetchedExtra) => {
-    const extra = reduceProps(fetchedExtra);
-
-    switch (fetchedExtra.type) {
-      case FetchedExtraType.Filler:
-        fillers.push(extra);
-        break;
-
-      case FetchedExtraType.Salad:
-        salads.push(extra);
-        break;
-
-      case FetchedExtraType.Beverage:
-        beverages.push(extra);
-        break;
-    }
-  });
-
-  return {
-    main,
-    soup: soup!,
-    extras: {
-      fillers,
-      salads,
-      beverages,
-    },
-    week_day,
-  };
+  return dailyMenus;
 };

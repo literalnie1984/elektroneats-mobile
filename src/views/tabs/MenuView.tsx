@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useRecoilValue } from "recoil";
 import { menuSelector, generateVariantTags } from "../utils/menu";
 import { getDayOfWeekMnemonic } from "../../api/utils";
+import { DailyMenu } from "../../api/menu/types";
 
 const ANIMATION_DURATION = 300;
 
@@ -139,6 +140,7 @@ const MenuBlank = (props: MenuBlankProps) => {
 
 const MenuView = () => {
   const menu = useRecoilValue(menuSelector);
+  if(!menu) return <Text>error</Text>;
 
   return (
     <GestureHandlerRootView style={menuViewStyles.root}>
@@ -146,8 +148,8 @@ const MenuView = () => {
         <FlashList
           data={menu}
           renderItem={({ item }) => {
-            console.log(item)
-            return <MenuItem dateSignature={getDayOfWeekMnemonic(item.week_day)!} dailyMenu={item} containerHeight={300} switchHeight={32} />;
+            // console.log(item)
+            return <MenuItem dateSignature={getDayOfWeekMnemonic(item.weekDay)!} dailyMenu={item} containerHeight={300} switchHeight={32} />;
           }}
           estimatedItemSize={200}
           keyExtractor={(_, index) => index.toString()}

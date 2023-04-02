@@ -4,14 +4,16 @@ import { useState } from "react";
 import { DinnerData, DinnerItemProps, DinnerSelectProps, DinnerViewProps, DinnerViewSelection, InnerIndex } from "../../types";
 import { cartItemsAtom, convertSelectionToCartItem } from "../utils/cart";
 import { useRecoilState } from "recoil";
+import { API_URL } from "@env";
 
-const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
+const baseURL = `${API_URL}image/`;
+
 const DinnerItemView = ({ item, backgroundColor, onPress }: DinnerItemProps) => {
   const { name, uri } = item;
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={[dinnerViewStyles.itemView, { backgroundColor }]}>
-        <Image style={dinnerViewStyles.itemImg} source={{ uri: placeholderUri ?? uri }} />
+        <Image style={dinnerViewStyles.itemImg} source={{ uri: `${baseURL}${uri}` }} />
         <Text style={dinnerViewStyles.itemTitle}>{name}</Text>
       </View>
     </TouchableOpacity>

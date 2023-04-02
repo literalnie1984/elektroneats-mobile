@@ -112,7 +112,7 @@ export const convertSelectionToCartItem = (selection: DinnerViewSelection, daily
     type: CartItemType.Dinner,
     cost: calculateTotalCost(selection, dailyMenu),
     amount: 1,
-    data: { selection, weekday: dailyMenu.week_day },
+    data: { selection, weekday: dailyMenu.weekDay },
   };
 };
 
