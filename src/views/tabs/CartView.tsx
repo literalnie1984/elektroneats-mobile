@@ -18,9 +18,10 @@ import { newOrder, orderViewStyles } from "./OrdersView";
 import { COLORS } from "../colors";
 import PaymentView from "../../components/PaymentView";
 import {balanceAtom, walletAtom} from "../utils/wallet";
+import {OrderBody} from "../../api/orders/types";
 
 const ANIMATION_DURATION = 300;
-const placeholderImage = "https://i.imgur.com/ejtUaJJ.png";
+const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
 
 const CartItemView = ({ index, item, handleAmountUpdate }: CartItemProps) => {
   const { data, type, cost, amount } = item;
@@ -58,18 +59,13 @@ const CartItemView = ({ index, item, handleAmountUpdate }: CartItemProps) => {
 };
 
 const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded, usePayment }: CartSummaryProps) => {
-  const FOLDED_HEIGHT = 40;
-  const EXPANDED_HEIGHT = 225;
 
-  const containerHeight = useSharedValue(EXPANDED_HEIGHT);
-  const elementsHeight = useSharedValue(100);
   const [cost, setCost] = useState<number | null>(summarizeCost(cartItems));
   const accessToken = useRecoilValue(userTokenSelector);
   const [ wallet, setWallet ] = useRecoilState(walletAtom)
   const [ balance, setBalance ] = useRecoilState(balanceAtom);
   const menu = useRecoilValue(menuSelector);
 
-  const [cost, setCost] = useState(summarizeCost(cartItems));
   useEffect(() => {
     setCost(summarizeCost(cartItems));
   }, [cartItems]);
@@ -109,7 +105,7 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
 		console.log(res?.err ? res?.err.status : 'pass');
     } ) )
 	.then( (value) => setBalance( value !== null ? value / 100 : value ) )
-    .then( () => usePayment({ orderBody: body, orderValue: totalCost, pickupDate: cartPickupDate }) );
+    .then( () => usePayment( body, totalCost, cartPickupDate ) );
 
     /*let error = '';
     const hasSucceed = await createOrders(body, accessToken, (res) => {
@@ -321,7 +317,7 @@ const verifyPickupDates = (data: CartItem[], newDate: Date) => {
   }
 };
 
-export const CartView = ({ navigation }) => {
+const CartScreen = ({ navigation }) => {
   const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
   const [date, setDate] = useState<Date | null>(null);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
@@ -389,10 +385,11 @@ export const CartView = ({ navigation }) => {
           cartPickupDate={date}
 
           handlePickupDateUpdate={() => showDatePicker(date, setDate, cartItems)} 
-          handleCartClearingRequest={clearCart} 
+          handleCartClearingRequest={clearCart}
 
           isExpanded={isSummaryExpanded} 
-          setIsExpanded={setIsSummaryExpanded} 
+          setIsExpanded={setIsSummaryExpanded}
+		  usePayment={( orderBody: OrderBody, orderValue: number, pickupDate: Date ) => navigation.navigate("PaymentView", { orderBody, orderValue, pickupDate }) }
         /> 
       </>
       : <CartPanelBlank />
@@ -400,3 +397,5 @@ export const CartView = ({ navigation }) => {
     </View>
   );
 };
+
+export default CartScreen;

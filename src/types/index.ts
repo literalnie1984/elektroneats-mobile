@@ -3,7 +3,7 @@ import { AnimatableValue, AnimatedStyleProp } from "react-native-reanimated";
 import { SetStateAction, Dispatch } from "react";
 import { DailyMenu, DinnerItem } from "../api/menu/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import {OrderBody} from "../api/orders/types";
+import {OrderBody, CreateOrdersBody} from "../api/orders/types";
 
 export type RootStackParamList = {
   [key: string]: any;
@@ -158,6 +158,7 @@ export interface CartSummaryProps {
   handleCartClearingRequest: () => void;
   isExpanded: boolean;
   setIsExpanded: Dispatch<SetStateAction<boolean>>;
+  usePayment: ( orderBody: CreateOrdersBody, orderValue: number, pickupDate: Date ) => void;
 }
 
 export type EmailConfirmationScreenProps = NativeStackScreenProps<RootStackParamList, "EmailConfirmationScreen">;
