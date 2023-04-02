@@ -32,6 +32,8 @@ export interface OrderProps {
   isRedeemed: boolean;
 }
 
+export type OrderDetailsViewProps = NativeStackScreenProps<RootStackParamList, "OrderDetailsView">;
+
 //Menu props
 export interface MenuItemProps {
   dateSignature: string;
@@ -114,10 +116,10 @@ export enum CartItemType {
 }
 
 export interface CartItemBase {
-  type: CartItemType;
-  cost: number;
-  amount: number;
-  data: object;
+    type: CartItemType;
+    cost: number;
+    amount: number;
+    data: object;
 }
 
 export interface CartItemDinnerObject {
@@ -137,8 +139,14 @@ export interface CartItemItem extends CartItemBase {
 
 export type CartItem = CartItemDinner | CartItemItem;
 
-export interface CartItemProps extends CartItemBase {
+export interface CartItemProps {
   index: number;
+  item: CartItem;
+  handleAmountUpdate: (index: number, amountUpdate: number) => void;
+}
+
+export interface CartPanelProps {
+  cartItems: CartItem[]; 
   handleAmountUpdate: (index: number, amountUpdate: number) => void;
 }
 
@@ -152,9 +160,16 @@ export interface CartSummaryProps {
   setIsExpanded: Dispatch<SetStateAction<boolean>>;
 }
 
-export interface CartPanelProps {
-  isSummaryExpanded: boolean;
-  data: CartItem[];
+export type EmailConfirmationScreenProps = NativeStackScreenProps<RootStackParamList, "EmailConfirmationScreen">;
+export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, "LoginScreen">;
+export type RegistrationScreenProps = NativeStackScreenProps<RootStackParamList, "RegistrationScreen">;
+
+export interface UserDecodedData {
+  sub: string;
+  username: string;
+  email: string;
+  is_admin: boolean;
+  exp: number;
 }
 
 export interface WalletFormViewProps {

@@ -8,7 +8,7 @@ export const generateVariantTags = function (dailyMenu: DailyMenu) {
   const variantCount = dailyMenu.main.length;
   const variantTags = [];
   for (let i = 1; i <= variantCount; i++) {
-    variantTags.push(`Variant ${i}`);
+    variantTags.push(`Wariant ${i}`);
   }
 
   return variantTags;

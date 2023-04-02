@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { SegmentedSwitchProps } from "../types";
+import { COLORS } from "../views/colors";
 
 const defaultStyle = StyleSheet.create({
   switch: {
@@ -18,7 +19,7 @@ const defaultStyle = StyleSheet.create({
     flex: 1,
     height: "100%",
     padding: 5,
-    backgroundColor: "#234ecb",
+    backgroundColor: COLORS.chestnut,
   },
   segmentText: {
     textAlign: "center",
@@ -26,7 +27,7 @@ const defaultStyle = StyleSheet.create({
     fontSize: 16,
   },
   selectedSegment: {
-    backgroundColor: "#557dfa",
+    backgroundColor: COLORS.lighterColar,
   },
 });
 

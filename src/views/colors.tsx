@@ -5,14 +5,15 @@ export const COLORS = {
   darkGrey: "#2b2b2b",
   red: "red",
 
-  colar: "#f78154",
-  lighterColar: "#eb855e",
-  whiteColar: "#faf2f0",
-  darkColar: "#b08574",
-  darkerColar: "#d48466",
+  colar: "#247fff",
+  lighterColar: "#5da2e8",
+  whiteColar: "#f2f7fc",
+  whiterColar: '#fafcff',
+  darkColar: "#7494b0",
+  darkerColar: "#66a4d4",
 
   gunmetal: "#292f36",
   saffron: "#f2c14e",
-  chestnut: "#8e443d",
+  chestnut: "#21559e",
   magnolia: "#f3eff5",
 };
