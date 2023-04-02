@@ -1,6 +1,7 @@
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native"
 import { newOrder } from "../tabs/OrdersView";
 import { OrderDetailsViewProps } from "../../types";
+import { COLORS } from "../colors";
 
 const orderDetails = StyleSheet.create({
     container: {
@@ -47,14 +48,8 @@ const orderContent = StyleSheet.create({
         padding: 10,
         width: '90%',
         marginBottom: 24,
-        shadowColor: "#0049a8",
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.23,
-        shadowRadius: 2.62,
-        elevation: 4,
+        shadowColor: COLORS.chestnut,
+        elevation: 6,
     },
     firstRow: {
         flexDirection: 'row',

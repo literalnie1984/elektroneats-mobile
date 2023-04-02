@@ -8,15 +8,17 @@ import { getPendingUserOrders } from "../../api";
 import { useRecoilValue } from "recoil";
 import { userTokenSelector } from "../utils/user";
 import { useNavigation } from "@react-navigation/native";
+import { COLORS } from "../colors";
 
 const orderViewStyles = StyleSheet.create({
   container: {
+    // backgroundColor: '#ebf2ff',
     // backgroundColor: '#f5f8ff',
     paddingTop: 20,
   },
   title: {
     fontSize: 20,
-    color: "#5491ff",
+    color: COLORS.colar,
     // fontWeight: 'bold',
     marginLeft: 20,
     marginBottom: 10,
@@ -81,19 +83,15 @@ export const newOrder = StyleSheet.create({
     alignItems: "center",
   },
   orderContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
+    // borderColor: '#afc0ed',
+    // borderWidth: 1,
     marginBottom: 24,
     padding: 10,
     width: '90%',
     borderRadius: 10,
-    shadowColor: "#0049a8",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
+    shadowColor: COLORS.chestnut,
+    elevation: 6,
   },
   infoContainer: {
     flexDirection: 'row',
