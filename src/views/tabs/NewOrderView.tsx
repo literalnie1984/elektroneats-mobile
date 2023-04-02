@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import { style } from "../../styles";
 
-const ShopView = () => {
+const NewOrderView = () => {
   return (
     <View style={style.container}>
-      <Text>Shop</Text>
+      <Text>NewOrder</Text>
     </View>
   );
 };
 
-export default ShopView;
+export default NewOrderView;

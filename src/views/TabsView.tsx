@@ -1,10 +1,10 @@
 import { BottomTabHeaderProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faUtensils, faTableList, faBasketShopping, faEllipsisVertical, faStore } from "@fortawesome/free-solid-svg-icons";
+import { faUtensils, faTableList, faBasketShopping, faEllipsisVertical, faStore, faGear } from "@fortawesome/free-solid-svg-icons";
 import HeaderView from "./HeaderView";
 import OrdersScreen from "./tabs/OrdersView";
 import MenuScreen from "./tabs/MenuView";
-import ShopScreen from "./tabs/ShopView";
+import ShopScreen from "./tabs/NewOrderView";
 import CartScreen from "./tabs/CartView";
 import MoreScreen from "./tabs/MoreView";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -41,20 +41,20 @@ const TabsView = ({ navigation }: any) => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: IconProp;
           switch (route.name) {
-            case "Orders":
-              iconName = faTableList;
-              break;
-            case "Menu":
+            case "Jadłospis":
               iconName = faUtensils;
               break;
-            case "Shop":
+            case "Zamów":
               iconName = faStore;
               break;
-            case "Cart":
+            case "Koszyk":
               iconName = faBasketShopping;
               break;
-            case "More":
-              iconName = faEllipsisVertical;
+            case "Zamówienia":
+              iconName = faTableList;
+              break;
+            case "Ustawienia":
+              iconName = faGear;
               break;
           }
 
@@ -62,11 +62,11 @@ const TabsView = ({ navigation }: any) => {
         },
       })}
     >
-      <Tab.Screen name="Orders" component={OrdersScreen} />
-      <Tab.Screen name="Menu" component={MenuScreen} />
-      <Tab.Screen name="Shop" component={ShopScreen} />
-      <Tab.Screen name="Cart" component={CartScreen} />
-      <Tab.Screen name="More" component={MoreScreen} />
+      <Tab.Screen name="Jadłospis" component={MenuScreen} />
+      <Tab.Screen name="Zamów" component={ShopScreen} />
+      <Tab.Screen name="Koszyk" component={CartScreen} />
+      <Tab.Screen name="Zamówienia" component={OrdersScreen} />
+      <Tab.Screen name="Ustawienia" component={MoreScreen} />
     </Tab.Navigator>
   );
 };
