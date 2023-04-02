@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState, Dispatch } from "react";
 import { ToastAndroid, Text, TextInput, View, Pressable } from "react-native";
-import { paymentViewStyle } from "../styles";
+import { paymentStyle } from "../styles";
 import { verifyNameIntegrity, verifyPostalIntegrity, verifyPhoneNumberIntegrity, verifyEmailAddressIntegrity, walletAtom, balanceAtom } from "../views/utils/wallet";
 import { COLORS } from "../views/colors";
 import { getBalance, getClientData, setWallet } from "../api";
 import {useRecoilState} from "recoil";
 import {userTokensAtom} from "../views/utils/user";
+import {WalletFormViewProps} from "../types";
+import {WalletDetails} from "../api/wallet/types";
 
-const emptyForm = {
+const emptyForm: WalletDetails = {
 		name: '', phone: '', address: {
 		city: '', country: '', postal_code: '', 
 		state: '', }
 };
 
-const trimWalletValues = ( walletForm, setWalletForm ) => {
+const trimWalletValues = ( walletForm: WalletDetails, setWalletForm: Dispatch<SetStateAction<WalletDetails>> ) => {
 		setWalletForm({
 				name: walletForm.name.trim(),
 				phone: walletForm.phone.trim(),
@@ -26,10 +28,10 @@ const trimWalletValues = ( walletForm, setWalletForm ) => {
 		});
 };
 
-const WalletFormView = ( { isDisplayed, setIsLoading, unDisplay } ) => {
+const WalletFormView = ( { isDisplayed, setIsLoading, unDisplay }: WalletFormViewProps ) => {
 
 		const [ tokens ] = useRecoilState(userTokensAtom);
-		const [ walletForm, setWalletForm ] = useState( emptyForm );
+		const [ walletForm, setWalletForm ] = useState<WalletDetails>( emptyForm );
 		const [ _, setWalletAtom ] = useRecoilState(walletAtom);
 
 		const handleWalletFormSave = async () => {
@@ -41,18 +43,21 @@ const WalletFormView = ( { isDisplayed, setIsLoading, unDisplay } ) => {
 								verifyNameIntegrity( walletForm.name )
 				  ){
 						setIsLoading(true);
-						const isSet = await setWallet( tokens, walletForm, ( res ) => {
-								res.err ? console.log("Bruh") : console.log("Success")
+						const isSet = await setWallet( tokens?.accessToken, walletForm, async ( res ) => {
+								res?.err ? console.log("Bruh") : console.log("Success")
+								console.log(res.status);
+								await res.text().then( ( value ) => console.log( value ) )
 						} );
 						
-						if( isSet | !isSet ) {
-								const wallet = await getClientData( tokens, ( res ) => {
+						if( isSet ) {
+								const wallet = await getClientData( tokens?.accessToken, ( res ) => {
 										console.log(res?.err);
 								} );
 						
 								if( wallet ) {
 										setWalletAtom( wallet );
 										ToastAndroid.show("Success", ToastAndroid.SHORT);
+										unDisplay();
 								} else {
 										console.log( wallet );
 										ToastAndroid.show("Error during wallet forming occured", ToastAndroid.SHORT)
@@ -75,155 +80,131 @@ const WalletFormView = ( { isDisplayed, setIsLoading, unDisplay } ) => {
 		}
 
 		return (
-		<View style={[ paymentViewStyle.walletFormBody, { display: isDisplayed ? 'flex' : 'none', }, ]}>
-				<View style={ paymentViewStyle.walletFormRow }>
-				<Text style={ paymentViewStyle.walletFormRowLabel }>Imię i nazwisko: </Text>
+		<View style={[ paymentStyle.paymentWalletRoot, { display: isDisplayed ? 'flex' : 'none', }, ]}>
+				<View style={ paymentStyle.paymentWalletRow }>
+				<Text style={ paymentStyle.paymentWalletRowLabel }>Imię i nazwisko: </Text>
 						<TextInput 
 						autoComplete='name'
-						underlineColorAndroid={ COLORS.black }
+						underlineColorAndroid={ COLORS.gunmetal }
+						cursorColor={ COLORS.gunmetal }
 						inputMode='text'
 						keyboardType='default'
 						textAlign='center'
 						onChangeText={ ( text ) => { 
 								setWalletForm( { ...walletForm, name: text } )
 						} }
-						style={ paymentViewStyle.walletFormRowInput }
+						style={ paymentStyle.paymentWalletRowInput }
 						value={ walletForm.name }
 						/>
 				</View>
-				<View style={ paymentViewStyle.walletFormRow }>
-						<Text style={ paymentViewStyle.walletFormRowLabel } >Numer telefonu: </Text>
+				<View style={ paymentStyle.paymentWalletRow }>
+						<Text style={ paymentStyle.paymentWalletRowLabel } >Numer telefonu: </Text>
 						<TextInput 
 								autoComplete='tel'
-								underlineColorAndroid={ COLORS.black }
+								underlineColorAndroid={ COLORS.gunmetal }
 								inputMode='numeric'
+								cursorColor={ COLORS.gunmetal }
 								keyboardType='phone-pad'
 								textAlign='center'
 								onChangeText={ ( text ) => { 
 										setWalletForm( { ...walletForm, phone: text } )
 								} }
-								style={ paymentViewStyle.walletFormRowInput }
+								style={ paymentStyle.paymentWalletRowInput }
 								value={ walletForm.phone }
 						/>
 				</View>
-				{/*<View style={ paymentViewStyle.walletFormRow }>
-						<Text style={ paymentViewStyle.walletFormRowLabel }>Adres email: </Text>
-						<TextInput 
-								autoComplete='email'
-								underlineColorAndroid={ COLORS.black }
-								inputMode='email'
-								keyboardType='email-address'
-								textAlign='center'
-								onChangeText={ ( text ) => { 
-										setWalletForm( { ...walletForm, email: text } )
-								} }
-								style={ paymentViewStyle.walletFormRowInput }
-								value={ walletForm.email }
-						/>
-				</View>*/}
-				<View style={ paymentViewStyle.walletFormAddressView }>
-						<Text style={ paymentViewStyle.walletFormAddresViewLabel }>Dane adresowe: </Text>
-						{ /* <View style={ paymentViewStyle.walletFormRow }>
-								<Text style={ paymentViewStyle.walletFormRowLabel }>Linia adresu 1: </Text>
-								<TextInput 
-										autoComplete='postal-address'
-										underlineColorAndroid={ COLORS.black }
-										inputMode='text'
-										keyboardType='default'
-										textAlign='center'
-										onChangeText={ ( text ) => { 
-												setWalletForm( { ...walletForm, address_line: text } )
-										} }
-										style={ paymentViewStyle.walletFormRowInput }
-										value={ walletForm.address_line }
-								/>
-						</View> */	}
-						<View style={ paymentViewStyle.walletFormRow }>
-								<Text style={ paymentViewStyle.walletFormRowLabel }>Kod pocztowy: </Text>
+				<View style={[ paymentStyle.paymentWalletAddressView, { display: isDisplayed ? 'flex' : 'none', }, ]}>
+						<Text style={ paymentStyle.paymentWalletAddresViewLabel }>Dane adresowe: </Text>
+						<View style={ paymentStyle.paymentWalletRow }>
+								<Text style={ paymentStyle.paymentWalletRowLabel }>Kod pocztowy: </Text>
 								<TextInput 
 										autoComplete='postal-code'
-										underlineColorAndroid={ COLORS.black }
+										underlineColorAndroid={ COLORS.gunmetal }
 										inputMode='text'
+										cursorColor={ COLORS.gunmetal }
 										keyboardType='numbers-and-punctuation'
 										textAlign='center'
 										onChangeText={ ( text ) => { 
 												setWalletForm( { ...walletForm, address: { ...walletForm.address, postal_code: text }, } )
 										} }
-										style={ paymentViewStyle.walletFormRowInput }
+										style={ paymentStyle.paymentWalletRowInput }
 										value={ walletForm.address.postal_code }
 								/>
 						</View>
-						<View style={ paymentViewStyle.walletFormRow }>
-								<Text style={ paymentViewStyle.walletFormRowLabel }>Miasto: </Text>
+						<View style={ paymentStyle.paymentWalletRow }>
+								<Text style={ paymentStyle.paymentWalletRowLabel }>Miasto: </Text>
 								<TextInput 
 										autoComplete='postal-address-locality'
-										underlineColorAndroid={ COLORS.black }
+										underlineColorAndroid={ COLORS.gunmetal }
 										inputMode='text'
+										cursorColor={ COLORS.gunmetal }
 										keyboardType='default'
 										textAlign='center'
 										onChangeText={ ( text ) => { 
 												setWalletForm( { ...walletForm, address: { ...walletForm.address, city: text } } )
 										} }
-										style={ paymentViewStyle.walletFormRowInput }
+										style={ paymentStyle.paymentWalletRowInput }
 										value={ walletForm.address.city }
 								/>
 						</View>
-						<View style={ paymentViewStyle.walletFormRow }>
-								<Text style={ paymentViewStyle.walletFormRowLabel }>Województwo: </Text>
+						<View style={ paymentStyle.paymentWalletRow }>
+								<Text style={ paymentStyle.paymentWalletRowLabel }>Województwo: </Text>
 								<TextInput 
 										autoComplete='postal-address-region'
-										underlineColorAndroid={ COLORS.black }
+										underlineColorAndroid={ COLORS.gunmetal }
+										cursorColor={ COLORS.gunmetal }
 										inputMode='text'
 										keyboardType='default'
 										textAlign='center'
 										onChangeText={ ( text ) => { 
 												setWalletForm( { ...walletForm, address:{ ...walletForm.address, state: text} } )
 										} }
-										style={ paymentViewStyle.walletFormRowInput }
+										style={ paymentStyle.paymentWalletRowInput }
 										value={ walletForm.address.state }
 
 								/>
 						</View>
-						<View style={ paymentViewStyle.walletFormRow }>
-								<Text style={ paymentViewStyle.walletFormRowLabel }>Państwo: </Text>
+						<View style={ paymentStyle.paymentWalletRow }>
+								<Text style={ paymentStyle.paymentWalletRowLabel }>Państwo: </Text>
 								<TextInput 
-										underlineColorAndroid={ COLORS.black }
+										underlineColorAndroid={ COLORS.gunmetal }
 										autoComplete='postal-address-country'
+										cursorColor={ COLORS.gunmetal }
 										inputMode='text'
 										keyboardType='default'
 										textAlign='center'
 										onChangeText={ ( text ) => { 
 												setWalletForm( { ...walletForm, address:{ ...walletForm.address, country: text } } )
 										} }
-										style={ paymentViewStyle.walletFormRowInput }
+										style={ paymentStyle.paymentWalletRowInput }
 										value={ walletForm.address.country }
 								/>
 						</View>
 				</View>
-				<View style={ paymentViewStyle.walletFormButtonRow }>
+				<View style={ paymentStyle.paymentWalletButtonRow }>
 				<Pressable
 						onPress={ () => handleWalletFormSave() }
-						style={ paymentViewStyle.walletFormButton }
+						style={ paymentStyle.paymentWalletButton }
 						android_ripple={{ 
 								color: "#fff",
 								borderless: false,
-								radius: 50,
+								radius: 80,
 								foreground: false,
 						}}
 				>
-						<Text style={ paymentViewStyle.walletFormButtonLabel }>Zapisz dane</Text>
+						<Text style={ paymentStyle.paymentWalletButtonLabel }>Zapisz dane</Text>
 				</Pressable>
 				<Pressable
 						onPress={ () => { setWalletForm( emptyForm ) } }
-						style={ paymentViewStyle.walletFormButton }
+						style={ paymentStyle.paymentWalletButton }
 						android_ripple={{ 
 								color: "#fff",
 								borderless: false,
-								radius: 50,
+								radius: 110,
 								foreground: false,
 						}}
 				>
-						<Text style={ paymentViewStyle.walletFormButtonLabel }>Wyzeruj wartość pól</Text>
+						<Text style={ paymentStyle.paymentWalletButtonLabel }>Wyzeruj wartość pól</Text>
 				</Pressable>
 				</View>
 		</View>

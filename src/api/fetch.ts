@@ -64,7 +64,7 @@ export async function fetchForNumber({ path, method, token, body, error }: Fetch
     });
     if (res.status !== 200) throw res;
 
-    const data = await res.text().then((value) => Number(value));
+    const data = Number(await res.text());
     return data;
   } catch (err) {
     error?.(err as Response);

@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import { View, Text, TextInput } from "react-native";
-import Slider from "@react-native-community/slider";
+import { COLORS } from "../views/colors";
 import {useRecoilState} from "recoil";
 import {balanceAtom, walletAtom} from "../views/utils/wallet";
 import {Button} from "react-native";
@@ -8,28 +8,36 @@ import { InitPaymentSheetResult, PaymentSheetError, useStripe, StripeError } fro
 import {addBalance} from "../api";
 import {userTokensAtom} from "../views/utils/user";
 import {ToastAndroid} from "react-native";
+import {text} from "@fortawesome/fontawesome-svg-core";
+import {paymentStyle} from "../styles";
+import {WalletTopUpViewProps} from "../types";
 
-const WalletTopUpView = ({ isDisplayed, balanceDiff, isLoading, setIsLoading, unDisplay }) => {
+const WalletTopUpView = ({ isDisplayed, balanceDiff, isLoading, setIsLoading, unDisplay }: WalletTopUpViewProps) => {
 		const balanceDiffPLN: number = balanceDiff / 100;
 
 		const [ tokens ] = useRecoilState(userTokensAtom);
 		const [ chargeValue, setChargeValue ] = useState(balanceDiffPLN);
+		const [ textValue, setTextValue  ] = useState("");
 		const [ wallet ] = useRecoilState(walletAtom);
 		const [ balance, setBalance ] = useRecoilState( balanceAtom );
 		const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
-		useEffect(() => {
-				if( chargeValue < balanceDiff ) setChargeValue( balanceDiff );
-		}, [ chargeValue ]);
+		useEffect( () => {
+				setChargeValue( Number(Number(textValue).toFixed(2)) * 100 )
+		}, [ textValue ] )
 
 		const initializePayment = async () => {
-				const customer_secret = await addBalance( tokens, chargeValue * 100, ( res ) => {
-						!res.err ? console.log("Success") : console.log("Bruh")
-				} ).then( ( value ) => console.log(value) );
+				const intent_data = await addBalance( tokens?.accessToken, chargeValue, ( res ) => {
+						console.log(res.status);
+						console.log(res?.err.status);
+				} );
+
+				console.log(intent_data);
 
 				const { error }: Promise<InitPaymentSheetResult | StripeError<PaymentSheetError> > = await initPaymentSheet({
 						merchantDisplayName: "Kantyna Elektronik",
-						paymentIntentClientSecret: customer_secret,
+						customerId: intent_data.customer_id,
+						paymentIntentClientSecret: intent_data.intent_secret,
 						style: "automatic",
 						defaultBillingDetails: {
 								email: wallet?.email || "jan.kowalski@roksa.pl",
@@ -48,42 +56,41 @@ const WalletTopUpView = ({ isDisplayed, balanceDiff, isLoading, setIsLoading, un
 
 				if( error ){
 						ToastAndroid.show(`Error: ${error.message}`, ToastAndroid.LONG)
+						unDisplay();
 				} else {
 						ToastAndroid.show("Success", ToastAndroid.LONG);
-						isLoading(false);
+						unDisplay();
 				}
 		};
 
 		const handleConfirm = async () => {
+				if( chargeValue < balanceDiffPLN ) {
+						ToastAndroid.show("Insufficient charge", ToastAndroid.SHORT);
+						return;
+				}
 				await initializePayment()
-				.then( () => openPaymentSheet )
+				.then( () => openPaymentSheet() )
 		};
 
 		return( 
-		<View style={[ { display: isDisplayed ? 'flex' : 'none' } ]}>
-				<View>
-						<Text>Podaj wartość doładowania: </Text>
+		<View style={[ paymentStyle.paymentTopUpRoot, { display: isDisplayed ? 'flex' : 'none' } ]}>
+				<View style={ paymentStyle.paymentTopUpRow }>
+						<Text style={ paymentStyle.paymentTopUpText }>Podaj wartość doładowania: </Text>
 						<TextInput
-								value={ String(chargeValue) }
-								onChangeText={ ( text ) => setChargeValue(Number( Number(text).toFixed(2))) }
-								underlineColorAndroid={ "#000" }
+								value={textValue}
+								onChange={ ( event ) => { setTextValue( event.nativeEvent.text );   }}
+								underlineColorAndroid={ COLORS.gunmetal }
+								cursorColor={ COLORS.gunmetal }
 								inputMode={ "numeric" }
-								keyboardType={ "number-pad" }
+								style={ paymentStyle.paymentTopUpInput }
+								keyboardType={ "decimal-pad" }
 						/>
 				</View>
-				<Slider
-						minimumValue={balanceDiffPLN}
-						lowerLimit={balanceDiffPLN}
-						maximumValue={balanceDiffPLN + 200}
-						upperLimit={balanceDiffPLN + 200}
-						step={0.01}
-						value={chargeValue}
-						onValueChange={ (value) => setChargeValue(Number(value.toFixed(2))) }
-				/>
 				<Button
 						onPress={ handleConfirm }
 						title={ "Zatwierdź" }
 						disabled={ isLoading }
+						color={ paymentStyle.paymentTopUpButton.color }
 				/>
 		</View> 
 		)

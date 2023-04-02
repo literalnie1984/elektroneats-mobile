@@ -3,6 +3,7 @@ import { AnimatableValue, AnimatedStyleProp } from "react-native-reanimated";
 import { SetStateAction, Dispatch } from "react";
 import { DailyMenu, DinnerItem } from "../api/menu/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import {OrderBody} from "../api/orders/types";
 
 export type RootStackParamList = {
   [key: string]: any;
@@ -154,4 +155,26 @@ export interface CartSummaryProps {
 export interface CartPanelProps {
   isSummaryExpanded: boolean;
   data: CartItem[];
+}
+
+export interface WalletFormViewProps {
+		isDisplayed: boolean,
+		setIsLoading: Dispatch<SetStateAction<boolean>>,
+		unDisplay: () => void,
+}
+
+export interface WalletTopUpViewProps {
+		isDisplayed: boolean,
+		setIsLoading: Dispatch<SetStateAction<boolean>>,
+		unDisplay: () => void,
+		balanceDiff: number,
+		isLoading: boolean,
+}
+
+export interface WalletCheckoutProps {
+		isDisplayed: boolean,
+		setIsLoading: Dispatch<SetStateAction<boolean>>,
+		unDisplay: () => void,
+		body: OrderBody,
+		orderValue: number,
 }

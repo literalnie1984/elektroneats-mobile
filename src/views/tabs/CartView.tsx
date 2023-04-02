@@ -4,17 +4,18 @@ import { cartViewStyles, paymentViewStyle } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronUp, faChevronDown, faChevronLeft, faChevronRight, faFaceMeh } from "@fortawesome/free-solid-svg-icons";
 import { FlashList } from "@shopify/flash-list";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { acc, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { DateTimePickerAndroid, DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { CartItem, CartItemProps, CartItemType, CartPanelProps, CartSummaryProps } from "../../types/index";
 import { getDayOfWeekMnemonic } from "../../api/utils";
-import { cartItemsAtom, convertCartItemsForApi } from "../utils/cart";
+import { calculateTotalCost, cartItemsAtom, convertCartItemsForApi, getPriceAsNumber } from "../utils/cart";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { createOrders } from "../../api";
+import { createOrders, getBalance, getClientData } from "../../api";
 import { userTokenSelector } from "../utils/user";
 import { menuSelector } from "../utils/menu";
 import { Modal } from "react-native";
 import PaymentView from "../../components/PaymentView";
+import {balanceAtom, walletAtom} from "../utils/wallet";
 
 const ANIMATION_DURATION = 300;
 const placeholderImage = "https://i.imgur.com/ejtUaJJ.png";
@@ -120,6 +121,8 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
   const elementsHeight = useSharedValue(100);
   const [cost, setCost] = useState<number | null>(summarizeCost(cartItems));
   const accessToken = useRecoilValue(userTokenSelector);
+  const [ wallet, setWallet ] = useRecoilState(walletAtom)
+  const [ balance, setBalance ] = useRecoilState(balanceAtom);
   const menu = useRecoilValue(menuSelector);
 
   useEffect(() => {
@@ -132,20 +135,32 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
   }, [isExpanded]);
 
   const handleOrdering = async () => {
-    // debugging
-    const cpd = cartPickupDate ?? new Date();
-
-	usePayment({ orderValue: summarizeCost( cartItems ), pickupDate: cpd });
 
     // if(!cartPickupDate) return ToastAndroid.show('You must select pickup date before doing that!', ToastAndroid.SHORT);
     if (!menu) return console.log("no menu");
 
-    const body = convertCartItemsForApi(menu, cartItems, cpd);
-    if(!body) return console.log('convertion went wrong');
-    
-    if(!accessToken) return console.log('no token');
+    const body = convertCartItemsForApi(menu, cartItems, cartPickupDate);
+	const totalCost = cartItems.reduce( ( acc = 0, item ) => {
+		if( item.type === CartItemType.Dinner ){
+				return acc + (calculateTotalCost( item.data.selection, menu[item.data.weekday] ) * item.amount);
+		}
+    }, 0 );
 
-    let error = '';
+    if(!body) return console.log('convertion went wrong');
+   
+	await getClientData( accessToken, ( res ) => {
+		console.log(res.status);
+		console.log(res?.err ? res?.err.status : 'pass');
+    } )
+	.then( (value) => setWallet( value )  )
+    .then( () => getBalance( accessToken, ( res ) => {
+		console.log(res.status);
+		console.log(res?.err ? res?.err.status : 'pass');
+    } ) )
+	.then( (value) => setBalance( value !== null ? value / 100 : value ) )
+    .then( () => usePayment({ orderBody: body, orderValue: totalCost, pickupDate: cartPickupDate }) );
+
+    /*let error = '';
     const hasSucceed = await createOrders(body, accessToken, (res) => {
       console.log(res.status);
 
@@ -166,8 +181,9 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
 
     if (hasSucceed) {
       setCartItems([]);
+      
       ToastAndroid.show("Order has been added", ToastAndroid.SHORT);
-    }
+    }*/
   };
 
   const containerAnimatedStyle = useAnimatedStyle(() => {
@@ -359,10 +375,6 @@ export const CartView = ({ navigation }) => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [cartOrder, setCartOrder] = useState<{ order: cartItem[]; pickupDate: Date } | null>(null);
 
-  const debug_usePaymentView = ({ orderValue, pickupDate}: { orderValue: number, pickupDate: Date }) => {
-		  navigation.navigate("PaymentView", { orderValue: orderValue, pickupDate: pickupDate });
-  };
-
   const updateItemAmount = (index: number, amountUpdate: number) => {
     console.log(`Changed value of ${index} by: ${amountUpdate}`);
     let cartList = JSON.parse(JSON.stringify(cartItems));
@@ -446,14 +458,6 @@ export const CartView = ({ navigation }) => {
           weekday: 2,
         },
       },
-      {
-        type: CartItemType.Item,
-        cost: 99.99,
-        amount: 3,
-        data: {
-          menu: "something",
-        },
-      },
     ]);
   };
 
@@ -468,7 +472,7 @@ export const CartView = ({ navigation }) => {
         handleCartClearingRequest={clearCart}
         isExpanded={isSummaryExpanded}
         setIsExpanded={setIsSummaryExpanded}
-		usePayment={({ orderValue, pickupDate }) => debug_usePaymentView({orderValue, pickupDate})}
+		usePayment={({ orderBody, orderValue, pickupDate }) => navigation.navigate("PaymentView", { orderBody, orderValue, pickupDate }) }
       />
       <Pressable style={cartViewStyles.cartPanelDebugButton} onPress={debugResetCart}>
         <Text style={cartViewStyles.cartPanelDebugButtonText}> Reset cart (debug)</Text>
