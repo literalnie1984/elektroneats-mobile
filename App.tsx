@@ -6,7 +6,7 @@ import MainView from "./src/views/MainView";
 
 export default function App() {
   return (
-    <StripeProvider publishableKey="jeszcze nic tu nie ma">
+    <StripeProvider publishableKey="pk_test_51MpCAID80hN9rXmTDAfEgiTv1MQlBADcKXS2Q0UQsbEms15Xwg9F0vBg5HSPol3VThIJrzr6RGtJfhyPbgUt7irN00VakiDrLD">
       <RecoilRoot>
         <NavigationContainer>
           <MainView />

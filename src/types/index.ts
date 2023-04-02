@@ -3,6 +3,7 @@ import { AnimatableValue, AnimatedStyleProp } from "react-native-reanimated";
 import { SetStateAction, Dispatch } from "react";
 import { DailyMenu, DinnerItem } from "../api/menu/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import {OrderBody} from "../api/orders/types";
 
 export type RootStackParamList = {
   [key: string]: any;
@@ -111,7 +112,7 @@ export type DinnerViewProps = NativeStackScreenProps<RootStackParamList, "Dinner
 //CartView
 export enum CartItemType {
   Dinner = "dinner",
-  Item = "item"
+  Item = "item",
 }
 
 export interface CartItemBase {
@@ -122,7 +123,7 @@ export interface CartItemBase {
 }
 
 export interface CartItemDinnerObject {
-  selection: DinnerViewSelection,
+  selection: DinnerViewSelection;
   weekday: number;
 }
 
@@ -133,7 +134,7 @@ export interface CartItemDinner extends CartItemBase {
 
 export interface CartItemItem extends CartItemBase {
   type: CartItemType.Item;
-  data: object; 
+  data: object;
 }
 
 export type CartItem = CartItemDinner | CartItemItem;
@@ -169,4 +170,26 @@ export interface UserDecodedData {
   email: string;
   is_admin: boolean;
   exp: number;
+}
+
+export interface WalletFormViewProps {
+		isDisplayed: boolean,
+		setIsLoading: Dispatch<SetStateAction<boolean>>,
+		unDisplay: () => void,
+}
+
+export interface WalletTopUpViewProps {
+		isDisplayed: boolean,
+		setIsLoading: Dispatch<SetStateAction<boolean>>,
+		unDisplay: () => void,
+		balanceDiff: number,
+		isLoading: boolean,
+}
+
+export interface WalletCheckoutProps {
+		isDisplayed: boolean,
+		setIsLoading: Dispatch<SetStateAction<boolean>>,
+		unDisplay: () => void,
+		body: OrderBody,
+		orderValue: number,
 }
