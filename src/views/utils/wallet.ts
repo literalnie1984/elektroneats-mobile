@@ -41,7 +41,7 @@ export const verifyNameIntegrity = (name: string) => {
   return true;
 };
 
-export const parseFormToDetails = (form) => {
+export const parseFormToDetails = (form: any) => {
   return {
     name: form.name,
     email: form.email,

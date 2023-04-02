@@ -1,4 +1,5 @@
 import { FetchParams } from "./types";
+import { ErrorRes } from "./user/types";
 import { formatURL } from "./utils";
 
 const headers = {

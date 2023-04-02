@@ -33,7 +33,7 @@ const options = [
   },
 ];
 
-const OptionButton = (props) => {
+const OptionButton = (props: any) => {
   const navigation = useNavigation<RootStackParamList>();
 
   return (

@@ -93,7 +93,7 @@ export const menuViewStyles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     backgroundColor: COLORS.colar,
-    width: '100%',
+    width: "100%",
     fontSize: 24,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -116,7 +116,6 @@ export const menuViewStyles = StyleSheet.create({
     backgroundColor: COLORS.white,
     rowGap: 10,
     flexGrow: 1,
-
   },
   menuVariantRow: {
     flexDirection: "row",
@@ -124,7 +123,6 @@ export const menuViewStyles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     justifyContent: "flex-start",
-    
   },
   menuVariantRowTitle: {
     textAlign: "left",
@@ -181,10 +179,10 @@ export const cartViewStyles = StyleSheet.create({
     gap: 10,
   },
   cartPanelList: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: "center",
+    // justifyContent: "center",
     backgroundColor: "transparent",
-    height: '80%'
+    height: "80%",
   },
   cartPanelHeader: {
     flexDirection: "row",
@@ -235,7 +233,7 @@ export const cartViewStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     borderRadius: 15,
-    marginVertical: 10
+    marginVertical: 10,
     // paddingHorizontal: 20,
     // overflow: "hidden",
   },
@@ -311,13 +309,13 @@ export const cartViewStyles = StyleSheet.create({
   },
   cartMeal: {
     borderRadius: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     overflow: "hidden",
     shadowColor: COLORS.chestnut,
     elevation: 6,
     margin: 10,
     paddingHorizontal: 20,
-    padding: 10
+    padding: 10,
   },
   cartMealImage: {
     height: 80,
@@ -397,7 +395,7 @@ export const cartViewStyles = StyleSheet.create({
   cartMealAmountButton: {
     padding: 5,
     borderRadius: 100,
-    borderWidth: 1
+    borderWidth: 1,
   },
   cartMealAmountButtonIcon: {
     width: 12,
@@ -528,11 +526,10 @@ export const dinnerViewStyles = StyleSheet.create({
   },
 });
 
-
 export const authStyle = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.white, 
-    flex: 1
+    backgroundColor: COLORS.white,
+    flex: 1,
   },
   innerContainer: { paddingTop: 50, paddingHorizontal: 20 },
   appName: {
@@ -548,181 +545,181 @@ export const authStyle = StyleSheet.create({
   changeScreenButton: {
     color: COLORS.darkerColar,
     fontWeight: "bold",
-  }
+  },
 });
 
 export const paymentStyle = StyleSheet.create({
-		paymentRoot: {
-				flex: 1,
-				paddingVertical: "15%",
-				paddingHorizontal: 25,
-				flexDirection: 'column',
-				flexWrap: 'nowrap',
-				alignItems: 'stretch',
-				justifyContent: 'space-around',
-				backgroundColor: COLORS.magnolia,
-		},
-		paymentPanel: {
-				flex: 1,
-				padding: 25,
-				flexDirection: 'column',
-				flexWrap: 'nowrap',
-				alignItems: 'center',
-				justifyContent: 'center',
-		},
-		paymentHeader: {
-				flexDirection: 'column',
-				flexWrap: 'nowrap',
-				alignItems: 'stretch',
-				justifyContent: 'center',
-				gap: 30,
-				flexShrink: 1,
-		},
-		paymentHeaderText: {
-				fontSize: 20,
-				textAlign: 'left',
-				color: COLORS.colar,
-		},
-		paymentSpinner: {
-				color: COLORS.saffron,
-		},
-		paymentWalletInfoPanel: {
-				flex: 1,
-				flexDirection: 'column',
-				flexWrap: 'nowrap',
-				alignItems: 'center',
-				justifyContent: 'space-around',
-		},
-		paymentWalletInfoText: {
-				fontSize: 16,
-				textAlign: 'center',
-				color: COLORS.gunmetal,
-		},
-		paymentWalletInfoButton: {
-				color: COLORS.colar,
-		},
-		paymentTopUpInfoPanel: {
-				flex: 1,
-				flexDirection: 'column',
-				flexWrap: 'nowrap',
-				alignItems: 'center',
-				justifyContent: 'space-around',
-		},
-		paymentTopUpInfoText: {
-				fontSize: 16,
-				textAlign: 'center',
-				color: COLORS.gunmetal,
-		},
-		paymentTopUpInfoButton: {
-				color: COLORS.colar,
-		},
-		paymentWalletRoot: {
-				flex: 1,
-				flexDirection: 'column',
-				flexWrap: 'nowrap',
-				alignItems: 'stretch',
-				justifyContent: 'center',
-				gap: 25,
-		},
-		paymentWalletRow: {
-				flexDirection: "row",
-				flexWrap: 'nowrap',
-				alignItems: 'center',
-				justifyContent: 'space-around',
-		},
-		paymentWalletRowLabel: {
-				fontSize: 18,
-				textAlign: 'left',
-				color: COLORS.colar,
-				width: "45%",
-		},
-		paymentWalletRowInput: {
-				fontSize: 16,
-				textAlign: 'center',
-				color: COLORS.gunmetal,
-				flexGrow: 1,
-		},
-		paymentWalletAddressView: {
-				borderColor: COLORS.chestnut,
-				borderWidth: 2,
-				borderStyle: 'solid',
-				borderRadius: 15,
-				padding: 10,
-		},
-		paymentWalletAddresViewLabel: {
-				color: COLORS.gunmetal,
-				fontSize: 24,
-				textAlign: 'left',
-				marginBottom: 15,
-		},
-		paymentWalletButtonRow: {
-				width: "100%",
-				paddingHorizontal: 15,
-				flexDirection: 'row',
-				flexWrap: 'wrap',
-				alignItems: 'center',
-				justifyContent: 'space-evenly',
-				rowGap: 15,
-		},
-		paymentWalletButtonLabel: {
-				fontSize: 20,
-				textAlign: 'center',
-				color: COLORS.whiteColar,
-		},
-		paymentWalletButton: {
-				flexDirection: 'row',
-				flexWrap: 'nowrap',
-				alignItems: 'center',
-				justifyContent: 'center',
-				padding: 10,
-				backgroundColor: COLORS.colar,
-				borderRadius: 10,
-		},
-		paymentTopUpRoot: {
-				flex: 1,
-				backgroundColor: COLORS.magnolia,
-				flexDirection: "column",
-				flexWrap: 'nowrap',
-				justifyContent: 'center',
-				gap: 35,
-				alignItems: 'stretch',
-		},
-		paymentTopUpRow: {
-				flexDirection: 'row',
-				flexWrap: 'nowrap',
-				alignItems: 'center',
-				justifyContent: 'center',
-				gap: 15,
-		},
-		paymentTopUpText: {
-				fontSize: 18,
-				textAlign: 'left',
-				color: COLORS.colar,
-		},
-		paymentTopUpInput: {
-				flexGrow: 1,
-				fontSize: 16,
-				textAlign: 'center',
-				color: COLORS.gunmetal,
-				padding: 5,
-		},
-		paymentTopUpButton: {
-				color: COLORS.colar,
-		},
-		paymentCheckoutRoot: {
-				flex: 1,
-				flexDirection: 'column',
-				flexWrap: 'nowrap',
-				alignItems: 'stretch',
-				justifyContent: 'center',
-				gap: 25,
-		},
-		paymentCheckoutText: {
-				fontSize: 20,
-				textAlign: 'center',
-				color: COLORS.gunmetal,
-		},
-		paymentCheckoutButton: {
-				color: COLORS.colar
-		},
+  paymentRoot: {
+    flex: 1,
+    paddingVertical: "15%",
+    paddingHorizontal: 25,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "stretch",
+    justifyContent: "space-around",
+    backgroundColor: COLORS.magnolia,
+  },
+  paymentPanel: {
+    flex: 1,
+    padding: 25,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  paymentHeader: {
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "stretch",
+    justifyContent: "center",
+    gap: 30,
+    flexShrink: 1,
+  },
+  paymentHeaderText: {
+    fontSize: 20,
+    textAlign: "left",
+    color: COLORS.colar,
+  },
+  paymentSpinner: {
+    color: COLORS.saffron,
+  },
+  paymentWalletInfoPanel: {
+    flex: 1,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+  paymentWalletInfoText: {
+    fontSize: 16,
+    textAlign: "center",
+    color: COLORS.gunmetal,
+  },
+  paymentWalletInfoButton: {
+    color: COLORS.colar,
+  },
+  paymentTopUpInfoPanel: {
+    flex: 1,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+  paymentTopUpInfoText: {
+    fontSize: 16,
+    textAlign: "center",
+    color: COLORS.gunmetal,
+  },
+  paymentTopUpInfoButton: {
+    color: COLORS.colar,
+  },
+  paymentWalletRoot: {
+    flex: 1,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "stretch",
+    justifyContent: "center",
+    gap: 25,
+  },
+  paymentWalletRow: {
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+  paymentWalletRowLabel: {
+    fontSize: 18,
+    textAlign: "left",
+    color: COLORS.colar,
+    width: "45%",
+  },
+  paymentWalletRowInput: {
+    fontSize: 16,
+    textAlign: "center",
+    color: COLORS.gunmetal,
+    flexGrow: 1,
+  },
+  paymentWalletAddressView: {
+    borderColor: COLORS.chestnut,
+    borderWidth: 2,
+    borderStyle: "solid",
+    borderRadius: 15,
+    padding: 10,
+  },
+  paymentWalletAddresViewLabel: {
+    color: COLORS.gunmetal,
+    fontSize: 24,
+    textAlign: "left",
+    marginBottom: 15,
+  },
+  paymentWalletButtonRow: {
+    width: "100%",
+    paddingHorizontal: 15,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    rowGap: 15,
+  },
+  paymentWalletButtonLabel: {
+    fontSize: 20,
+    textAlign: "center",
+    color: COLORS.whiteColar,
+  },
+  paymentWalletButton: {
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+    backgroundColor: COLORS.colar,
+    borderRadius: 10,
+  },
+  paymentTopUpRoot: {
+    flex: 1,
+    backgroundColor: COLORS.magnolia,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    justifyContent: "center",
+    gap: 35,
+    alignItems: "stretch",
+  },
+  paymentTopUpRow: {
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 15,
+  },
+  paymentTopUpText: {
+    fontSize: 18,
+    textAlign: "left",
+    color: COLORS.colar,
+  },
+  paymentTopUpInput: {
+    flexGrow: 1,
+    fontSize: 16,
+    textAlign: "center",
+    color: COLORS.gunmetal,
+    padding: 5,
+  },
+  paymentTopUpButton: {
+    color: COLORS.colar,
+  },
+  paymentCheckoutRoot: {
+    flex: 1,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "stretch",
+    justifyContent: "center",
+    gap: 25,
+  },
+  paymentCheckoutText: {
+    fontSize: 20,
+    textAlign: "center",
+    color: COLORS.gunmetal,
+  },
+  paymentCheckoutButton: {
+    color: COLORS.colar,
+  },
 });

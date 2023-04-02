@@ -36,7 +36,7 @@ const loginStyle = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 16,
-  }
+  },
 });
 
 interface Errors {
@@ -67,7 +67,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
       handleError("To pole jest wymagane", "email");
       isValid = false;
     } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
-      handleError('Wprowadź poprawny adres email', 'email');
+      handleError("Wprowadź poprawny adres email", "email");
       isValid = false;
     }
 
@@ -124,7 +124,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
           <Input onChangeText={(text: string) => handleOnChange(text, "email")} onFocus={() => handleError(null, "email")} iconName="email-outline" label="Email" placeholder="Wprowadź adres email" errorMsg={errors.email} />
           <Input onChangeText={(text: any) => handleOnChange(text, "password")} onFocus={() => handleError(null, "password")} iconName="lock-outline" label="Hasło" placeholder="Wprowadź hasło" errorMsg={errors.password} password={true} />
           <View style={loginStyle.rememberMeContainer}>
-            <Pressable style={{...loginStyle.alignVertically, justifyContent: 'flex-start'}} onPress={() => setRememberMe(!rememberMe)}>
+            <Pressable style={{ ...loginStyle.alignVertically, justifyContent: "flex-start" }} onPress={() => setRememberMe(!rememberMe)}>
               <Checkbox value={rememberMe} onValueChange={setRememberMe} color={rememberMe ? COLORS.darkColar : undefined} />
               <Text style={{ marginLeft: 4 }}>Pamiętaj mnie</Text>
             </Pressable>
@@ -135,17 +135,9 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
             /> */}
           </View>
           <Button title="Zaloguj się" onPress={validate} />
-          <Text
-            onPress={() => navigation.navigate("RegistrationScreen")}
-            style={loginStyle.noAccountContainer}>
+          <Text onPress={() => navigation.navigate("RegistrationScreen")} style={loginStyle.noAccountContainer}>
             <View style={loginStyle.alignVertically}>
-              <PressableText
-                leftText={"Nie masz konta?"}
-                title={"Zarejstruj się"}
-                fontSize={16}
-                style={authStyle.changeScreenButton}
-                onPress={() => navigation.navigate("RegistrationScreen")}
-              />
+              <PressableText leftText={"Nie masz konta?"} title={"Zarejstruj się"} fontSize={16} style={authStyle.changeScreenButton} onPress={() => navigation.navigate("RegistrationScreen")} />
             </View>
           </Text>
         </View>

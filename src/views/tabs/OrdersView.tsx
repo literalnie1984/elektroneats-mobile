@@ -83,22 +83,22 @@ export const newOrder = StyleSheet.create({
     alignItems: "center",
   },
   orderContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     // borderColor: '#afc0ed',
     // borderWidth: 1,
     marginBottom: 24,
     padding: 10,
-    width: '90%',
+    width: "90%",
     borderRadius: 10,
     shadowColor: COLORS.chestnut,
     elevation: 6,
   },
   infoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   buttonContainer: {
-    marginHorizontal: 12
+    marginHorizontal: 12,
   },
   pairRow: {
     flexDirection: "column",
@@ -106,70 +106,67 @@ export const newOrder = StyleSheet.create({
     marginHorizontal: 12,
   },
   pairItem: {
-    marginVertical: 8
+    marginVertical: 8,
   },
   buttonText: {
     textAlign: "right",
     fontSize: 13,
-    color: '#525e70',
+    color: "#525e70",
     paddingTop: 10,
     paddingBottom: 2,
   },
   label: {
     // color: "#a3a3a3",
-    color: '#abb8c9',
-    textTransform: 'uppercase',
-    fontSize: 12
+    color: "#abb8c9",
+    textTransform: "uppercase",
+    fontSize: 12,
   },
   content: {
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });
 
 export const OrderInfo = () => {
-  return(
+  return (
     <View style={newOrder.infoContainer}>
-    <View style={newOrder.pairRow}>
-      <View style={newOrder.pairItem}>
-        <Text style={newOrder.label}>Nr zamówienia</Text>
-        <Text style={{...newOrder.content, fontSize: 18}}>0001</Text>
+      <View style={newOrder.pairRow}>
+        <View style={newOrder.pairItem}>
+          <Text style={newOrder.label}>Nr zamówienia</Text>
+          <Text style={{ ...newOrder.content, fontSize: 18 }}>0001</Text>
+        </View>
+        <View style={newOrder.pairItem}>
+          <Text style={newOrder.label}>Odbiorca</Text>
+          <Text style={newOrder.content}>Jan Kowalski</Text>
+        </View>
       </View>
-      <View style={newOrder.pairItem}>
-        <Text style={newOrder.label}>Odbiorca</Text>
-        <Text style={newOrder.content}>Jan Kowalski</Text>
+      <View style={newOrder.pairRow}>
+        <View style={newOrder.pairItem}>
+          <Text style={newOrder.label}>Status</Text>
+          <Text style={{ ...newOrder.content, fontWeight: "bold" }}>Zarejestrowane</Text>
+        </View>
+        <View style={newOrder.pairItem}>
+          <Text style={newOrder.label}>Data odbioru</Text>
+          <Text style={newOrder.content}>pon. | 03.04.23 | 11:15</Text>
+        </View>
       </View>
     </View>
-    <View style={newOrder.pairRow}>
-      <View style={newOrder.pairItem}>
-        <Text style={newOrder.label}>Status</Text>
-        <Text style={{...newOrder.content, fontWeight: "bold"}}>Zarejestrowane</Text>
-      </View>
-      <View style={newOrder.pairItem}>
-        <Text style={newOrder.label}>Data odbioru</Text>
-        <Text style={newOrder.content}>pon. | 03.04.23 | 11:15</Text>
-      </View>
-    </View>
-  </View>
-  )
-}
+  );
+};
 
 const NewOrder = (props: OrderProps) => {
   const navigation = useNavigation<RootStackParamList>();
 
   const showDetails = () => {
-    navigation.navigate('OrderDetailsView', {});
-  }
+    navigation.navigate("OrderDetailsView", {});
+  };
 
   return (
     <View style={newOrder.container}>
       <View style={newOrder.orderContainer}>
-          <TouchableOpacity onPress={() => showDetails()} activeOpacity={0.5}>
-        <OrderInfo />
-  
+        <TouchableOpacity onPress={() => showDetails()} activeOpacity={0.5}>
+          <OrderInfo />
         </TouchableOpacity>
-
       </View>
-
     </View>
   );
 };
@@ -195,14 +192,14 @@ const OrdersView = () => {
     },
   ];
 
-  const [data, setData] = useState('');
+  const [data, setData] = useState("");
   const accessToken = useRecoilValue(userTokenSelector);
 
   const getData = () => {
-    console.log(accessToken)
-    if(!accessToken) return setData('no token');
+    console.log(accessToken);
+    if (!accessToken) return setData("no token");
     getPendingUserOrders(accessToken, (res) => {
-      let error = '';
+      let error = "";
       switch (res.status) {
         case 400:
           error = "Rejestracja nie powiodło się";
@@ -227,7 +224,6 @@ const OrdersView = () => {
 
   return (
     <View style={orderViewStyles.container}>
-
       {/* <Text>Pending: {data}</Text> */}
       {/* <Button title={"get data"} onPress={() => getData()}/> */}
 

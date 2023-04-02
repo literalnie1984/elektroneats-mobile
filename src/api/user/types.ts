@@ -21,3 +21,7 @@ export interface UserTokens {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface ErrorRes {
+  error: string;
+}

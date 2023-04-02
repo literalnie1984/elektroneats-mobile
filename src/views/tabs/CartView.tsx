@@ -1,69 +1,68 @@
 import { View, Text, Pressable, Alert, Image, ToastAndroid } from "react-native";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { cartViewStyles, paymentViewStyle } from "../../styles";
+import { cartViewStyles } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronUp, faChevronDown, faFaceMeh, faPlus, faMinus, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FlashList } from "@shopify/flash-list";
-import Animated, { acc, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { DateTimePickerAndroid, DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { CartItem, CartItemProps, CartItemType, CartPanelProps, CartSummaryProps } from "../../types/index";
 import { getDayOfWeekMnemonic } from "../../api/utils";
-import { calculateTotalCost, cartItemsAtom, convertCartItemsForApi, getPriceAsNumber } from "../utils/cart";
+import { calculateTotalCost, cartItemsAtom, convertCartItemsForApi } from "../utils/cart";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { createOrders, getBalance, getClientData } from "../../api";
+import { getBalance, getClientData } from "../../api";
 import { userTokenSelector } from "../utils/user";
 import { menuSelector } from "../utils/menu";
 import { orderContent } from "../stack/OrderDetailsView";
-import { newOrder, orderViewStyles } from "./OrdersView";
-import { COLORS } from "../colors";
-import PaymentView from "../../components/PaymentView";
-import {balanceAtom, walletAtom} from "../utils/wallet";
-import {OrderBody} from "../../api/orders/types";
+import { orderViewStyles } from "./OrdersView";
+import { balanceAtom, walletAtom } from "../utils/wallet";
+import { OrderBody } from "../../api/orders/types";
 
 const ANIMATION_DURATION = 300;
 const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
 
 const CartItemView = ({ index, item, handleAmountUpdate }: CartItemProps) => {
   const { data, type, cost, amount } = item;
-  if(type === CartItemType.Item) return <View>TODO</View>;
-  
+  if (type === CartItemType.Item) return <View>TODO</View>;
+
   const mealEditHandler = () => {
     console.log("bruh");
-  }
+  };
 
-  return(
+  return (
     <View style={cartViewStyles.cartMeal}>
       <View style={cartViewStyles.cartMealInfoBar}>
         <View style={cartViewStyles.cartMealImageContainer}>
-          <Image style={{width: 48, height: 48 }} source={{ uri: placeholderUri }} />
+          <Image style={{ width: 48, height: 48 }} source={{ uri: placeholderUri }} />
         </View>
         <Text style={orderContent.orderName}>Obiad</Text>
-        <Text style={orderContent.orderPrice}>{amount} x {cost.toFixed(2)} zł</Text>
+        <Text style={orderContent.orderPrice}>
+          {amount} x {cost.toFixed(2)} zł
+        </Text>
         <Text style={orderContent.orderPrice}>{Number(cost * amount).toFixed(2)}zł</Text>
       </View>
       <View style={cartViewStyles.cartMealActionsBar}>
-          <Pressable style={cartViewStyles.cartMealManageButton} onPress={() => mealEditHandler()} hitSlop={10}>
-            <FontAwesomeIcon icon={faGear} color={cartViewStyles.cartMealManageButtonIcon.color} size={cartViewStyles.cartMealManageButtonIcon.width} />
+        <Pressable style={cartViewStyles.cartMealManageButton} onPress={() => mealEditHandler()} hitSlop={10}>
+          <FontAwesomeIcon icon={faGear} color={cartViewStyles.cartMealManageButtonIcon.color} size={cartViewStyles.cartMealManageButtonIcon.width} />
+        </Pressable>
+        <View style={cartViewStyles.cartMealAmountOptions}>
+          <Pressable style={{ ...cartViewStyles.cartMealAmountButton, borderColor: "green" }} onPress={() => handleAmountUpdate(index, +1)} hitSlop={10}>
+            <FontAwesomeIcon icon={faPlus} color={"green"} size={cartViewStyles.cartMealAmountButtonIcon.width} />
           </Pressable>
-          <View style={cartViewStyles.cartMealAmountOptions}>
-            <Pressable style={{ ...cartViewStyles.cartMealAmountButton, borderColor: 'green' }} onPress={() => handleAmountUpdate(index, +1)} hitSlop={10}>
-              <FontAwesomeIcon icon={faPlus} color={'green'} size={cartViewStyles.cartMealAmountButtonIcon.width} />
-            </Pressable>
-            <Pressable style={{ ...cartViewStyles.cartMealAmountButton, borderColor: '#871010' }} onPress={() => handleAmountUpdate(index, -1)} hitSlop={10}>
-              <FontAwesomeIcon icon={faMinus} color={'#871010'} size={cartViewStyles.cartMealAmountButtonIcon.width} />
-            </Pressable>
-          </View>
+          <Pressable style={{ ...cartViewStyles.cartMealAmountButton, borderColor: "#871010" }} onPress={() => handleAmountUpdate(index, -1)} hitSlop={10}>
+            <FontAwesomeIcon icon={faMinus} color={"#871010"} size={cartViewStyles.cartMealAmountButtonIcon.width} />
+          </Pressable>
+        </View>
       </View>
     </View>
   );
 };
 
 const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded, usePayment }: CartSummaryProps) => {
-
   const [cost, setCost] = useState<number | null>(summarizeCost(cartItems));
   const accessToken = useRecoilValue(userTokenSelector);
-  const [ wallet, setWallet ] = useRecoilState(walletAtom)
-  const [ balance, setBalance ] = useRecoilState(balanceAtom);
+  const [wallet, setWallet] = useRecoilState(walletAtom);
+  const [balance, setBalance] = useRecoilState(balanceAtom);
   const menu = useRecoilValue(menuSelector);
 
   useEffect(() => {
@@ -82,30 +81,34 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
   }, [isExpanded]);
 
   const handleOrdering = async () => {
-
-    // if(!cartPickupDate) return ToastAndroid.show('You must select pickup date before doing that!', ToastAndroid.SHORT);
+    if (!cartPickupDate) return ToastAndroid.show("You must select pickup date before doing that!", ToastAndroid.SHORT);
     if (!menu) return console.log("no menu");
 
     const body = convertCartItemsForApi(menu, cartItems, cartPickupDate);
-	const totalCost = cartItems.reduce( ( acc = 0, item ) => {
-		if( item.type === CartItemType.Dinner ){
-				return acc + (calculateTotalCost( item.data.selection, menu[item.data.weekday] ) * item.amount);
-		}
-    }, 0 );
+    const totalCost = cartItems.reduce((acc = 0, item) => {
+      if (item.type === CartItemType.Dinner) {
+        return acc + calculateTotalCost(item.data.selection, menu[item.data.weekday]) * item.amount;
+      }
+    }, 0);
 
-    if(!body) return console.log('convertion went wrong');
-   
-	await getClientData( accessToken, ( res ) => {
-		console.log(res.status);
-		console.log(res?.err ? res?.err.status : 'pass');
-    } )
-	.then( (value) => setWallet( value )  )
-    .then( () => getBalance( accessToken, ( res ) => {
-		console.log(res.status);
-		console.log(res?.err ? res?.err.status : 'pass');
-    } ) )
-	.then( (value) => setBalance( value !== null ? value / 100 : value ) )
-    .then( () => usePayment( body, totalCost, cartPickupDate ) );
+    if (!totalCost) return console.log("ddd");
+
+    if (!body) return console.log("convertion went wrong");
+    if (!accessToken) return console.log("no token");
+
+    await getClientData(accessToken, (res) => {
+      console.log(res.status);
+      // console.log(res?.err ? res?.err.status : 'pass');
+    })
+      .then((value) => setWallet(value))
+      .then(() =>
+        getBalance(accessToken, (res) => {
+          console.log(res.status);
+          // console.log(res?.err ? res?.err.status : 'pass');
+        })
+      )
+      .then((value) => setBalance(value !== null ? value / 100 : value))
+      .then(() => usePayment(body, totalCost, cartPickupDate));
 
     /*let error = '';
     const hasSucceed = await createOrders(body, accessToken, (res) => {
@@ -211,23 +214,22 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
 const CartPanelListItemSeparator = () => <View style={{ height: 20 }} />;
 
 const CartPanel = ({ cartItems, handleAmountUpdate }: CartPanelProps) => {
-  
   return (
     <>
-    <Text style={orderViewStyles.title}>Zawartość koszyka</Text>
-    <View style={cartViewStyles.cartPanel}>
-      <FlashList
-        contentContainerStyle={cartViewStyles.cartPanelList}
-        data={cartItems}
-        renderItem={({ item, index }: { item: CartItem; index: number }) => {
-          return <CartItemView index={index} item={item} handleAmountUpdate={handleAmountUpdate} />;
-        }}
-        estimatedItemSize={150}
-        keyExtractor={(_, index) => String(index)}
-        ItemSeparatorComponent={CartPanelListItemSeparator}
-        drawDistance={15}
-      />
-    </View>
+      <Text style={orderViewStyles.title}>Zawartość koszyka</Text>
+      <View style={cartViewStyles.cartPanel}>
+        <FlashList
+          contentContainerStyle={cartViewStyles.cartPanelList}
+          data={cartItems}
+          renderItem={({ item, index }: { item: CartItem; index: number }) => {
+            return <CartItemView index={index} item={item} handleAmountUpdate={handleAmountUpdate} />;
+          }}
+          estimatedItemSize={150}
+          keyExtractor={(_, index) => String(index)}
+          ItemSeparatorComponent={CartPanelListItemSeparator}
+          drawDistance={15}
+        />
+      </View>
     </>
   );
 };
@@ -317,12 +319,12 @@ const verifyPickupDates = (data: CartItem[], newDate: Date) => {
   }
 };
 
-const CartScreen = ({ navigation }) => {
+const CartScreen = ({ navigation }: any) => {
   const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
   const [date, setDate] = useState<Date | null>(null);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [cartOrder, setCartOrder] = useState<{ order: cartItem[]; pickupDate: Date } | null>(null);
+  const [cartOrder, setCartOrder] = useState<{ order: CartItem[]; pickupDate: Date } | null>(null);
 
   const updateItemAmount = (index: number, amountUpdate: number) => {
     const cartList = JSON.parse(JSON.stringify(cartItems));
@@ -373,27 +375,23 @@ const CartScreen = ({ navigation }) => {
 
   return (
     <View style={cartViewStyles.root}>
-      {cartItems?.length !== 0 ?       
-      <>
-        <CartPanel 
-          cartItems={cartItems} 
-          handleAmountUpdate={updateItemAmount} 
-        />
-        <CartSummary 
-          cartItems={cartItems} 
-          setCartItems={setCartItems} 
-          cartPickupDate={date}
-
-          handlePickupDateUpdate={() => showDatePicker(date, setDate, cartItems)} 
-          handleCartClearingRequest={clearCart}
-
-          isExpanded={isSummaryExpanded} 
-          setIsExpanded={setIsSummaryExpanded}
-		  usePayment={( orderBody: OrderBody, orderValue: number, pickupDate: Date ) => navigation.navigate("PaymentView", { orderBody, orderValue, pickupDate }) }
-        /> 
-      </>
-      : <CartPanelBlank />
-    }
+      {cartItems?.length !== 0 ? (
+        <>
+          <CartPanel cartItems={cartItems} handleAmountUpdate={updateItemAmount} />
+          <CartSummary
+            cartItems={cartItems}
+            setCartItems={setCartItems}
+            cartPickupDate={date}
+            handlePickupDateUpdate={() => showDatePicker(date, setDate, cartItems)}
+            handleCartClearingRequest={clearCart}
+            isExpanded={isSummaryExpanded}
+            setIsExpanded={setIsSummaryExpanded}
+            usePayment={(orderBody: OrderBody, orderValue: number, pickupDate: Date) => navigation.navigate("PaymentView", { orderBody, orderValue, pickupDate })}
+          />
+        </>
+      ) : (
+        <CartPanelBlank />
+      )}
     </View>
   );
 };

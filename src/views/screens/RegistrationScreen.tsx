@@ -92,13 +92,7 @@ const RegistrationScreen = ({ navigation }: RegistrationScreenProps) => {
           <Input onChangeText={(text: string) => handleOnChange(text, "username")} onFocus={() => handleError(null, "username")} iconName="account-outline" label="Imię i nazwisko" placeholder="Wprowadź imię i nazwisko" errorMsg={errors.username} />
           <Input onChangeText={(text: string) => handleOnChange(text, "password")} onFocus={() => handleError(null, "password")} iconName="lock-outline" label="Hasło" placeholder="Wprowadź hasło" errorMsg={errors.password} password={true} />
           <Button title="Zarejestruj się" style={{ marginTop: 40 }} onPress={validate} />
-          <PressableText
-            leftText={"Masz już konto?"}
-            title={"Zaloguj się"}
-            fontSize={16}
-            style={authStyle.changeScreenButton}
-            onPress={() => navigation.navigate("LoginScreen")}
-          />
+          <PressableText leftText={"Masz już konto?"} title={"Zaloguj się"} fontSize={16} style={authStyle.changeScreenButton} onPress={() => navigation.navigate("LoginScreen")} />
         </View>
       </ScrollView>
     </View>

@@ -3,10 +3,8 @@ import { View, Text } from "react-native";
 import { useEffect, useState } from "react";
 import { miscellaneousViewStyle } from "../../../styles/OptionViewsStyles";
 import OptionSwitch from "../../../components/OptionSwitch";
-import { Setting, Settings, SettingsSection, SettingsSections } from "../../../types/OptionViewsTypes";
+import { Settings } from "../../../types/OptionViewsTypes";
 import { setupSections } from "../../utils/options";
-import OptionCheckboxList from "../../../components/OptionCheckboxList";
-import { CheckboxData } from "../../../types/OptionComponentsTypes";
 
 const defSettings: Settings = [
   {
@@ -23,7 +21,7 @@ const defSettings: Settings = [
   },
 ];
 
-const MiscellaneousOptionsView = ({ navigation }) => {
+const MiscellaneousOptionsView = ({ navigation }: any) => {
   const [settings, setSettings] = useState(defSettings);
 
   let sections_data = setupSections(settings);

@@ -11,11 +11,11 @@ const buttonStyle = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  buttonText: { 
-    color: COLORS.white, 
-    fontWeight: "bold", 
-    fontSize: 18 
-  }
+  buttonText: {
+    color: COLORS.white,
+    fontWeight: "bold",
+    fontSize: 18,
+  },
 });
 
 interface ButtonProps {
@@ -26,11 +26,7 @@ interface ButtonProps {
 
 const Button = ({ title, onPress, style }: ButtonProps) => {
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      activeOpacity={0.7}
-      style={{ ...buttonStyle.buttonContainer, ...style }}
-    >
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={{ ...buttonStyle.buttonContainer, ...style }}>
       <Text style={buttonStyle.buttonText}>{title}</Text>
     </TouchableOpacity>
   );

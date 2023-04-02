@@ -8,7 +8,7 @@ export const COLORS = {
   colar: "#247fff",
   lighterColar: "#5da2e8",
   whiteColar: "#f2f7fc",
-  whiterColar: '#fafcff',
+  whiterColar: "#fafcff",
   darkColar: "#7494b0",
   darkerColar: "#66a4d4",
 

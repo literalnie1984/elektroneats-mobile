@@ -11,7 +11,7 @@ export enum FetchedMealType {
 }
 
 export interface FetchedMeal extends FetchedDinnerItem {
-  weekDay: number;
+  week_day: number;
   maxSupply: number;
   type: FetchedMealType;
 }
@@ -39,7 +39,7 @@ export interface DinnerItem {
 }
 
 export interface DailyMenu {
-  weekDay: number;
+  week_day: number;
   main: DinnerItem[];
   soup: DinnerItem;
   extras: {

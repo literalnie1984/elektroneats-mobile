@@ -18,7 +18,7 @@ const getBalance = async (token: JWT, error?: ErrorFunction): Promise<number | n
   return wallet !== null ? wallet.balance : null;
 };
 
-const addBalance = async ( token: JWT, amount: number, error?: ErrorFunction ): Promise<any> => {
+const addBalance = async (token: JWT, amount: number, error?: ErrorFunction): Promise<any> => {
   return await fetchForJSON({ path: `payment/add-balance/${amount}`, method: "POST", token, error });
 };
 

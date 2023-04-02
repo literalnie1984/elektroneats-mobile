@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import { lookAndFeelStyle } from "../../../styles/OptionViewsStyles";
 
-const LookAndFeelView = ({ navigation }) => {
+const LookAndFeelView = ({ navigation }: any) => {
   return (
     <View style={lookAndFeelStyle.root}>
       <Text>Look And Feel Settings</Text>

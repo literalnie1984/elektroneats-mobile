@@ -13,9 +13,9 @@ const emailStyle = StyleSheet.create({
   inputStyle: {
     fontSize: 18,
   },
-  buttonStyle: { 
-    marginTop: 40
-  }
+  buttonStyle: {
+    marginTop: 40,
+  },
 });
 
 const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) => {

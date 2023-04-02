@@ -31,7 +31,7 @@ interface InputProps {
 const Input = ({ label, iconName, errorMsg, password, onFocus, style, ...props }: InputProps) => {
   const [hidePassword, setHidePassword] = useState(password);
   const [isFocused, setIsFocused] = useState(false);
-  
+
   return (
     <View style={{ marginTop: 20 }}>
       <Text style={styles.label}>{label}</Text>

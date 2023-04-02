@@ -66,10 +66,10 @@ const MenuVariant = (props: MenuVariantProps) => {
 const MenuItem = (props: MenuItemProps) => {
   return (
     <View style={menuViewStyles.menuItem}>
-        {/* <View style={menuViewStyles.menuItemBar}> */}
-          <Text style={menuViewStyles.menuItemBarDate}>{props.dateSignature}</Text>
-        {/* </View> */}
-        <MenuItemContainer dailyMenu={props.dailyMenu} isFolded={false} containerHeight={props.containerHeight} switchHeight={props.switchHeight} contentHeight={props.containerHeight - props.switchHeight} actionButtonHeight={40} />
+      {/* <View style={menuViewStyles.menuItemBar}> */}
+      <Text style={menuViewStyles.menuItemBarDate}>{props.dateSignature}</Text>
+      {/* </View> */}
+      <MenuItemContainer dailyMenu={props.dailyMenu} isFolded={false} containerHeight={props.containerHeight} switchHeight={props.switchHeight} contentHeight={props.containerHeight - props.switchHeight} actionButtonHeight={40} />
     </View>
   );
 };
@@ -146,7 +146,8 @@ const MenuView = () => {
         <FlashList
           data={menu}
           renderItem={({ item }) => {
-            return <MenuItem dateSignature={getDayOfWeekMnemonic(item.weekDay)!} dailyMenu={item} containerHeight={300} switchHeight={32} />;
+            console.log(item)
+            return <MenuItem dateSignature={getDayOfWeekMnemonic(item.week_day)!} dailyMenu={item} containerHeight={300} switchHeight={32} />;
           }}
           estimatedItemSize={200}
           keyExtractor={(_, index) => index.toString()}

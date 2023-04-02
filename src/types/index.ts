@@ -3,7 +3,7 @@ import { AnimatableValue, AnimatedStyleProp } from "react-native-reanimated";
 import { SetStateAction, Dispatch } from "react";
 import { DailyMenu, DinnerItem } from "../api/menu/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import {OrderBody, CreateOrdersBody} from "../api/orders/types";
+import { OrderBody, CreateOrdersBody } from "../api/orders/types";
 
 export type RootStackParamList = {
   [key: string]: any;
@@ -116,10 +116,10 @@ export enum CartItemType {
 }
 
 export interface CartItemBase {
-    type: CartItemType;
-    cost: number;
-    amount: number;
-    data: object;
+  type: CartItemType;
+  cost: number;
+  amount: number;
+  data: object;
 }
 
 export interface CartItemDinnerObject {
@@ -146,7 +146,7 @@ export interface CartItemProps {
 }
 
 export interface CartPanelProps {
-  cartItems: CartItem[]; 
+  cartItems: CartItem[];
   handleAmountUpdate: (index: number, amountUpdate: number) => void;
 }
 
@@ -158,7 +158,7 @@ export interface CartSummaryProps {
   handleCartClearingRequest: () => void;
   isExpanded: boolean;
   setIsExpanded: Dispatch<SetStateAction<boolean>>;
-  usePayment: ( orderBody: CreateOrdersBody, orderValue: number, pickupDate: Date ) => void;
+  usePayment: Function;
 }
 
 export type EmailConfirmationScreenProps = NativeStackScreenProps<RootStackParamList, "EmailConfirmationScreen">;
@@ -174,23 +174,23 @@ export interface UserDecodedData {
 }
 
 export interface WalletFormViewProps {
-		isDisplayed: boolean,
-		setIsLoading: Dispatch<SetStateAction<boolean>>,
-		unDisplay: () => void,
+  isDisplayed: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  unDisplay: () => void;
 }
 
 export interface WalletTopUpViewProps {
-		isDisplayed: boolean,
-		setIsLoading: Dispatch<SetStateAction<boolean>>,
-		unDisplay: () => void,
-		balanceDiff: number,
-		isLoading: boolean,
+  isDisplayed: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  unDisplay: () => void;
+  balanceDiff: number;
+  isLoading: boolean;
 }
 
 export interface WalletCheckoutProps {
-		isDisplayed: boolean,
-		setIsLoading: Dispatch<SetStateAction<boolean>>,
-		unDisplay: () => void,
-		body: OrderBody,
-		orderValue: number,
+  isDisplayed: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  unDisplay: () => void;
+  body: OrderBody;
+  orderValue: number;
 }

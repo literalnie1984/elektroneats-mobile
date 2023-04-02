@@ -63,7 +63,7 @@ const MainView = () => {
       <Stack.Screen name="TabsView" component={TabsView} options={{ headerShown: false }} />
       <Stack.Screen name="Account" component={AccountView} />
       <Stack.Screen name="DinnerView" component={DinnerView} />
-      <Stack.Screen name="OrderDetailsView" component={OrderDetailsView} options={{ title: "Szczegóły zamówienia"}} />
+      <Stack.Screen name="OrderDetailsView" component={OrderDetailsView} options={{ title: "Szczegóły zamówienia" }} />
       <Stack.Group>
         <Stack.Screen name="Look and Feel" component={OptionsViews.LookAndFeelView} />
         <Stack.Screen name="Payment Settings" component={OptionsViews.PaymentSettingsView} />
@@ -71,7 +71,7 @@ const MainView = () => {
         <Stack.Screen name="Biometrics and Security" component={OptionsViews.SecurityOptionsView} />
         <Stack.Screen name="Informations" component={OptionsViews.InformationsView} />
       </Stack.Group>
-	  <Stack.Screen name="PaymentView" component={PaymentView} />
+      <Stack.Screen name="PaymentView" component={PaymentView} />
     </Stack.Navigator>
   );
 };

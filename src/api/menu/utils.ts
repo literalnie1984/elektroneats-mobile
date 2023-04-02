@@ -10,7 +10,7 @@ const reduceProps = (obj: FetchedDinnerItem): DinnerItem => {
 };
 
 export const parseFetchedDinners = (data: FetchedDinner[]): DailyMenu => {
-  const weekDay: number = data[0].dinner.weekDay;
+  const week_day: number = data[0].dinner.week_day;
 
   const main: DinnerItem[] = [];
   let soup: DinnerItem | null = null;
@@ -58,6 +58,6 @@ export const parseFetchedDinners = (data: FetchedDinner[]): DailyMenu => {
       salads,
       beverages,
     },
-    weekDay,
+    week_day,
   };
 };
