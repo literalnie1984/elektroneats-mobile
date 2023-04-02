@@ -50,6 +50,28 @@ export async function fetchForText({ path, method, token, body, error }: FetchPa
   }
 }
 
+export async function fetchForNumber({ path, method, token, body, error }: FetchParams): Promise<number | null> {
+  try {
+    const url = formatURL(path);
+    console.log(`${method}: ${url}`);
+    const res = await fetch(url, {
+      method: method ?? "GET",
+      headers: {
+        ...headers,
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    });
+    if (res.status !== 200) throw res;
+
+    const data = Number(await res.text());
+    return data;
+  } catch (err) {
+    error?.(err as Response);
+    return null;
+  }
+}
+
 export async function fetchForSuccess({ path, method, token, body, error }: FetchParams): Promise<boolean> {
   try {
     const url = formatURL(path);

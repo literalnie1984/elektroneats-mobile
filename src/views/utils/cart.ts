@@ -94,15 +94,15 @@ const getId = (item?: DinnerItem): number | null => {
 };
 
 export const calculateTotalCost = (selection: DinnerViewSelection, dailyMenu: DailyMenu) => {
-    const findIndex = (sectionId: number, index: number) => {
-        return selection.find(i => i[0] === sectionId && i[1] === index)?.[2] ?? -1
-    }
+  const findIndex = (sectionId: number, index: number) => {
+    return selection.find((i) => i[0] === sectionId && i[1] === index)?.[2] ?? -1;
+  };
 
-    const mainDishPrice = getPriceAsNumber(dailyMenu.main[findIndex(0, 0)]);
-    const fillerPrice = getPriceAsNumber(dailyMenu.extras.fillers[findIndex(1, 0)]);
-    const saladPrice = getPriceAsNumber(dailyMenu.extras.salads[findIndex(1, 1)]);
-    const beveragePrice = getPriceAsNumber(dailyMenu.extras.beverages[findIndex(1, 2)]);
-    const soupPrice = findIndex(2, 0) !== -1 ? getPriceAsNumber(dailyMenu.soup) : 0;
+  const mainDishPrice = getPriceAsNumber(dailyMenu.main[findIndex(0, 0)]);
+  const fillerPrice = getPriceAsNumber(dailyMenu.extras.fillers[findIndex(1, 0)]);
+  const saladPrice = getPriceAsNumber(dailyMenu.extras.salads[findIndex(1, 1)]);
+  const beveragePrice = getPriceAsNumber(dailyMenu.extras.beverages[findIndex(1, 2)]);
+  const soupPrice = findIndex(2, 0) !== -1 ? getPriceAsNumber(dailyMenu.soup) : 0;
 
     return (mainDishPrice + fillerPrice + saladPrice + beveragePrice + soupPrice);
 };

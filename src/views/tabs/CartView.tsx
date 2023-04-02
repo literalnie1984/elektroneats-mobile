@@ -1,22 +1,26 @@
 import { View, Text, Pressable, Alert, Image, ToastAndroid } from "react-native";
-import { useState, useEffect } from "react";
-import { cartViewStyles } from "../../styles";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { cartViewStyles, paymentViewStyle } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronUp, faChevronDown, faFaceMeh, faPlus, faMinus, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FlashList } from "@shopify/flash-list";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { acc, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { DateTimePickerAndroid, DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { CartItem, CartItemProps, CartItemType, CartPanelProps, CartSummaryProps } from "../../types/index";
-import { cartItemsAtom, convertCartItemsForApi, parseDateToString, showDatePicker, summarizeCost } from "../utils/cart";
+import { getDayOfWeekMnemonic } from "../../api/utils";
+import { calculateTotalCost, cartItemsAtom, convertCartItemsForApi, getPriceAsNumber } from "../utils/cart";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { createOrders } from "../../api";
+import { createOrders, getBalance, getClientData } from "../../api";
 import { userTokenSelector } from "../utils/user";
 import { menuSelector } from "../utils/menu";
 import { orderContent } from "../stack/OrderDetailsView";
 import { newOrder, orderViewStyles } from "./OrdersView";
 import { COLORS } from "../colors";
+import PaymentView from "../../components/PaymentView";
+import {balanceAtom, walletAtom} from "../utils/wallet";
 
 const ANIMATION_DURATION = 300;
-const placeholderUri = "https://images.immediate.co.uk/production/volatile/sites/30/2022/03/Speedy-stroganoff-pasta-dbb29a0.jpg?quality=90&resize=556,505";
+const placeholderImage = "https://i.imgur.com/ejtUaJJ.png";
 
 const CartItemView = ({ index, item, handleAmountUpdate }: CartItemProps) => {
   const { data, type, cost, amount } = item;
@@ -53,8 +57,16 @@ const CartItemView = ({ index, item, handleAmountUpdate }: CartItemProps) => {
   );
 };
 
-const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded }: CartSummaryProps) => {
+const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded, usePayment }: CartSummaryProps) => {
+  const FOLDED_HEIGHT = 40;
+  const EXPANDED_HEIGHT = 225;
+
+  const containerHeight = useSharedValue(EXPANDED_HEIGHT);
+  const elementsHeight = useSharedValue(100);
+  const [cost, setCost] = useState<number | null>(summarizeCost(cartItems));
   const accessToken = useRecoilValue(userTokenSelector);
+  const [ wallet, setWallet ] = useRecoilState(walletAtom)
+  const [ balance, setBalance ] = useRecoilState(balanceAtom);
   const menu = useRecoilValue(menuSelector);
 
   const [cost, setCost] = useState(summarizeCost(cartItems));
@@ -74,15 +86,32 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
   }, [isExpanded]);
 
   const handleOrdering = async () => {
-    if(!cartPickupDate) return ToastAndroid.show('You must select pickup date before doing that!', ToastAndroid.SHORT);
-    if(!menu) return console.log('no menu');
+
+    // if(!cartPickupDate) return ToastAndroid.show('You must select pickup date before doing that!', ToastAndroid.SHORT);
+    if (!menu) return console.log("no menu");
 
     const body = convertCartItemsForApi(menu, cartItems, cartPickupDate);
-    if(!body) return console.log('convertion went wrong');
-    
-    if(!accessToken) return console.log('no token');
+	const totalCost = cartItems.reduce( ( acc = 0, item ) => {
+		if( item.type === CartItemType.Dinner ){
+				return acc + (calculateTotalCost( item.data.selection, menu[item.data.weekday] ) * item.amount);
+		}
+    }, 0 );
 
-    let error = '';
+    if(!body) return console.log('convertion went wrong');
+   
+	await getClientData( accessToken, ( res ) => {
+		console.log(res.status);
+		console.log(res?.err ? res?.err.status : 'pass');
+    } )
+	.then( (value) => setWallet( value )  )
+    .then( () => getBalance( accessToken, ( res ) => {
+		console.log(res.status);
+		console.log(res?.err ? res?.err.status : 'pass');
+    } ) )
+	.then( (value) => setBalance( value !== null ? value / 100 : value ) )
+    .then( () => usePayment({ orderBody: body, orderValue: totalCost, pickupDate: cartPickupDate }) );
+
+    /*let error = '';
     const hasSucceed = await createOrders(body, accessToken, (res) => {
       console.log(res.status);
 
@@ -101,11 +130,12 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
       ToastAndroid.show(error, ToastAndroid.SHORT);
     });
 
-    if(hasSucceed) {
+    if (hasSucceed) {
       setCartItems([]);
+      
       ToastAndroid.show("Order has been added", ToastAndroid.SHORT);
-    }
-  }
+    }*/
+  };
 
   const containerAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -216,10 +246,87 @@ const CartPanelBlank = () => {
   );
 };
 
-const CartView = () => {
-  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
+const showDatePicker = (currentDate: Date | null, setDate: Dispatch<SetStateAction<Date | null>>, cartItems: CartItem[]) => {
+  DateTimePickerAndroid.open({
+    value: currentDate || new Date(),
+    mode: "date",
+    is24Hour: true,
+    onChange: (event: DateTimePickerEvent, date?: Date | undefined) => {
+      if (event.type === "set") {
+        if (date) {
+          if (date.getDay() === 0) {
+            Alert.alert("Date error", "Date exceeds range Monday - Saturday", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
+            return;
+          }
+          if (!verifyPickupDates(cartItems, date)) {
+            Alert.alert("Date error", "You cannot select this date: week days mismatch", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
+            return;
+          }
+          DateTimePickerAndroid.open({
+            mode: "time",
+            value: date,
+            is24Hour: true,
+            onChange: (event: DateTimePickerEvent, time?: Date | undefined) => {
+              if (event.type === "set") {
+                if (time) setDate(time);
+              } else {
+                Alert.alert("Date error", "Time picking dismissed", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
+                return;
+              }
+            },
+          });
+        }
+      } else {
+        Alert.alert("Date error", "Date picking dismissed", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
+        return;
+      }
+    },
+  });
+  return;
+};
+
+export const parseDateToString = (date: Date) => {
+  let date_string = "";
+  date_string += `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth()).padStart(2, "0")}.${date.getFullYear()} `;
+  date_string += `(${getDayOfWeekMnemonic(date.getDay() - 1)}) - `;
+  date_string += `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+
+  return date_string;
+};
+
+export const summarizeCost = (data: CartItem[]) => {
+  if (data.length === 0) return null;
+
+  let cost = 0;
+  data.map((item) => {
+    if (!item) return;
+    cost += item.cost * item.amount;
+  });
+
+  return cost || null;
+};
+
+const verifyPickupDates = (data: CartItem[], newDate: Date) => {
+  try {
+    data.map((item) => {
+      if (item.type === CartItemType.Dinner) {
+        if (newDate.getDay() !== item.data.weekday + 1) {
+          throw new Error("Week days mismatched");
+        }
+      }
+    });
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const CartView = ({ navigation }) => {
   const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
   const [date, setDate] = useState<Date | null>(null);
+  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [cartOrder, setCartOrder] = useState<{ order: cartItem[]; pickupDate: Date } | null>(null);
 
   const updateItemAmount = (index: number, amountUpdate: number) => {
     const cartList = JSON.parse(JSON.stringify(cartItems));
@@ -290,9 +397,6 @@ const CartView = () => {
       </>
       : <CartPanelBlank />
     }
-
     </View>
   );
 };
-
-export default CartView;
