@@ -1,13 +1,13 @@
-import { fetchForJSON, fetchForText, fetchForSuccess } from "../fetch";
+import { fetchForJSON, fetchForSuccess } from "../fetch";
 import { ErrorFunction, JWT } from "../types";
-import { ChangePasswordBody, FetchedUserData, UserLoginBody, UserRegisterBody } from "./types";
+import { ChangePasswordBody, FetchedUserData, UserLoginBody, UserRegisterBody, UserTokens } from "./types";
 
 const registerUser = async (body: UserRegisterBody, error?: ErrorFunction): Promise<boolean> => (
     fetchForSuccess({ path: `user/register`, method: "POST", body, error })
 );
 
-const loginUser = async (body: UserLoginBody, error?: ErrorFunction): Promise<string | null> => (
-    fetchForText({ path: `user/login`, method: "POST", body, error })
+const loginUser = async (body: UserLoginBody, error?: ErrorFunction): Promise<UserTokens | null> => (
+    fetchForJSON({ path: `user/login`, method: "POST", body, error })
 );
 
 const getUserData = async (token: JWT): Promise<FetchedUserData | null> => (

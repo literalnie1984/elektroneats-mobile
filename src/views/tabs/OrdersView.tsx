@@ -45,11 +45,12 @@ const OrdersView = () => {
   ];
 
   const [data, setData] = useState('');
-  const token = useRecoilValue(userTokenSelector);
+  const accessToken = useRecoilValue(userTokenSelector);
 
   const getData = () => {
-    if(!token) return setData('no token');
-    getPendingUserOrders(token, (res) => {
+    console.log(accessToken)
+    if(!accessToken) return setData('no token');
+    getPendingUserOrders(accessToken, (res) => {
       let error = '';
       switch (res.status) {
         case 400:
