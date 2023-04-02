@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { COLORS } from "../views/colors";
 
 export const style = StyleSheet.create({
   container: {
@@ -151,53 +152,6 @@ export const menuViewStyles = StyleSheet.create({
     width: "70%",
     textAlign: "center",
     color: "#fff",
-  },
-});
-
-export const orderViewStyles = StyleSheet.create({
-  container: {
-    paddingTop: 20,
-  },
-  title: {
-    fontSize: 20,
-    color: "#808080",
-    marginLeft: 20,
-    marginBottom: 10,
-  },
-  orderContainer: {
-    marginBottom: 15,
-    width: "100%",
-    flex: 1,
-    alignItems: "center",
-  },
-  topPressableContainer: {
-    backgroundColor: "#2246b6",
-    color: "#fff",
-    width: "85%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 8,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    height: 40,
-  },
-  expandableContainer: {
-    backgroundColor: "#557dfa",
-    color: "#fff",
-    width: "85%",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-  },
-  orderText: {
-    color: "#fff",
-    fontSize: 18,
-  },
-  noBottomBorder: {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
   },
 });
 
@@ -562,4 +516,26 @@ export const dinnerViewStyles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
+});
+
+export const authStyle = StyleSheet.create({
+  container: {
+    backgroundColor: COLORS.white, 
+    flex: 1
+  },
+  innerContainer: { paddingTop: 50, paddingHorizontal: 20 },
+  appName: {
+    fontSize: 45,
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    textAlign: "center",
+    marginBottom: 40,
+    color: COLORS.chestnut,
+  },
+  screenTitle: { color: COLORS.black, fontSize: 30, fontWeight: "bold" },
+  screenDescription: { color: COLORS.grey, fontSize: 18, marginVertical: 10 },
+  changeScreenButton: {
+    color: COLORS.darkerColar,
+    fontWeight: "bold",
+  }
 });

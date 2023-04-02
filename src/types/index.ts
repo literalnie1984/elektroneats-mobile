@@ -157,3 +157,15 @@ export interface CartPanelProps {
   isSummaryExpanded: boolean;
   data: CartItem[];
 }
+
+export type EmailConfirmationScreenProps = NativeStackScreenProps<RootStackParamList, "EmailConfirmationScreen">;
+export type LoginScreenProps = NativeStackScreenProps<RootStackParamList, "LoginScreen">;
+export type RegistrationScreenProps = NativeStackScreenProps<RootStackParamList, "RegistrationScreen">;
+
+export interface UserDecodedData {
+  sub: string;
+  username: string;
+  email: string;
+  is_admin: boolean;
+  exp: number;
+}

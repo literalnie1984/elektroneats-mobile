@@ -8280,6 +8280,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jwt-decode@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "jwt-decode@npm:3.1.2"
+  checksum: 20a4b072d44ce3479f42d0d2c8d3dabeb353081ba4982e40b83a779f2459a70be26441be6c160bfc8c3c6eadf9f6380a036fbb06ac5406b5674e35d8c4205eeb
+  languageName: node
+  linkType: hard
+
 "kantyna-app@workspace:.":
   version: 0.0.0-use.local
   resolution: "kantyna-app@workspace:."
@@ -8335,6 +8342,7 @@ __metadata:
     expo-system-ui: ~2.2.1
     expo-task-manager: ~11.1.1
     expo-web-browser: ~12.1.1
+    jwt-decode: ^3.1.2
     prettier: ^2.8.7
     react: 18.2.0
     react-dom: 18.2.0
