@@ -5,7 +5,7 @@ import HeaderView from "./HeaderView";
 import OrdersScreen from "./tabs/OrdersView";
 import MenuScreen from "./tabs/MenuView";
 import ShopScreen from "./tabs/ShopView";
-import CartScreen from "./tabs/CartView";
+import { CartView as CartScreen } from "./tabs/CartView";
 import MoreScreen from "./tabs/MoreView";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { useEffect } from "react";

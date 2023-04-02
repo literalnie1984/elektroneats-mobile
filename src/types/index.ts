@@ -109,7 +109,7 @@ export type DinnerViewProps = NativeStackScreenProps<RootStackParamList, "Dinner
 //CartView
 export enum CartItemType {
   Dinner = "dinner",
-  Item = "item"
+  Item = "item",
 }
 
 export interface CartItemBase {
@@ -120,7 +120,7 @@ export interface CartItemBase {
 }
 
 export interface CartItemDinnerObject {
-  selection: DinnerViewSelection,
+  selection: DinnerViewSelection;
   weekday: number;
 }
 
@@ -131,7 +131,7 @@ export interface CartItemDinner extends CartItemBase {
 
 export interface CartItemItem extends CartItemBase {
   type: CartItemType.Item;
-  data: object; 
+  data: object;
 }
 
 export type CartItem = CartItemDinner | CartItemItem;

@@ -23,7 +23,6 @@ const defSettings: Settings = [
   },
 ];
 
-
 const MiscellaneousOptionsView = ({ navigation }) => {
   const [settings, setSettings] = useState(defSettings);
 

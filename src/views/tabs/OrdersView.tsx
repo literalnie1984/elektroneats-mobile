@@ -64,20 +64,20 @@ const OrdersView = () => {
           break;
       }
       ToastAndroid.show(error, ToastAndroid.SHORT);
-    }).then(data => {
-      if(!data) setData('no data');
+    }).then((data) => {
+      if (!data) setData("no data");
       else setData(JSON.stringify(data));
-    })
-  }
+    });
+  };
 
   useEffect(() => {
     getData();
-  }, [])
+  }, []);
 
   return (
     <View style={orderViewStyles.container}>
       <Text>Pending: {data}</Text>
-      <Button title={"get data"} onPress={() => getData()}/>
+      <Button title={"get data"} onPress={() => getData()} />
       <SectionList
         sections={DATA}
         keyExtractor={(item) => item.id}

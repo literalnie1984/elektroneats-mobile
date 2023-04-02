@@ -115,4 +115,4 @@ const optionButtonStyle = StyleSheet.create({
   },
 });
 
-export { optionSwitchStyle, optionSliderStyle, optionPickerStyle, optionButtonStyle, };
+export { optionSwitchStyle, optionSliderStyle, optionPickerStyle, optionButtonStyle };

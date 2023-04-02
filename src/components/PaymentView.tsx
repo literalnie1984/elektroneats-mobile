@@ -1,306 +1,103 @@
-import { View, Text, Pressable, Modal, TextInput, ToastAndroid, Button } from 'react-native';
-import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
-import { useStripe } from '@stripe/stripe-react-native';
-import { userTokenAtom } from "../views/utils/user";
-import { setWallet, getClientData, getPaymentSheetParams } from "../api";
-import { walletAtom, balanceAtom, verifyPhoneNumberIntegrity, verifyPostalIntegrity, verifyEmailAddressIntegrity, verifyNameIntegrity, parseFormToDetails } from "../views/utils/wallet";
+import { Text, View } from 'react-native';
+import {useEffect, useState} from "react";
+import {useRecoilState} from "recoil";
+import {parseDateToString} from "../views/tabs/CartView";
+import {balanceAtom, walletAtom} from "../views/utils/wallet";
 import Spinner from "react-native-loading-spinner-overlay/lib";
+import {getBalance, getClientData} from '../api';
+import {userTokensAtom} from '../views/utils/user';
+import {Button} from 'react-native';
+import WalletFormView from './WalletFormView';
+import WalletTopUpView from './WalletTopUpView';
+import {ToastAndroid} from 'react-native';
 
-const emptyForm = {
-		name: '', phone_number: '', email: '', 
-		city: '', country: '', postal_code: '', 
-		region: '', address_line: '',
-};
+// Saldo i kwoty w GROSZACH!!!
 
-const PaymentView = ({ cartValue, }) => {
-		const [ token ] = useRecoilState(userTokenAtom);
-		const [ wallet, setWalletAtom ] = useRecoilState(walletAtom);
-		const [ balance, setBalance ] = useRecoilState(balanceAtom);
+const PaymentView = ({ navigation, route }) => {
+		const [ tokens ] = useRecoilState(userTokensAtom);
 		const [ isLoading, setIsLoading ] = useState(true);
-		const [ showWalletInitModal, setShowWalletInitModal ] = useState(false);
-		const [ showWalletChargeUpModal, setShowWalletChargeUpModal ] = useState(false);
-		const [ walletForm, setWalletForm ] = useState( emptyForm );
-		const [ topUpBalance, setTopUpBalance ] = useState( 0 );
-		const [ chosenPaymentMethod, setChosenPaymentMethod ] = useState('none');
-		const { initPaymentSheet, presentPaymentSheet } = useStripe();
-		
-		useEffect( () => { 
-						getClientData( token ).then( ( value ) => setWalletAtom( value ) ).then( () => setIsLoading(false));
-						initializePaymentSheet();
-		}, [] );
+		const [ wallet, setWallet ] = useRecoilState(walletAtom);
+		const [ balance, setBalance ] = useRecoilState(balanceAtom);
+		const [ currentView, setCurrentView ] = useState('none');
 
-		const handleWalletFormSave = () => {
-				if(
-								verifyPhoneNumberIntegrity( walletForm.phone_number.trim() ) &&
-								verifyPostalIntegrity( walletForm.postal_code.trim() ) &&
-								verifyEmailAddressIntegrity( walletForm.email.trim() ) &&
-								verifyNameIntegrity( walletForm.name.trim() )
-				  ){
-						setIsLoading(true);
-						setWallet( token, parseFormToDetails( walletForm )).then( ( res ) => {
-								if( res === false ){
-										ToastAndroid.show("Wystąpił błąd podczas zapisu portfela", ToastAndroid.LONG);
-										setIsLoading(false);
-								}
-								else {
-										getClientData( token ).then( ( value ) => setWalletAtom( value ) )
-										.then( () => { 
-												setIsLoading(false);
-												ToastAndroid.show("Dodano nowy portfel!", ToastAndroid.LONG);
-												setShowWalletInitModal(!showWalletInitModal);
-										} );
+		const { orderValue, pickupDate } = route.params;
+
+				useEffect(() => {
+						getClientData(tokens, ( res ) => {
+								!res.err ? console.log("Success") : console.log("Bruh");
+						})
+						.then( (value) => { console.log(value); setWallet( value );} )
+						.then( () => getBalance( tokens, ( res ) => {
+								!res.err ? console.log("Success") : console.log("Bruh");
+						} ) )
+						.then( (value) => value ? setBalance( value / 100 ) : setBalance( value ) )
+						.then( () => determinePanel() )
+						.then( () => setIsLoading(false) )
+				}, [])
+
+				const Undisplay = async () => {
+						getBalance( tokens, (res) => {
+								!res.err ? console.log("Success") : console.log("Bruh")
+						} )
+						.then( (value) => {
+								if( value !== null ){
+										setBalance( value / 100 );
+								} else {
+										ToastAndroid.show("Error during balance fetching occured", ToastAndroid.SHORT);
+										setBalance( value );
 								}
 						} )
-						setWalletForm( emptyForm );
+						.then( () => determinePanel() )
+						.then( () => setIsLoading(false) );
 				}
-				else {
-						if( !verifyPhoneNumberIntegrity( walletForm.phone_number ) ){
-								ToastAndroid.show( "Wprowadź prawidłowy numer telefonu!", ToastAndroid.LONG );
-						} else if ( !verifyNameIntegrity( walletForm.name ) ){
-								ToastAndroid.show( "Wprowadź poprawne dane osobowe!", ToastAndroid.LONG );
-						} else if ( !verifyPostalIntegrity( walletForm.postal_code ) ){
-								ToastAndroid.show( "Wprowadź prawidłowy kod pocztowy", ToastAndroid.LONG);
-						} else if ( !verifyEmailAddressIntegrity( walletForm.email ) ){
-								ToastAndroid.show( "Wprowadź prawidłowy adres email!", ToastAndroid.LONG );
+
+				const determinePanel = () => {
+						if(wallet){
+								if(balance >= orderValue) {
+										setCurrentView('checkout');
+								} else {
+										setCurrentView('topUp_info');
+								}
+						} else {
+								setCurrentView('walletForm_info');
 						}
-
-						setWalletForm( emptyForm );
 				}
-		}
-
-		const initializePaymentSheet = async () => {
-				const {
-						paymentIntent,
-						ephemeralKey,
-						customer,
-						publishableKey,
-				} = await getPaymentSheetParams( token );
-
-				const { error } = await initPaymentSheet({
-						merchantDisplayName: "Kantyna Elektronik",
-						customerId: customer,
-						customerEphemeralKeySecret: ephemeralKey,
-						paymentIntentClientSecret: paymentIntent,
-						allowsDelayedPaymentMethods: false,
-						defaultBillingDetails: {
-								email: "jankowalski@email.pl",
-								name: "Jan Kowalski",
-								phone: "987654321",
-								address: {
-										line1: "ul. Chrzanowa 32",
-										postalCode: "43-398",
-										city: "Sosnowiec",
-										state: "Śląskie",
-										country: "Polska"
-								},
-						},
-				});
-
-				if(!error){
-						setIsLoading(true);
-				}
-		};
-
-		const openPaymentSheet = async () => {
-				const { error } = await presentPaymentSheet();
-
-				if(error){
-						ToastAndroid.show(`Błąd ${error.code}: ${error.message}`, ToastAndroid.LONG);
-				} else {
-						ToastAndroid.show(`Sukces! Potwierdzono zamówienie!`, ToastAndroid.LONG);
-				}
-		};
 
 		return(
 				<View>
 						<Spinner visible={isLoading} />
-						{ true ? (
-								balance ? (
-										balance < cartValue ? (
-												<>
-												<Text>Brakuje ci: { cartValue - balance }</Text>
-												<Text>Uzupełnij portfel, zanim przejdziesz dalej</Text>
-												<Pressable><Text>Przejdź do menu portfela</Text></Pressable>
-												</>
-										) : (
-												<></>
-										)
-								) : (
-										<>
-										<Text>Nie masz żadnych środków w portfelu</Text>
-										<Text>Uzupełnij portfel, zanim przejdziesz dalej</Text>
-										<Pressable onPress={() => setShowWalletChargeUpModal(!showWalletChargeUpModal)}><Text>Przejdź do menu doładowania środków</Text></Pressable>
-										<Modal
-												visible={showWalletChargeUpModal}
-										>
-												<View>
-														<View>
-																<Text> Jaką kwotą chciałbyś zasilić portfel? </Text>
-																<TextInput
-																		inputMode='numeric'
-																		keyboardType='numeric'
-																		textAlign='center'
-																		onChangeText={ ( text ) => { 
-																				setTopUpBalance(Number(text));
-																		}}
-																		value={ topUpBalance  }
-																/>
-																<Text>zł</Text>
-														</View>
-														<View>
-																<Text> Wybierz preferowaną metodę płatności: </Text>
-																<View>
-																		<Pressable onPress={ () => setChosenPaymentMethod('card') }>
-																				<Text>Karta</Text>
-																		</Pressable>
-																		<Modal visible={ chosenPaymentMethod == 'card' }>
-																				<Button
-																						
-																						onPress={() => ToastAndroid.show("Przechodzimy do płatności", ToastAndroid.SHORT)}
-																						title={"Przejdź do płatności"}
-																				/>
-																		</Modal>
-																</View>
-														</View>
-														
-												</View>
-										</Modal>
-										</>
-								)
-						) : (
-								<>
-								<Text>Wygląda na to że masz niezałożony portfel</Text>
-								<Text>Załóż go zanim będziesz mógł kontynuować zakup</Text>
-								<Pressable onPress={ () => setShowWalletInitModal(!showWalletInitModal) }>
-										<Text>Utwórz portfel</Text>
-								</Pressable>
-								<Modal
-										visible={showWalletInitModal}
-								>
-										<View>
-												<Text>Imię i nazwisko: </Text>
-												<TextInput 
-														autoComplete='name'
-														inputMode='text'
-														keyboardType='default'
-														textAlign='center'
-														onChangeText={ ( text ) => { 
-																setWalletForm( { ...walletForm, name: text } )
-														} }
-														value={ walletForm.name }
-
-												/>
-										</View>
-										<View>
-												<Text>Numer telefonu: </Text>
-												<TextInput 
-														autoComplete='tel'
-														inputMode='numeric'
-														keyboardType='phone-pad'
-														textAlign='center'
-														onChangeText={ ( text ) => { 
-																setWalletForm( { ...walletForm, phone_number: text } )
-														} }
-														value={ walletForm.phone_number }
-												/>
-										</View>
-										<View>
-												<Text>Adres email: </Text>
-												<TextInput 
-														autoComplete='email'
-														inputMode='email'
-														keyboardType='email-address'
-														textAlign='center'
-														onChangeText={ ( text ) => { 
-																setWalletForm( { ...walletForm, email: text } )
-														} }
-														value={ walletForm.email }
-												/>
-										</View>
-										<View>
-												<Text>Dane adresowe: </Text>
-												
-												<View>
-														<Text>Ulica, numer domu i numer apartamentu: </Text>
-														<TextInput 
-																autoComplete='postal-address'
-																inputMode='text'
-																keyboardType='default'
-																textAlign='center'
-																onChangeText={ ( text ) => { 
-																		setWalletForm( { ...walletForm, address_line: text } )
-																} }
-																value={ walletForm.address_line }
-														/>
-												</View>	
-												<View>
-														<Text>Kod pocztowy: </Text>
-														<TextInput 
-																autoComplete='postal-code'
-																inputMode='text'
-																keyboardType='numbers-and-punctuation'
-																textAlign='center'
-																onChangeText={ ( text ) => { 
-																		setWalletForm( { ...walletForm, postal_code: text } )
-																} }
-																value={ walletForm.postal_code }
-														/>
-												</View>
-												<View>
-														<Text>Miasto: </Text>
-														<TextInput 
-																autoComplete='postal-address-locality'
-																inputMode='text'
-																keyboardType='default'
-																textAlign='center'
-																onChangeText={ ( text ) => { 
-																		setWalletForm( { ...walletForm, city: text } )
-																} }
-																value={ walletForm.city }
-														/>
-												</View>
-												<View>
-														<Text>Województwo/Stan/Hrabstwo: </Text>
-														<TextInput 
-																autoComplete='postal-address-region'
-																inputMode='text'
-																keyboardType='default'
-																textAlign='center'
-																onChangeText={ ( text ) => { 
-																		setWalletForm( { ...walletForm, region: text } )
-																} }
-																value={ walletForm.region }
-
-														/>
-												</View>
-												<View>
-														<Text>Państwo: </Text>
-														<TextInput 
-																autoComplete='postal-address-country'
-																inputMode='text'
-																keyboardType='default'
-																textAlign='center'
-																onChangeText={ ( text ) => { 
-																		setWalletForm( { ...walletForm, country: text } )
-																} }
-																value={ walletForm.country }
-														/>
-												</View>
-										</View>
-										<Pressable
-												onPress={ () => handleWalletFormSave() }
-										>
-												<Text>Zapisz dane</Text>
-										</Pressable>
-										<Pressable
-												onPress={ () => { setWalletForm( emptyForm ) } }
-										>
-												<Text>Wyzeruj wartość pól</Text>
-										</Pressable>
-								</Modal>
-								</>
-						) }
+						<Text>{`Kwota operacji: ${orderValue.toFixed(2)}zł`}</Text>
+						<Text>{`Data odbioru: ${parseDateToString(pickupDate)}`}</Text>
+						<View>
+								<View style={[ { display: currentView === 'walletForm_info' ? 'flex' : 'none', }, ]}>
+										<Text>Wygląda na to, że nie masz stworzonego portfela</Text>
+										<Text>Stwórz go w celu kontynuowania transakcji</Text>
+										<Button
+												onPress={ () => { setCurrentView('walletForm') } }
+												title={ "Stwórz portfel" }
+										/>
+								</View>
+								<WalletFormView
+										isDisplayed={ currentView === 'walletForm' }
+										setIsLoading={ setIsLoading }
+										unDisplay={ Undisplay }
+								/>
+								<View style={[ { display: currentView === 'topUp_info' ? 'flex' : 'none', }, ]}>
+										<Text>{`Twoje saldo: ${ balance?.toFixed(2) }zł`}</Text>
+										<Text>{`Musisz zasilić konto kwotą co najmniej ${ ( orderValue - Number(balance) ).toFixed(2) }zł`}</Text>
+										<Button
+												onPress={ () => { setCurrentView('topUp') } }
+												title={ "Doładuj portfel" }
+										/>
+								</View>
+								<WalletTopUpView
+										isDisplayed={ currentView === 'topUp' }
+										setIsLoading={ setIsLoading }
+										isLoading={ isLoading }
+										unDisplay={ Undisplay }
+										balanceDiff={ Number((orderValue - Number(balance)).toFixed(2)) }
+								/>
+						</View>
 				</View>
 		);
 };
