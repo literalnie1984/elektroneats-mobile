@@ -63,7 +63,7 @@ const TabsView = ({ navigation }: any) => {
       })}
     >
       <Tab.Screen name="Jadłospis" component={MenuScreen} />
-      <Tab.Screen name="Zamów" component={ShopScreen} />
+      {/* <Tab.Screen name="Zamów" component={ShopScreen} /> */}
       <Tab.Screen name="Koszyk" component={CartScreen} />
       <Tab.Screen name="Zamówienia" component={OrdersScreen} />
       <Tab.Screen name="Ustawienia" component={MoreScreen} />

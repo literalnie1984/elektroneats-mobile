@@ -115,10 +115,10 @@ export enum CartItemType {
 }
 
 export interface CartItemBase {
-  type: CartItemType;
-  cost: number;
-  amount: number;
-  data: object;
+    type: CartItemType;
+    cost: number;
+    amount: number;
+    data: object;
 }
 
 export interface CartItemDinnerObject {
@@ -138,8 +138,14 @@ export interface CartItemItem extends CartItemBase {
 
 export type CartItem = CartItemDinner | CartItemItem;
 
-export interface CartItemProps extends CartItemBase {
+export interface CartItemProps {
   index: number;
+  item: CartItem;
+  handleAmountUpdate: (index: number, amountUpdate: number) => void;
+}
+
+export interface CartPanelProps {
+  cartItems: CartItem[]; 
   handleAmountUpdate: (index: number, amountUpdate: number) => void;
 }
 
@@ -151,11 +157,6 @@ export interface CartSummaryProps {
   handleCartClearingRequest: () => void;
   isExpanded: boolean;
   setIsExpanded: Dispatch<SetStateAction<boolean>>;
-}
-
-export interface CartPanelProps {
-  isSummaryExpanded: boolean;
-  data: CartItem[];
 }
 
 export type EmailConfirmationScreenProps = NativeStackScreenProps<RootStackParamList, "EmailConfirmationScreen">;

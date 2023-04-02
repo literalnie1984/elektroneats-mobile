@@ -10,7 +10,7 @@ import { userTokenSelector } from "../utils/user";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS } from "../colors";
 
-const orderViewStyles = StyleSheet.create({
+export const orderViewStyles = StyleSheet.create({
   container: {
     // backgroundColor: '#ebf2ff',
     // backgroundColor: '#f5f8ff',

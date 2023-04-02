@@ -23,7 +23,7 @@ export const menuViewStyles = StyleSheet.create({
   },
   menu: {
     paddingVertical: 30,
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
   },
   menuBlankContainerStyle: {
     flexDirection: "column",
@@ -59,47 +59,53 @@ export const menuViewStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
+    borderRadius: 20,
+    shadowColor: COLORS.chestnut,
+    elevation: 6,
   },
   menuItemSeparator: {
-    height: 40,
+    height: 20,
   },
   menuItemContainer: {
     width: "100%",
-    flexDirection: "column",
+    // flexDirection: "column",
     flexWrap: "nowrap",
     overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    backgroundColor: "#2247b7",
+    // alignItems: "center",
+    // justifyContent: "center",
+    backgroundColor: COLORS.white,
+    borderBottomStartRadius: 20,
+    borderBottomEndRadius: 20,
   },
   menuItemBar: {
-    flexDirection: "row",
-    flexWrap: "nowrap",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingLeft: 25,
-    paddingRight: 25,
-    backgroundColor: "#2246b6",
-    borderRadius: 10,
-    color: "#fff",
-    width: "100%",
-    height: 50,
+    // flexDirection: "row",
+    // flexWrap: "nowrap",
+    // alignItems: "center",
+    // justifyContent: "space-between",
+    // paddingLeft: 25,
+    // paddingRight: 25,
+    // backgroundColor: COLORS.colar,
+    // color: "#fff",
+    // width: "100%",
+    // height: 50,
   },
   menuItemBarDate: {
     color: "#fff",
     textAlign: "center",
+    backgroundColor: COLORS.colar,
+    width: '100%',
     fontSize: 24,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingVertical: 6,
   },
-  menuItemBarFolded: {
-    borderRadius: 10,
-  },
-  menuItemBarUnfolded: {
-    borderRadius: 10,
-    borderBottomStartRadius: 0,
-    borderBottomEndRadius: 0,
-  },
+  // menuItemBarFolded: {
+  //   borderRadius: 10,
+  // },
+  // menuItemBarUnfolded: {
+  //   borderRadius: 10,
+
+  // },
   menuVariant: {
     flexDirection: "column",
     flexWrap: "nowrap",
@@ -107,11 +113,10 @@ export const menuViewStyles = StyleSheet.create({
     justifyContent: "space-evenly",
     padding: 10,
     width: "100%",
-    backgroundColor: "#557dfa",
+    backgroundColor: COLORS.white,
     rowGap: 10,
     flexGrow: 1,
-    borderBottomEndRadius: 10,
-    borderBottomStartRadius: 10,
+
   },
   menuVariantRow: {
     flexDirection: "row",
@@ -119,11 +124,12 @@ export const menuViewStyles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     justifyContent: "flex-start",
+    
   },
   menuVariantRowTitle: {
     textAlign: "left",
     fontWeight: "bold",
-    color: "#fff",
+    color: "#000",
     width: "30%",
   },
   menuVariantActionRow: {
@@ -151,31 +157,34 @@ export const menuViewStyles = StyleSheet.create({
   menuVariantElement: {
     width: "70%",
     textAlign: "center",
-    color: "#fff",
+    color: "#000",
   },
 });
 
 export const cartViewStyles = StyleSheet.create({
   root: {
     flex: 1,
-    margin: "2.5%",
     gap: 15,
-    flexDirection: "column",
-    flexWrap: "nowrap",
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    // flexDirection: "column",
+    // flexWrap: "nowrap",
+    // alignItems: "center",
+    // justifyContent: "space-evenly",
+    // height: '100%',
+    // margin: '2.5%'
   },
   cartPanel: {
-    width: "100%",
     flex: 1,
-    backgroundColor: "#2347b6",
-    borderRadius: 15,
-    paddingHorizontal: 15,
-    paddingVertical: 25,
+    width: "100%",
+    // borderRadius: 15,
+    // paddingHorizontal: 15,
+    // paddingVertical: 25,
     gap: 10,
   },
   cartPanelList: {
-    backgroundColor: "#2347b6",
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "transparent",
+    height: '80%'
   },
   cartPanelHeader: {
     flexDirection: "row",
@@ -188,7 +197,7 @@ export const cartViewStyles = StyleSheet.create({
     textAlign: "center",
     fontSize: 32,
     fontWeight: "bold",
-    color: "#fff",
+    color: "#000",
   },
   cartPanelHeaderIcon: {
     color: "#fff",
@@ -204,18 +213,18 @@ export const cartViewStyles = StyleSheet.create({
     justifyContent: "space-around",
   },
   cartPanelBlankIcon: {
-    color: "#fff",
+    color: "#000",
     width: 64,
   },
   cartPanelBlankHeader: {
     textAlign: "center",
     fontSize: 32,
-    color: "#fff",
+    color: "#000",
   },
   cartPanelBlankText: {
     textAlign: "center",
     fontSize: 18,
-    color: "#fff",
+    color: "#000",
   },
   summary: {
     width: "100%",
@@ -225,9 +234,10 @@ export const cartViewStyles = StyleSheet.create({
     flexWrap: "nowrap",
     alignItems: "center",
     justifyContent: "space-around",
-    gap: 10,
     borderRadius: 15,
-    overflow: "hidden",
+    marginVertical: 10
+    // paddingHorizontal: 20,
+    // overflow: "hidden",
   },
   summaryInfo: {
     flexDirection: "column",
@@ -300,14 +310,14 @@ export const cartViewStyles = StyleSheet.create({
     color: "#fff",
   },
   cartMeal: {
-    flex: 1,
-    flexDirection: "column",
-    flexWrap: "nowrap",
-    alignItems: "center",
-    justifyContent: "center",
     borderRadius: 10,
-    backgroundColor: "#3266fe",
+    backgroundColor: '#fff',
     overflow: "hidden",
+    shadowColor: COLORS.chestnut,
+    elevation: 6,
+    margin: 10,
+    paddingHorizontal: 20,
+    padding: 10
   },
   cartMealImage: {
     height: 80,
@@ -329,17 +339,15 @@ export const cartViewStyles = StyleSheet.create({
     justifyContent: "center",
   },
   cartMealInfoBar: {
-    flexGrow: 1,
     flexDirection: "row",
-    flexWrap: "nowrap",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 30,
+    // gap: 30,
   },
   cartMealName: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#fff",
+    color: "#000",
     textAlign: "center",
   },
   cartMealCost: {
@@ -348,7 +356,7 @@ export const cartViewStyles = StyleSheet.create({
     textAlign: "center",
   },
   cartMealInfoIcon: {
-    color: "#fff",
+    color: "#000",
     width: 24,
   },
   cartMealActionsBar: {
@@ -358,39 +366,41 @@ export const cartViewStyles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "nowrap",
     alignItems: "center",
-    justifyContent: "space-around",
-    paddingHorizontal: 10,
+    justifyContent: "space-between",
+    // paddingHorizontal: 10,
   },
   cartMealActionButton: {
     backgroundColor: "#B1B2B5",
-    padding: 10,
+    // padding: 10,
     borderRadius: 10,
     flexDirection: "row",
     flexWrap: "nowrap",
     alignItems: "center",
     justifyContent: "center",
   },
-  cartMealActionLabel: {
-    textAlign: "center",
-    fontSize: 14,
-    color: "#000",
-  },
   cartMealAmountOptions: {
     flexDirection: "row",
     flexWrap: "nowrap",
     alignItems: "center",
-    justifyContent: "space-evenly",
-    padding: 10,
+    justifyContent: "center",
+    // padding: 10,
     borderRadius: 10,
-    gap: 25,
+    gap: 16,
+  },
+  cartMealManageButton: {
+    padding: 5,
+  },
+  cartMealManageButtonIcon: {
+    color: COLORS.chestnut,
+    width: 16,
   },
   cartMealAmountButton: {
     padding: 5,
-    borderRadius: 10,
+    borderRadius: 100,
+    borderWidth: 1
   },
   cartMealAmountButtonIcon: {
-    color: "#fff",
-    width: 24,
+    width: 12,
   },
   cartMealAmountLabel: {
     textAlign: "center",

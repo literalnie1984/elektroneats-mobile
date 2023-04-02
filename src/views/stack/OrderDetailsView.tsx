@@ -41,7 +41,7 @@ const orderDetails = StyleSheet.create({
     }
 });
 
-const orderContent = StyleSheet.create({
+export const orderContent = StyleSheet.create({
     container: {
         backgroundColor: "#fff",
         borderRadius: 10,
@@ -81,10 +81,10 @@ const orderContent = StyleSheet.create({
 })
 
 interface OrderItemProps {
-    navigation: OrderDetailsViewProps['navigation'];
+    navigation?: OrderDetailsViewProps['navigation'];
 }
 
-const OrderItem = ({ navigation }: OrderItemProps) => {
+export const OrderItem = ({ navigation }: OrderItemProps) => {
 
     const showOrderContent = () => {
         // navigation.navigate('DinnerView');
