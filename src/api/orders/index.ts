@@ -11,8 +11,8 @@ const getPendingUserOrders = async (token: JWT, error?: ErrorFunction): Promise<
   fetchForJSON({ path: `user/orders/pending`, method: "GET", token, error })
 );
 
-const getCompletedUserOrders = async (token: JWT): Promise<FetchedDinner[] | null> => (
-  fetchForJSON({ path: `user/orders/completed`, method: "GET", token })
+const getCompletedUserOrders = async (token: JWT, error?: ErrorFunction): Promise<FetchedDinner[] | null> => (
+  fetchForJSON({ path: `user/orders/completed`, method: "GET", token, error })
 );
 
 export default { createOrders, getPendingUserOrders, getCompletedUserOrders };

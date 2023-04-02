@@ -8,7 +8,7 @@ const AccountView = ({ navigation }: any) => {
   const [tokens] = useRecoilState(userTokensAtom);
 
   const logout = () => {
-    SecureStore.deleteItemAsync("token").then(() => {
+    SecureStore.deleteItemAsync("tokens").then(() => {
       navigation.navigate("LoginScreen");
     });
   };

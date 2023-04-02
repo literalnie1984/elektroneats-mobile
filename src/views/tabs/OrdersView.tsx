@@ -192,6 +192,7 @@ const OrdersView = () => {
     },
   ];
 
+  const navigation = useNavigation<RootStackParamList>();
   const [data, setData] = useState("");
   const accessToken = useRecoilValue(userTokenSelector);
 
@@ -199,6 +200,7 @@ const OrdersView = () => {
     console.log(accessToken);
     if (!accessToken) return setData("no token");
     getPendingUserOrders(accessToken, (res) => {
+      if(res === 'logout') return navigation.navigate('LoginScreen');
       let error = "";
       switch (res.status) {
         case 400:

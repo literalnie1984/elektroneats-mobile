@@ -10,14 +10,16 @@ const loginUser = async (body: UserLoginBody, error?: ErrorFunction): Promise<Us
     fetchForJSON({ path: `user/login`, method: "POST", body, error })
 );
 
-const getUserData = async (token: JWT): Promise<FetchedUserData | null> => (
-    fetchForJSON({ path: `user/get-user-data`, method: "GET", token })
+const getUserData = async (token: JWT, error?: ErrorFunction): Promise<FetchedUserData | null> => (
+    fetchForJSON({ path: `user/get-user-data`, method: "GET", token, error })
 );
 
-const changeUsersPassword = async (body: ChangePasswordBody, token: JWT): Promise<FetchedUserData | null> => (
-    fetchForJSON({ path: `user/change-password`, method: "POST", token, body })
+const changeUsersPassword = async (body: ChangePasswordBody, token: JWT, error?: ErrorFunction): Promise<FetchedUserData | null> => (
+    fetchForJSON({ path: `user/change-password`, method: "POST", token, body, error })
 );
 
-// TODO: /user/delete
+const verifyUser = async (code: string, error?: ErrorFunction): Promise<boolean> => (
+    fetchForSuccess({ path: `user/activate/${code}`, method: "POST", error })
+);
 
-export default { registerUser, loginUser, getUserData, changeUsersPassword };
+export default { registerUser, loginUser, getUserData, changeUsersPassword, verifyUser };

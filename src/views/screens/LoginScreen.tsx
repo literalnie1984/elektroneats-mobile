@@ -86,6 +86,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     let error = "";
 
     const data = await loginUser(inputs, (res) => {
+      if(res === 'logout') return navigation.navigate('LoginScreen');
       console.log(res.status);
 
       switch (res.status) {
@@ -108,7 +109,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     if (data) {
       console.log(data);
       setTokens(data);
-      if (rememberMe) await SecureStore.setItemAsync("token", JSON.stringify(tokens));
+      if (rememberMe) await SecureStore.setItemAsync("tokens", JSON.stringify(tokens));
       navigation.navigate("TabsView");
     }
   };

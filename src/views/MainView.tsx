@@ -6,7 +6,7 @@ import TabsView from "./TabsView";
 import AccountView from "./stack/AccountView";
 import DinnerView from "./stack/DinnerView";
 import * as OptionsViews from "./stack/optionsViews/";
-import { getWeeklyMenu } from "../api";
+import { getLastMenuUpdate, getWeeklyMenu } from "../api";
 import { RootStackParamList } from "../types";
 import LoginScreen from "./screens/LoginScreen";
 import RegistrationScreen from "./screens/RegistrationScreen";
@@ -16,10 +16,11 @@ import * as SplashScreen from "expo-splash-screen";
 import * as SecureStore from "expo-secure-store";
 import OrderDetailsView from "./stack/OrderDetailsView";
 import PaymentView from "../components/PaymentView";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 SplashScreen.preventAutoHideAsync();
 
-const Stack = createStackNavigator<RootStackParamList>();
+export const Stack = createStackNavigator<RootStackParamList>();
 const MainView = () => {
   const [menu, setMenu] = useRecoilState(menuAtom);
   const [tokens, setTokens] = useRecoilState(userTokensAtom);
@@ -31,18 +32,48 @@ const MainView = () => {
   }, [appIsReady]);
 
   useEffect(() => {
-    getWeeklyMenu().then((menu) => setMenu(menu));
-    SecureStore.getItemAsync("token").then((data) => {
-      if (data) {
-        console.log("token has been found in securestore and saved successfully");
+    (async function(){
+      // MENU
+      async function updateWeeklyMenu() {
+        const weeklyMenu = await getWeeklyMenu();
+        if(weeklyMenu) AsyncStorage.setItem('weeklyMenu', JSON.stringify(weeklyMenu));
+        setMenu(weeklyMenu);
+      }
+
+      const lastMenuUpdate = await getLastMenuUpdate();
+      if(lastMenuUpdate) {
+        const { lastUpdate } = lastMenuUpdate;
+
+        const savedLastMenuUpdate = await AsyncStorage.getItem('lastMenuUpdate');
+        const currTimeInSec = Math.round((new Date().getTime()) / 1000);
+
+        if(!savedLastMenuUpdate) {
+          AsyncStorage.setItem('lastMenuUpdate', currTimeInSec.toString());
+          updateWeeklyMenu();
+        } else {
+          const savedLastMenuUpdateNum = Number(savedLastMenuUpdate);
+          if(!isNaN(savedLastMenuUpdateNum) && savedLastMenuUpdateNum > currTimeInSec) {
+            AsyncStorage.setItem('lastMenuUpdate', currTimeInSec.toString());
+            updateWeeklyMenu();
+          } else {
+            const savedWeeklyMenu = await AsyncStorage.getItem('weeklyMenu');
+            if(!savedWeeklyMenu) updateWeeklyMenu();
+            else setMenu(JSON.parse(savedWeeklyMenu));
+          }
+        }
+      }
+
+      // TOKENS
+      const tokens = await SecureStore.getItemAsync("tokens");
+      if(tokens) {
         setInitialRoute("TabsView");
-        setTokens(JSON.parse(data));
+        setTokens(JSON.parse(tokens));
       } else {
-        console.log("no token in securestore");
         setInitialRoute("LoginScreen");
       }
+
       setAppIsReady(true);
-    });
+    })();
   }, []);
 
   if (!appIsReady || initialRoute === null) {

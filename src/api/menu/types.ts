@@ -50,3 +50,7 @@ export interface DailyMenu {
 }
 
 export type WeeklyMenu = DailyMenu[];
+
+export interface FetchedLastUpdate {
+  lastUpdate: number;
+}

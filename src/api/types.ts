@@ -1,6 +1,6 @@
 export type JWT = string;
 
-export type ErrorFunction = (res: Response) => void;
+export type ErrorFunction = (res: Response | 'logout') => void;
 export interface FetchParams {
   path: string;
   method?: string;

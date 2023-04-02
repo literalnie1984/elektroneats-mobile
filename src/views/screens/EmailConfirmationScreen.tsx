@@ -1,4 +1,4 @@
-import { View, Text, Keyboard, StyleSheet } from "react-native";
+import { View, Text, Keyboard, StyleSheet, ToastAndroid } from "react-native";
 import { useEffect, useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
 import Button from "../../components/Button";
@@ -8,6 +8,7 @@ import { useRecoilState } from "recoil";
 import { userEmail } from "../utils/user";
 import { authStyle } from "../../styles";
 import { EmailConfirmationScreenProps } from "../../types";
+import { verifyUser } from "../../api";
 
 const emailStyle = StyleSheet.create({
   inputStyle: {
@@ -48,11 +49,35 @@ const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) =
     }
   };
 
-  const checkCode = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+  const checkCode = async () => {
+      if(!code) return;
+
+      setIsLoading(true);
+      
+      let error = "";
+      const data = await verifyUser(code, (res) => {
+        if(res === 'logout') return navigation.navigate('LoginScreen');
+        console.log(res.status);
+
+        switch (res.status) {
+          case 400:
+            error = "Logowanie nie powiodło się";
+            break;
+          case 500:
+            error = "Wystąpił błąd serwera";
+            break;
+          default:
+            error = `Wystąpił nieokreślony błąd (${res.status})`;
+            break;
+        }
+
+        ToastAndroid.show(error, ToastAndroid.SHORT);
+      });
+
+      if (data) {
+        ToastAndroid.show("Weryfikacja przebiegła pomyślnie", ToastAndroid.SHORT);
+        navigation.navigate("TabsView");
+      }
   };
 
   return (

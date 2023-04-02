@@ -132,7 +132,7 @@ const OrderDetailsView = ({ route, navigation }: OrderDetailsViewProps) => {
             </View>
             <View style={orderDetails.pairItem}>
               <Text style={orderDetails.label}>Data odbioru</Text>
-              <Text style={orderDetails.content}>pon. | 03.04.23 | 11:15</Text>
+              <Text style={orderDetails.content}>03.04.23{"\n"}11:15 (pon.)</Text>
             </View>
             <View style={orderDetails.pairItem}>
               <Text style={orderDetails.label}>Metoda płatności</Text>

@@ -6,7 +6,7 @@ import { faChevronUp, faChevronDown, faFaceMeh, faPlus, faMinus, faGear } from "
 import { FlashList } from "@shopify/flash-list";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { DateTimePickerAndroid, DateTimePickerEvent } from "@react-native-community/datetimepicker";
-import { CartItem, CartItemProps, CartItemType, CartPanelProps, CartSummaryProps } from "../../types/index";
+import { CartItem, CartItemProps, CartItemType, CartPanelProps, CartSummaryProps, RootStackParamList } from "../../types/index";
 import { getDayOfWeekMnemonic } from "../../api/utils";
 import { calculateTotalCost, cartItemsAtom, convertCartItemsForApi } from "../utils/cart";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -17,6 +17,7 @@ import { orderContent } from "../stack/OrderDetailsView";
 import { orderViewStyles } from "./OrdersView";
 import { balanceAtom, walletAtom } from "../utils/wallet";
 import { OrderBody } from "../../api/orders/types";
+import { useNavigation } from "@react-navigation/native";
 
 const ANIMATION_DURATION = 300;
 const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
@@ -59,6 +60,7 @@ const CartItemView = ({ index, item, handleAmountUpdate }: CartItemProps) => {
 };
 
 const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded, usePayment }: CartSummaryProps) => {
+  const navigation = useNavigation<RootStackParamList>();
   const [cost, setCost] = useState<number | null>(summarizeCost(cartItems));
   const accessToken = useRecoilValue(userTokenSelector);
   const [wallet, setWallet] = useRecoilState(walletAtom);
@@ -97,12 +99,14 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
     if (!accessToken) return console.log("no token");
 
     await getClientData(accessToken, (res) => {
+      if(res === 'logout') return navigation.navigate('LoginScreen');
       console.log(res.status);
       // console.log(res?.err ? res?.err.status : 'pass');
     })
       .then((value) => setWallet(value))
       .then(() =>
         getBalance(accessToken, (res) => {
+          if(res === 'logout') return navigation.navigate('LoginScreen');
           console.log(res.status);
           // console.log(res?.err ? res?.err.status : 'pass');
         })

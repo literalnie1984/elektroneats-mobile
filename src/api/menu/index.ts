@@ -1,20 +1,25 @@
 import { fetchForJSON } from "../fetch";
-import { DailyMenu, FetchedDinner, WeeklyMenu } from "./types";
+import { ErrorFunction } from "../types";
+import { DailyMenu, FetchedDinner, FetchedLastUpdate, WeeklyMenu } from "./types";
 import { parseFetchedDinners } from "./utils";
 
-const getWeeklyMenu = async (): Promise<WeeklyMenu | null> => {
-  const data = await fetchForJSON<FetchedDinner[][]>({ path: "menu/", method: "GET" });
+const getWeeklyMenu = async (error?: ErrorFunction): Promise<WeeklyMenu | null> => {
+  const data = await fetchForJSON<FetchedDinner[][]>({ path: "menu/", method: "GET", error });
   return data ? data.map((x) => parseFetchedDinners(x)) : data;
 };
 
-const getTodaysMenu = async (): Promise<DailyMenu | null> => {
-  const data = await fetchForJSON<FetchedDinner[]>({ path: "menu/today", method: "GET" });
+const getTodaysMenu = async (error?: ErrorFunction): Promise<DailyMenu | null> => {
+  const data = await fetchForJSON<FetchedDinner[]>({ path: "menu/today", method: "GET", error });
   return data ? parseFetchedDinners(data) : data;
 };
 
-const getMenuByDay = async (day: number): Promise<DailyMenu | null> => {
-  const data = await fetchForJSON<FetchedDinner[]>({ path: `menu/day/${day}`, method: "GET" });
+const getMenuByDay = async (day: number, error?: ErrorFunction): Promise<DailyMenu | null> => {
+  const data = await fetchForJSON<FetchedDinner[]>({ path: `menu/day/${day}`, method: "GET", error });
   return data ? parseFetchedDinners(data) : data;
 };
 
-export default { getWeeklyMenu, getTodaysMenu, getMenuByDay };
+const getLastMenuUpdate = async (error?: ErrorFunction): Promise<FetchedLastUpdate | null> => (
+  fetchForJSON<FetchedLastUpdate>({ path: "menu/last-update", method: "GET", error })
+);
+
+export default { getWeeklyMenu, getTodaysMenu, getMenuByDay, getLastMenuUpdate };
