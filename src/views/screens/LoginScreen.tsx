@@ -107,9 +107,8 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     setIsLoading(false);
 
     if (data) {
-      console.log(data);
       setTokens(data);
-      if (rememberMe) await SecureStore.setItemAsync("tokens", JSON.stringify(tokens));
+      if (rememberMe) await SecureStore.setItemAsync("tokens", JSON.stringify(data));
       navigation.navigate("TabsView");
     }
   };

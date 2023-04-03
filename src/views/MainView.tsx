@@ -35,6 +35,17 @@ const MainView = () => {
 
   useEffect(() => {
     (async function(){
+      const tokens = await SecureStore.getItemAsync("tokens");
+      console.log(`Getting tokens from SecureStore\nValue: ${tokens}\nType: ${typeof tokens}`);
+      if (tokens && tokens !== 'null') {
+        console.log("tokens exist -> forcing TabsView");
+        setInitialRoute("TabsView");
+        setTokens(JSON.parse(tokens));
+      } else {
+        console.log("tokens doesnt exist -> forcing LoginScreen");
+        setInitialRoute("LoginScreen");
+      }
+
       // MENU
       async function updateWeeklyMenu() {
         const weeklyMenu = await getWeeklyMenu();
@@ -64,22 +75,12 @@ const MainView = () => {
           }
         }
       }
+
+      setAppIsReady(true);
     })();
   }, []);
 
-  useEffect(() => {
-    SecureStore.getItemAsync("tokens").then((data) => {
-      if (data) {
-        console.log("token has been found in securestore and saved successfully");
-        setInitialRoute("TabsView");
-      } else {
-        console.log("no token in securestore");
-        setInitialRoute("LoginScreen");
-      }
-      setTokens(JSON.parse((data ?? "{}")));
-      setAppIsReady(true);
-    });
-  }, []);
+
 
   if (!appIsReady || initialRoute === null) {
     return null;
