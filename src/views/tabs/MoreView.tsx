@@ -1,5 +1,7 @@
 import { View, Text, Pressable } from "react-native";
 import { moreViewStyles } from "../../styles";
+import { themeAtom } from "../utils/options";
+import { getRecoil } from "recoil-nexus";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faPalette, faWallet, faEllipsis, faFingerprint, faInfo, } from "@fortawesome/free-solid-svg-icons";
 import { useNavigation } from "@react-navigation/native";

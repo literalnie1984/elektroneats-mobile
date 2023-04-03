@@ -17,14 +17,15 @@ import * as SecureStore from "expo-secure-store";
 import OrderDetailsView from "./stack/OrderDetailsView";
 import PaymentView from "../components/PaymentView";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {defaultSettings, settingsAtom} from "./utils/options";
+import { Text } from "react-native";
 
 SplashScreen.preventAutoHideAsync();
+
+let device_theme: string; 
 
 export const Stack = createStackNavigator<RootStackParamList>();
 const MainView = () => {
   const [menu, setMenu] = useRecoilState(menuAtom);
-  const [ settings, setSettings ] = useRecoilState(settingsAtom);
   const [tokens, setTokens] = useRecoilState(userTokensAtom);
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
   const [appIsReady, setAppIsReady] = useState(false);
@@ -76,9 +77,9 @@ const MainView = () => {
         console.log("no token in securestore");
         setInitialRoute("LoginScreen");
       }
-      setTokens(JSON.parse((data ?? "{}")));
-      setAppIsReady(true);
-    });
+      setTokens(JSON.parse((data ?? "{}")))
+    })
+	.then( () => setAppIsReady(true) );
   }, []);
 
   if (!appIsReady || initialRoute === null) {
@@ -113,3 +114,4 @@ const MainView = () => {
 };
 
 export default MainView;
+export { device_theme };

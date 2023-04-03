@@ -6,10 +6,13 @@ import { useRecoilValue } from "recoil";
 import { userTokenSelector } from "../utils/user";
 import { useNavigation } from "@react-navigation/native";
 import { OrderData, OrderStatus } from "../../api/orders/types";
-import { cartViewStyles, newOrder, orderViewStyles } from "../../styles";
+import { cartViewStyles, newOrder, orderViewStyles, } from "../../styles";
 import jwt_decode from "jwt-decode";
+import { themeAtom } from "../utils/options";
+import { getRecoil } from "recoil-nexus";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faFaceMeh } from "@fortawesome/free-solid-svg-icons";
+
 
 const formatDate = (timestampInSeconds: number): string => {
   const date = new Date(timestampInSeconds * 1000);

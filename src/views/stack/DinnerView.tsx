@@ -7,6 +7,9 @@ import { useRecoilState } from "recoil";
 import { API_URL } from "@env";
 import { menuAtom } from "../utils/menu";
 import { DailyMenu } from "../../api/menu/types";
+import { themeAtom } from "../utils/options";
+import { getRecoil } from "recoil-nexus";
+
 
 const baseURL = `${API_URL}image/`;
 const DinnerItemView = ({ item, backgroundColor, onPress }: DinnerItemProps) => {

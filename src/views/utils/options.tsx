@@ -1,16 +1,17 @@
 import { Settings, Setting, SettingType, SettingHandlerBind } from "../../types/index";
 import { atom, useRecoilState } from "recoil";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ToastAndroid } from "react-native";
+import { ToastAndroid, Appearance } from "react-native";
 import OptionSwitch from "../../components/OptionSwitch";
 import OptionNumberInput from "../../components/OptionNumberInput";
 import OptionTextInput from "../../components/OptionTextInput";
 import OptionSlider from "../../components/OptionSlider";
 import { View, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { OptionPickerProps, PickerItem } from "../../types/OptionComponentsTypes";
 import { optionPickerStyle } from "../../styles/OptionComponentsStyles";
+import { setDark } from "../../../global";
 
 const generateItemList = (itemArray: PickerItem[]): JSX.Element[] => {
   const componentArray: JSX.Element[] = itemArray.map((item: PickerItem) => {
@@ -21,25 +22,25 @@ const generateItemList = (itemArray: PickerItem[]): JSX.Element[] => {
 };
 
 const OptionPicker = ({ label, tag, value, onValueChange, optionsList, enabled, mode }: OptionPickerProps) => {
-  const options = useRef(generateItemList(optionsList));
-  console.log(optionsList.length);
-  console.log(options.current.length);
-  console.log(options.current[1]);
 
   const [ selectedOption, setSelectedOption ] = useState(value);
   const [ settings, setSettings ] = useRecoilState(settingsAtom);
+  const [ options, setOptions ] = useState(generateItemList(optionsList));
+
+  console.log( value );
 
   const setSetting = ( value: any ) => {
 		  const newSettings = settings.map( setting => {
 				if(setting.tag === tag){
-						setting = { ...setting, value };
-				} 
+						setting = {...setting, value}
+				};
+				console.log( setting );
 				return setting;
 		});
 
 		setSettings(newSettings);
   };
-  const handleChange = onValueChange ?? setSetting;
+  const handlePickChange = onValueChange ?? setSetting;
 
   return (
     <View style={optionPickerStyle.body}>
@@ -47,14 +48,14 @@ const OptionPicker = ({ label, tag, value, onValueChange, optionsList, enabled, 
       <Picker
         style={optionPickerStyle.picker}
         selectedValue={selectedOption}
-        onValueChange={ ( item ) => { setSelectedOption(item); handleChange( item ); } }
+        onValueChange={ ( item ) => { setSelectedOption(item); handlePickChange( item ); } }
         enabled={enabled ?? true}
         mode={mode ?? "dropdown"}
         dropdownIconColor={optionPickerStyle.dropdownIcon.color}
         dropdownIconRippleColor={optionPickerStyle.dropdownRipple.color}
         itemStyle={optionPickerStyle.itemStyle}
       >
-        {options.current}
+        {options}
       </Picker>
     </View>
   );
@@ -65,17 +66,65 @@ export default OptionPicker;
 
 export const settingsAtom = atom<Settings>({ key: 'settings', default: undefined });
 
-export const getSettingsByMenu = ( menu: string, settingsList: Settings ): Settings => {
-		return settingsList.filter( ( setting: Setting ) => setting.menu === menu );
+export const Options = () => {
+		const [ settings, setSettings ] = useRecoilState(settingsAtom);
+		
+		const readSettingsFromStorage = async () => {
+				try{
+						const readSettings = await AsyncStorage.getItem('settings');
+						if( readSettings === null ) throw new Error("No messages in storage");
+						setSettings(JSON.parse(readSettings));
+				} catch ( error ) {
+						console.log("Using default settings");
+						await writeSettingsToStorage();
+						setSettings(defaultSettings);
+				}
+		};
+
+		const writeSettingsToStorage = async() => {
+		
+		try{
+				const settingsJSON = JSON.stringify(settings);
+				await AsyncStorage.setItem('settings', settingsJSON);
+				settings.map( ( setting ) => {
+						AsyncStorage.setItem(`setting_${setting.tag}`, JSON.stringify(setting.value))
+						.then( () => { console.log(`setting ${setting.tag} saved in storage`) },
+						       () => { console.log(`failed saving setting ${setting.tag}!`) } );
+				} )
+
+				} catch ( error ) {
+						ToastAndroid.show("Wystąpił błąd podczas zapisu ustawień", ToastAndroid.SHORT);
+				}
+		};
+
+		useEffect(() => {
+				readSettingsFromStorage();
+		}, [])
+
+		useEffect( () => {
+				writeSettingsToStorage().then( () => {
+						let themeSetting =  getSetting('theme', settings)[0].value;
+						if( themeSetting === 'system' ){
+								themeSetting = Appearance.getColorScheme();
+						};
+						setDark( themeSetting === 'dark' );
+				});
+		}, [ settings ] )
+
+		return null;
 };
+
+export const getSettingsByMenu = ( menu: string, settingsList: Settings ): Settings => {
+				return settingsList.filter( ( setting: Setting ) => setting.menu === menu );
+		};
 
 export const getSettingsBySection = ( section: string, settingsList: Settings ): Settings => {
-		return settingsList.filter( ( setting: Setting ) => setting.section === section );
-};
+				return settingsList.filter( ( setting: Setting ) => setting.section === section );
+		};
 
 export const getSetting = ( tag: string, settings: Settings ) => {
-		return settings.filter( ( setting: Setting ) => setting.tag === tag );
-}
+				return settings.filter( ( setting: Setting ) => setting.tag === tag );
+		};
 
 export const setSetting = ( tag: string, value: any ): void => {
 		const [ settings, setSettings ] = useRecoilState( settingsAtom );
@@ -85,26 +134,7 @@ export const setSetting = ( tag: string, value: any ): void => {
 		setSettings([ ...settings, setting ]);
 };
 
-export const readSettingsFromStorage = async () => {
-		const [ _, setSettings ] = useRecoilState(settingsAtom);
-		
-		const readSettings = await AsyncStorage.getItem('settings');
-
-		readSettings ? setSettings( JSON.parse(readSettings) ) : setSettings( [] );
-};
-
-export const writeSettingsToStorage = async( settings: Settings ) => {
-		const [ _, setSettings ] = useRecoilState(settingsAtom);
-		
-		try{
-				const settingsJSON = JSON.stringify(settings);
-				await AsyncStorage.setItem('settings', settingsJSON);
-		} catch ( error ) {
-				ToastAndroid.show("Wystąpił błąd podczas zapisu ustawień", ToastAndroid.SHORT);
-		}
-};
-
-export const parseSettingsToComponents = ( settings: Settings, handlerBinds?: SettingHandlerBind[] ): JSX.Element[] => {
+export const parseSettingsToComponents = ( settings: Settings, handlerBinds?: SettingHandlerBind[] ): JSX.Element[] | undefined[] => {
 		const componentList = settings.map( (setting) => {
 				switch( setting.type ){
 						case SettingType.Switch:{
@@ -125,7 +155,7 @@ export const parseSettingsToComponents = ( settings: Settings, handlerBinds?: Se
 								return ( <OptionPicker 
 												label={setting.name}
 												tag={setting.tag}
-												value={setting.tag}
+												value={setting.value}
 												optionsList={setting.props.optionsList}
 												onValueChange={handlerBind?.handler}
 												enabled={!settings.props?.disabled}
@@ -183,7 +213,7 @@ export const parseSettingsToComponents = ( settings: Settings, handlerBinds?: Se
 		return componentList;
 };
 
-export const defaultSettings: Settings = [
+const defaultSettings: Settings = [
 		{
 				name: "Motyw",
 				tag: 'theme',

@@ -4,6 +4,7 @@ import { COLORS } from "../colors";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { newOrder } from "../../styles";
 
+
 const orderDetails = StyleSheet.create({
   container: {
     // paddingTop: 16
@@ -88,6 +89,8 @@ interface OrderItemProps {
 }
 
 export const DinnerOrderItem = ({ navigation }: OrderItemProps) => {
+
+
   const showOrderContent = () => {
     navigation.navigate('DinnerView');
   };
@@ -107,6 +110,7 @@ export const DinnerOrderItem = ({ navigation }: OrderItemProps) => {
 };
 
 const OrderDetailsView = ({ route, navigation }: OrderDetailsViewProps) => {
+  
   const { id, username, collectionDate, status, data } = route.params;
   return (
     <View style={orderDetails.container}>
