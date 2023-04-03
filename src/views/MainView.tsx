@@ -64,18 +64,21 @@ const MainView = () => {
           }
         }
       }
+    })();
+  }, []);
 
-      // TOKENS
-      const tokens = await SecureStore.getItemAsync("tokens");
-      if(tokens) {
+  useEffect(() => {
+    SecureStore.getItemAsync("tokens").then((data) => {
+      if (data) {
+        console.log("token has been found in securestore and saved successfully");
         setInitialRoute("TabsView");
-        setTokens(JSON.parse(tokens));
       } else {
+        console.log("no token in securestore");
         setInitialRoute("LoginScreen");
       }
-	  setSettings(defaultSettings);
+      setTokens(JSON.parse((data ?? "{}")));
       setAppIsReady(true);
-    })();
+    });
   }, []);
 
   if (!appIsReady || initialRoute === null) {

@@ -536,6 +536,7 @@ export const authStyle = StyleSheet.create({
   innerContainer: { paddingTop: 20, paddingHorizontal: 20 },
   imageContainer: {display: 'flex', flexDirection: 'column', alignItems: 'center'},
   appName: {
+    marginVertical: 30,
     // fontSize: 45,
     // fontWeight: "bold",
     // textTransform: "uppercase",
