@@ -1,4 +1,5 @@
 import { ToastAndroid } from "react-native";
+import { useEffect } from "react";
 import { View, Text, Button } from "react-native";
 import { useRecoilState } from "recoil";
 import { createOrders } from "../api";
@@ -11,14 +12,26 @@ const WalletCheckout = ({ isDisplayed, setIsLoading, body, orderValue, unDisplay
   const [balance, __] = useRecoilState(balanceAtom);
   const [tokens, _] = useRecoilState(userTokensAtom);
 
+  useEffect( () => {
+    console.log(`Body: ${body}`);
+	console.log(`value: ${orderValue}`);
+  }, [] )
+
   const handleConfirm = async () => {
     console.log(body);
     setIsLoading(true);
     createOrders(body, tokens?.accessToken, (res) => {
-      console.log(res.status);
-      res.text().then((value) => console.log(value));
-      console.log(res?.err ? res?.err.status : "pass");
-    }).then((value) => {
+		console.log(`${JSON.stringify(body)}`);
+      if(res !== "logout"){
+		console.log(res.status);
+		console.log(res?.err?.status ?? res?.status);
+		console.log(`${res.body}`);
+		res.text().then( (value) => { console.log(value); } )
+	  } else { 
+				console.log( res ); 
+				console.log(res.length);
+		}
+	  }).then((value) => {
       if (value) {
         unDisplay();
       } else {

@@ -11,27 +11,27 @@ const options = [
   {
     name: "Wygląd",
     icon: faPalette,
-    goto: "Look and Feel",
+    goto: "LookAndFeelView",
   },
   {
-    name: "Ustawienia płatności",
+    name: "Płatności",
     icon: faWallet,
-    goto: "Payment Settings",
+    goto: "PaymentSettingsView",
   },
   {
-    name: "Biometria i zabezpieczenia",
+    name: "Zabezpieczenia",
     icon: faFingerprint,
-    goto: "Biometrics and Security",
+    goto: "SecurityOptionsView",
   },
   {
     name: "Pozostałe",
     icon: faEllipsis,
-    goto: "Miscellaneous",
+    goto: "MiscellaneousView",
   },
   {
     name: "Informacje i autorzy",
     icon: faInfo,
-    goto: "Informations",
+    goto: "InformationsView",
   },
 ];
 

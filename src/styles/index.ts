@@ -555,7 +555,7 @@ export const authStyle = StyleSheet.create({
   },
 });
 
-export const paymentStyleBuilder = StyleSheet.create({
+export const paymentStyle = StyleSheet.create({
   paymentRoot: {
     flex: 1,
     paddingVertical: "15%",
