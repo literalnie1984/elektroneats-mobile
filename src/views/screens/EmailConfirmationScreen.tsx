@@ -1,4 +1,4 @@
-import { View, Text, Keyboard, StyleSheet, ToastAndroid } from "react-native";
+import { View, Text, Keyboard, StyleSheet, ToastAndroid, Image } from "react-native";
 import { useEffect, useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
 import Button from "../../components/Button";
@@ -86,7 +86,9 @@ const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) =
     <View style={authStyle.container}>
       <Spinner visible={isLoading} />
       <View style={authStyle.innerContainer}>
-        <Text style={authStyle.appName}>Kantyna App</Text>
+        <View style={authStyle.imageContainer}>
+          <Image style={authStyle.appName} source={require('../../../assets/cool-title.png')} />
+        </View>
         <Text style={{ ...authStyle.screenTitle, color: COLORS.darkGrey, fontSize: 28 }}>Weryfikacja adresu email</Text>
         <Text style={{ ...authStyle.screenDescription, fontSize: 16, marginTop: 10 }}>Wprowadź kod, który został wysłany twoją pocztę</Text>
         <View style={{ marginVertical: 0 }}>

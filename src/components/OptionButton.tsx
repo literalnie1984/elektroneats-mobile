@@ -6,8 +6,8 @@ const OptionButton = ({ pressAction, longPressAction, label }: { pressAction: (e
   return (
     <Pressable
       style={optionButtonStyle.body}
-      android_ripple={{
-        color: "#b5c7fd",
+	  android_ripple={{
+		color: optionButtonStyle.ripple.color,
         borderless: false,
         radius: 500,
         foreground: false,

@@ -131,8 +131,8 @@ const MenuBlank = (props: MenuBlankProps) => {
     <View style={props.containerStyle}>
       <View style={props.windowStyle}>
         <FontAwesomeIcon icon={faFaceSadTear} size={props.iconStyle.fontSize} color={String(props.iconStyle.color)} />
-        <Text style={props.headingStyle}>Oops</Text>
-        <Text style={props.textStyle}>It looks like we have some problem with menu fetching. Please try again later.</Text>
+        <Text style={props.headingStyle}>Ups</Text>
+        <Text style={props.textStyle}>Wystąpił błąd podczas pobierania jadłospisu. Spróbuj ponownie później..</Text>
       </View>
     </View>
   );

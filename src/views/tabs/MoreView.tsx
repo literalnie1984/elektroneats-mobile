@@ -1,33 +1,35 @@
 import { View, Text, Pressable } from "react-native";
 import { moreViewStyles } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faPalette, faWallet, faEllipsis, faFingerprint, faInfo, IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faPalette, faWallet, faEllipsis, faFingerprint, faInfo, } from "@fortawesome/free-solid-svg-icons";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
+import {useRecoilState} from "recoil";
+import {settingsAtom} from "../utils/options";
 
 const options = [
   {
-    name: "Look and Feel",
+    name: "Wygląd",
     icon: faPalette,
     goto: "Look and Feel",
   },
   {
-    name: "Payment Settings",
+    name: "Ustawienia płatności",
     icon: faWallet,
     goto: "Payment Settings",
   },
   {
-    name: "Biometrics and Security",
+    name: "Biometria i zabezpieczenia",
     icon: faFingerprint,
     goto: "Biometrics and Security",
   },
   {
-    name: "Miscellaneous",
+    name: "Pozostałe",
     icon: faEllipsis,
     goto: "Miscellaneous",
   },
   {
-    name: "Informations and Credits",
+    name: "Informacje i autorzy",
     icon: faInfo,
     goto: "Informations",
   },
@@ -36,10 +38,12 @@ const options = [
 const OptionButton = (props: any) => {
   const navigation = useNavigation<RootStackParamList>();
 
+  const [ settings, setSettings ] = useRecoilState(settingsAtom);
+
   return (
     <Pressable
       style={moreViewStyles.optionButton}
-      onPress={() => navigation.navigate(props.goto)}
+      onPress={() => navigation.navigate(props.goto, { title: props.optionName })}
       android_ripple={{
         color: "#9ab3fe",
         borderless: false,

@@ -1,33 +1,51 @@
 import { StyleSheet } from "react-native";
+import { COLORS } from "../views/colors";
 
 const optionSwitchStyle = StyleSheet.create({
   body: {
     width: "100%",
     flexDirection: "row",
-    flexWrap: "nowrap",
+    flexWrap: "wrap",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     padding: 10,
+	backgroundColor: COLORS.colar,
+	borderRadius: 10,
+	marginVertical: 20,
   },
   label: {
     fontSize: 16,
-    color: "#000",
+    color: COLORS.whiteColar,
     textAlign: "left",
   },
+  switchBody: {
+    width: 'auto',
+	flexDirection: "row",
+	flexWrap: 'nowrap',
+	alignItems: 'center',
+	justifyContent: 'center',
+	gap: 10,
+  },
+  tag: {
+		fontSize: 16,
+		paddingHorizontal: 5,
+		color: COLORS.gunmetal,
+		textAlign: 'center',
+  },
   switch: {
-    flexGrow: 1,
+		width: 40,
   },
   switchEnabled: {
-    color: "#b5c7fd",
+    color: COLORS.whiteColar,
   },
   switchDisabled: {
-    color: "#2246b6",
+    color: COLORS.chestnut,
   },
   trackEnabled: {
-    color: "#2246b6",
+    color: COLORS.darkerColar,
   },
   trackDisabled: {
-    color: "#b5c7fd",
+    color: COLORS.darkGrey,
   },
 });
 
@@ -41,59 +59,66 @@ const optionSliderStyle = StyleSheet.create({
     justifyContent: "center",
   },
   label: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: "center",
-    color: "#000",
+    color: COLORS.chestnut,
     marginBottom: 5,
   },
   currentValue: {
     fontSize: 16,
     textAlign: "center",
-    color: "#000",
+    color: COLORS.gunmetal,
   },
   slider: {
-    width: "90%",
+    width: "100%",
     height: 40,
   },
   minimumTrack: {
-    color: "#2246b6",
+    color: COLORS.darkColar,
   },
   maximumTrack: {
-    color: "#b5c7fd",
+    color: COLORS.lighterColar,
   },
   thumb: {
-    color: "#fff",
+    color: COLORS.colar,
   },
 });
 
 const optionPickerStyle = StyleSheet.create({
   body: {
-    width: "100%",
+    width: '90%',
     height: 50,
     flexDirection: "row",
-    flexWrap: "nowrap",
+    flexWrap: "wrap",
     alignItems: "center",
-    justifyContent: "space-between",
+	alignSelf: 'center',
+    justifyContent: "space-evenly",
     paddingVertical: 5,
     paddingHorizontal: 10,
-    gap: 25,
+	backgroundColor: COLORS.colar,
+	borderRadius: 10,
+	marginVertical: 30,
   },
   label: optionSwitchStyle.label,
   picker: {
-    height: 20,
-    flexGrow: 1,
-    color: "#000",
+    height: '100%',
+	width: '40%',
+	flexDirection: 'row',
+	flexWrap: 'nowrap',
+	alignItems: 'center',
+	justifyContent: 'center',
+    color: COLORS.gunmetal,
   },
   dropdownIcon: {
-    color: "#2246b6",
+    color: COLORS.chestnut,
   },
   dropdownRipple: {
-    color: "#b5c7fd",
+    color: COLORS.colar,
   },
   itemStyle: {
     fontSize: 16,
     textAlign: "right",
-    color: "#000",
+    color: COLORS.gunmetal,
   },
 });
 
@@ -111,8 +136,42 @@ const optionButtonStyle = StyleSheet.create({
     width: "80%",
     fontSize: 16,
     textAlign: "center",
-    color: "#000",
+    color: COLORS.chestnut,
   },
+  ripple: {
+		  color: COLORS.lighterColar,
+  }
 });
 
-export { optionSwitchStyle, optionSliderStyle, optionPickerStyle, optionButtonStyle };
+const optionInputStyle = StyleSheet.create({
+		body: {
+				width: "100%",
+				paddingVertical: 5,
+				flexDirection: "row",
+				flexWrap: 'nowrap',
+				alignItems: 'center',
+				justifyContent: 'center',
+				borderWidth: 1,
+				borderStyle: 'solid',
+				borderColor: COLORS.chestnut,
+				gap: 15,
+		},
+		label: {
+				fontSize: 16,
+				color: COLORS.chestnut,
+				textAlign: 'left',
+		},
+		input: {
+				flexGrow: 1,
+				fontSize: 16,
+				color: COLORS.gunmetal,
+		},
+		underline: {
+				color: COLORS.gunmetal,
+		},
+		cursor: {
+				color: COLORS.gunmetal,
+		},
+});
+
+export { optionSwitchStyle, optionSliderStyle, optionPickerStyle, optionButtonStyle, optionInputStyle };

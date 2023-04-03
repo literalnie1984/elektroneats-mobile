@@ -1,4 +1,4 @@
-import { View, Text, Keyboard, Alert, ToastAndroid, Pressable, StyleSheet } from "react-native";
+import { View, Text, Keyboard, Alert, ToastAndroid, Pressable, StyleSheet, Image } from "react-native";
 import { useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
 import Button from "../../components/Button";
@@ -118,7 +118,9 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     <View style={authStyle.container}>
       <Spinner visible={isLoading} />
       <View style={authStyle.innerContainer}>
-        <Text style={authStyle.appName}>Kantyna App</Text>
+        <View style={authStyle.imageContainer}>
+          <Image style={authStyle.appName} source={require('../../../assets/cool-title.png')} />
+        </View>
         <Text style={{ ...authStyle.screenTitle, color: COLORS.darkGrey }}>Logowanie</Text>
         <Text style={authStyle.screenDescription}>Wprowadź swoje dane logowania</Text>
         <View style={{ marginVertical: 0 }}>

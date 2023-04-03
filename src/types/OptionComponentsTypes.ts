@@ -2,6 +2,7 @@ import { Picker } from "@react-native-picker/picker";
 
 interface OptionSwitchProps {
   label: string;
+  tag: string;
   state: boolean;
   disabled: boolean;
   handleSwitch: (newValue: boolean) => void;
@@ -9,25 +10,27 @@ interface OptionSwitchProps {
 
 interface OptionSliderProps {
   label: string;
+  tag: string,
   value: number;
   disabled?: boolean;
   maxValue: number;
   minValue: number;
   step?: number;
-  handleValueChange: (value: number) => void;
+  handleValueChange?: (value: number) => void;
 }
 
 type PickerItem = {
   label: string;
-  value: string | number;
+  value: any;
   enabled?: boolean;
 };
 
 interface OptionPickerProps {
   label: string;
-  state: string | number;
-  stateModifier: (itemValue: string | number, itemPosition: number) => any;
+  tag: string,
+  value: any,
   optionsList: PickerItem[];
+  onValueChange?: ( value: any ) => any,
   enabled?: boolean;
   mode?: "dialog" | "dropdown";
 }
