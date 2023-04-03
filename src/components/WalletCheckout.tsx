@@ -8,24 +8,26 @@ import { WalletCheckoutProps } from "../types";
 import { userTokensAtom } from "../views/utils/user";
 import { balanceAtom } from "../views/utils/wallet";
 
+
 const WalletCheckout = ({ isDisplayed, setIsLoading, body, orderValue, unDisplay }: WalletCheckoutProps) => {
   const [balance, __] = useRecoilState(balanceAtom);
   const [tokens, _] = useRecoilState(userTokensAtom);
+  
 
   useEffect( () => {
-    console.log(`Body: ${body}`);
+    console.log(`Body: ${JSON.stringify(body)}`);
 	console.log(`value: ${orderValue}`);
   }, [] )
 
   const handleConfirm = async () => {
-    console.log(body);
+    console.log(JSON.stringify(body));
     setIsLoading(true);
     createOrders(body, tokens?.accessToken, (res) => {
 		console.log(`${JSON.stringify(body)}`);
       if(res !== "logout"){
 		console.log(res.status);
 		console.log(res?.err?.status ?? res?.status);
-		console.log(`${res.body}`);
+		console.log(`${JSON.stringify(res.body)}`);
 		res.text().then( (value) => { console.log(value); } )
 	  } else { 
 				console.log( res ); 
