@@ -138,7 +138,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
           <Button title="Zaloguj się" onPress={validate} />
           <Text onPress={() => navigation.navigate("RegistrationScreen")} style={loginStyle.noAccountContainer}>
             <View style={loginStyle.alignVertically}>
-              <PressableText leftText={"Nie masz konta?"} title={"Zarejstruj się"} fontSize={16} style={authStyle.changeScreenButton} onPress={() => navigation.navigate("RegistrationScreen")} />
+              <PressableText leftText={"Nie masz konta?"} title={"Zarejestruj się"} fontSize={16} style={authStyle.changeScreenButton} onPress={() => navigation.navigate("RegistrationScreen")} />
             </View>
           </Text>
         </View>

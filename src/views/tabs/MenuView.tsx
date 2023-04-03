@@ -6,7 +6,7 @@ import { faFaceSadTear } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import SegmentedSwitch from "../../components/SegmentedSwitch";
 import { ViewStyle } from "react-native";
-import { MenuVariantProps, MenuBlankProps, MenuItemProps, MenuItemContainerProps, RootStackParamList } from "../../types";
+import { MenuVariantProps, MenuBlankProps, MenuItemProps, MenuItemContainerProps, RootStackParamList, DinnerViewDisplayMode } from "../../types";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
@@ -49,7 +49,7 @@ const MenuVariant = (props: MenuVariantProps) => {
       <Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle]}>
         <Pressable
           style={menuViewStyles.menuVariantActionButton}
-          onPress={() => navigation.navigate("DinnerView", { dailyMenu: props.dailyMenu })}
+          onPress={() => navigation.navigate("DinnerView", { mode: DinnerViewDisplayMode.CREATE, data: props.dailyMenu })}
           android_ripple={{
             color: "#5376df",
             borderless: false,

@@ -6,11 +6,11 @@ import { faChevronUp, faChevronDown, faFaceMeh, faPlus, faMinus, faGear } from "
 import { FlashList } from "@shopify/flash-list";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { DateTimePickerAndroid, DateTimePickerEvent } from "@react-native-community/datetimepicker";
-import { CartItem, CartItemProps, CartItemType, CartPanelProps, CartSummaryProps, RootStackParamList } from "../../types/index";
+import { CartItem, CartItemProps, CartItemType, CartPanelProps, CartSummaryProps, DinnerViewDisplayMode, RootStackParamList } from "../../types/index";
 import { getDayOfWeekMnemonic } from "../../api/utils";
 import { calculateTotalCost, cartItemsAtom, convertCartItemsForApi } from "../utils/cart";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { getBalance, getClientData } from "../../api";
+import { createOrders, getBalance, getClientData } from "../../api";
 import { userTokenSelector } from "../utils/user";
 import { menuSelector } from "../utils/menu";
 import { orderContent } from "../stack/OrderDetailsView";
@@ -22,12 +22,12 @@ import { useNavigation } from "@react-navigation/native";
 const ANIMATION_DURATION = 300;
 const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
 
-const CartItemView = ({ index, item, handleAmountUpdate }: CartItemProps) => {
+const CartItemView = ({ index, item, handleAmountUpdate, navigation }: CartItemProps) => {
   const { data, type, cost, amount } = item;
   if (type === CartItemType.Item) return <View>TODO</View>;
-
+  
   const mealEditHandler = () => {
-    console.log("bruh");
+    navigation.navigate('DinnerView', { mode: DinnerViewDisplayMode.EDIT, data: item });
   };
 
   return (
@@ -98,46 +98,49 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
     if (!body) return console.log("convertion went wrong");
     if (!accessToken) return console.log("no token");
 
-    await getClientData(accessToken, (res) => {
-      if(res === 'logout') return navigation.navigate('LoginScreen');
-      console.log(res.status);
-      // console.log(res?.err ? res?.err.status : 'pass');
-    })
-      .then((value) => setWallet(value))
-      .then(() =>
-        getBalance(accessToken, (res) => {
-          if(res === 'logout') return navigation.navigate('LoginScreen');
-          console.log(res.status);
-          // console.log(res?.err ? res?.err.status : 'pass');
-        })
-      )
-      .then((value) => setBalance(value !== null ? value / 100 : value))
-      .then(() => usePayment(body, totalCost, cartPickupDate));
+    // await getClientData(accessToken, (res) => {
+    //   if(res === 'logout') return navigation.navigate('LoginScreen');
+    //   console.log(res.status);
+    //   // console.log(res?.err ? res?.err.status : 'pass');
+    // })
+    //   .then((value) => setWallet(value))
+    //   .then(() =>
+    //     getBalance(accessToken, (res) => {
+    //       if(res === 'logout') return navigation.navigate('LoginScreen');
+    //       console.log(res.status);
+    //       // console.log(res?.err ? res?.err.status : 'pass');
+    //     })
+    //   )
+    //   .then((value) => setBalance(value !== null ? value / 100 : value))
+    //   .then(() => usePayment(body, totalCost, cartPickupDate));
 
-    /*let error = '';
+    console.log(JSON.stringify(body));
+
+    let error = '';
     const hasSucceed = await createOrders(body, accessToken, (res) => {
-      console.log(res.status);
+        if(res === 'logout') return;
 
-      switch (res.status) {
-        case 400:
-          error = "Dodanie zamówienia nie powiodło się";
-          break;
-        case 500:
-          error = "Wystąpił błąd serwera";
-          break;
-        default:
-          error = `Wystąpił nieokreślony błąd (${res.status})`;
-          break;
-      }
-
-      ToastAndroid.show(error, ToastAndroid.SHORT);
+        switch (res.status) {
+          case 400:
+            error = "Dodanie zamówienia nie powiodło się";
+            break;
+          case 500:
+            error = "Wystąpił błąd serwera";
+            break;
+          default:
+            error = `Wystąpił nieokreślony błąd (${res.status})`;
+            break;
+        }
+        ToastAndroid.show(error, ToastAndroid.SHORT);
     });
+
+    console.log(hasSucceed);
 
     if (hasSucceed) {
       setCartItems([]);
       
       ToastAndroid.show("Order has been added", ToastAndroid.SHORT);
-    }*/
+    }
   };
 
   const containerAnimatedStyle = useAnimatedStyle(() => {
@@ -217,7 +220,7 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
 
 const CartPanelListItemSeparator = () => <View style={{ height: 20 }} />;
 
-const CartPanel = ({ cartItems, handleAmountUpdate }: CartPanelProps) => {
+const CartPanel = ({ cartItems, handleAmountUpdate, navigation }: CartPanelProps) => {
   return (
     <>
       <Text style={orderViewStyles.title}>Zawartość koszyka</Text>
@@ -226,7 +229,7 @@ const CartPanel = ({ cartItems, handleAmountUpdate }: CartPanelProps) => {
           contentContainerStyle={cartViewStyles.cartPanelList}
           data={cartItems}
           renderItem={({ item, index }: { item: CartItem; index: number }) => {
-            return <CartItemView index={index} item={item} handleAmountUpdate={handleAmountUpdate} />;
+            return <CartItemView index={index} item={item} handleAmountUpdate={handleAmountUpdate} navigation={navigation} />;
           }}
           estimatedItemSize={150}
           keyExtractor={(_, index) => String(index)}
@@ -381,7 +384,7 @@ const CartScreen = ({ navigation }: any) => {
     <View style={cartViewStyles.root}>
       {cartItems?.length !== 0 ? (
         <>
-          <CartPanel cartItems={cartItems} handleAmountUpdate={updateItemAmount} />
+          <CartPanel cartItems={cartItems} navigation={navigation} handleAmountUpdate={updateItemAmount} />
           <CartSummary
             cartItems={cartItems}
             setCartItems={setCartItems}

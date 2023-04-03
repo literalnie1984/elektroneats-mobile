@@ -13,7 +13,7 @@ export const userEmail = atom<string | null>({ key: "userEmail", default: null }
 export const userDataSelector = selector({
   key: "userData",
   get: ({ get }) => {
-    const accessToken = get(userTokensAtom)?.accessToken;
+    const accessToken = get(userTokensAtom)!.accessToken;
     if (accessToken) jwt_decode(accessToken) as UserDecodedData;
     else return null;
   },

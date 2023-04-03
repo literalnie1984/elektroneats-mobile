@@ -93,6 +93,11 @@ const getId = (item?: DinnerItem): number | null => {
   return item?.id ? item.id : null;
 };
 
+function generateId() {
+  return Math.random().toString(36).substring(2) +
+    (new Date()).getTime().toString(36);
+}
+
 export const calculateTotalCost = (selection: DinnerViewSelection, dailyMenu: DailyMenu) => {
   const findIndex = (sectionId: number, index: number) => {
     return selection.find((i) => i[0] === sectionId && i[1] === index)?.[2] ?? -1;
@@ -109,6 +114,7 @@ export const calculateTotalCost = (selection: DinnerViewSelection, dailyMenu: Da
 
 export const convertSelectionToCartItem = (selection: DinnerViewSelection, dailyMenu: DailyMenu): CartItemDinner => {
   return {
+    id: generateId(),
     type: CartItemType.Dinner,
     cost: calculateTotalCost(selection, dailyMenu),
     amount: 1,
@@ -152,6 +158,6 @@ export const convertCartItemsForApi = (menu: WeeklyMenu, cartItems: CartItem[], 
     collectionDate: Math.round(collectionDate.getTime() / 1000),
   };
 
-  console.log(body.dinners);
+  console.log(body.dinners[0]);
   return body;
 };

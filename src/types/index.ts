@@ -3,11 +3,12 @@ import { AnimatableValue, AnimatedStyleProp } from "react-native-reanimated";
 import { SetStateAction, Dispatch } from "react";
 import { DailyMenu, DinnerItem } from "../api/menu/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { OrderBody, CreateOrdersBody } from "../api/orders/types";
+import { OrderBody, CreateOrdersBody, OrderDinner } from "../api/orders/types";
 
 export type RootStackParamList = {
   [key: string]: any;
-  DinnerView: { dailyMenu: DailyMenu };
+  DinnerView: DinnerViewRoute;
+  OrderDetailsView: OrderProps;
 };
 
 export interface HeaderProps {
@@ -28,8 +29,10 @@ export interface ExpandableProps {
 
 export interface OrderProps {
   id: string;
-  title: string;
-  isRedeemed: boolean;
+  collectionDate: string;
+  username: string;
+  status: string;
+  data: OrderDinner[];
 }
 
 export type OrderDetailsViewProps = NativeStackScreenProps<RootStackParamList, "OrderDetailsView">;
@@ -105,7 +108,36 @@ export interface DinnerSelectProps {
   selectedIndex: InnerIndex;
   setSelectedIndex: (innerIndex: InnerIndex) => void;
   items: DinnerItem[];
+  isSelectable: boolean;
 }
+
+export enum DinnerViewDisplayMode {
+  CREATE = 1, // when creating new order for the cart
+  EDIT = 2, // after clicking the gear in the cart
+  INFO = 3  // after clicking on the item in order details
+}
+
+interface DinnerViewBase {
+  mode: DinnerViewDisplayMode;
+  data: object;
+}
+
+interface DinnerViewCreate extends DinnerViewBase {
+  mode: DinnerViewDisplayMode.CREATE;
+  data: DailyMenu;
+}
+
+interface DinnerViewEdit extends DinnerViewBase {
+  mode: DinnerViewDisplayMode.EDIT;
+  data: CartItemDinner;
+}
+
+interface DinnerViewInfo extends DinnerViewBase {
+  mode: DinnerViewDisplayMode.INFO;
+  data: never;
+}
+
+export type DinnerViewRoute = (DinnerViewCreate | DinnerViewEdit | DinnerViewInfo);
 
 export type DinnerViewProps = NativeStackScreenProps<RootStackParamList, "DinnerView">;
 
@@ -116,6 +148,7 @@ export enum CartItemType {
 }
 
 export interface CartItemBase {
+  id: string;
   type: CartItemType;
   cost: number;
   amount: number;
@@ -143,11 +176,13 @@ export interface CartItemProps {
   index: number;
   item: CartItem;
   handleAmountUpdate: (index: number, amountUpdate: number) => void;
+  navigation: any;
 }
 
 export interface CartPanelProps {
   cartItems: CartItem[];
   handleAmountUpdate: (index: number, amountUpdate: number) => void;
+  navigation: any;
 }
 
 export interface CartSummaryProps {
@@ -170,6 +205,7 @@ export interface UserDecodedData {
   username: string;
   email: string;
   is_admin: boolean;
+  is_verified: boolean;
   exp: number;
 }
 

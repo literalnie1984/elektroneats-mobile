@@ -723,3 +723,102 @@ export const paymentStyle = StyleSheet.create({
     color: COLORS.colar,
   },
 });
+
+export const orderViewStyles = StyleSheet.create({
+  container: {
+    // backgroundColor: '#ebf2ff',
+    // backgroundColor: '#f5f8ff',
+    paddingTop: 20,
+  },
+  title: {
+    fontSize: 20,
+    color: COLORS.colar,
+    // fontWeight: 'bold',
+    marginLeft: 20,
+    marginBottom: 10,
+  },
+  orderContainer: {
+    marginBottom: 15,
+    width: "100%",
+    flex: 1,
+    alignItems: "center",
+  },
+  topPressableContainer: {
+    backgroundColor: "#2246b6",
+    color: "#fff",
+    width: "85%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 8,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    height: 40,
+  },
+  expandableContainer: {
+    backgroundColor: "#557dfa",
+    color: "#fff",
+    width: "85%",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  orderText: {
+    color: "#fff",
+    fontSize: 18,
+  },
+  noBottomBorder: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+});
+
+export const newOrder = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  orderContainer: {
+    backgroundColor: "#fff",
+    // borderColor: '#afc0ed',
+    // borderWidth: 1,
+    marginBottom: 24,
+    padding: 10,
+    width: "90%",
+    borderRadius: 10,
+    shadowColor: COLORS.chestnut,
+    elevation: 6,
+  },
+  infoContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  buttonContainer: {
+    marginHorizontal: 12,
+  },
+  pairRow: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    marginHorizontal: 12,
+  },
+  pairItem: {
+    marginVertical: 8,
+  },
+  buttonText: {
+    textAlign: "right",
+    fontSize: 13,
+    color: "#525e70",
+    paddingTop: 10,
+    paddingBottom: 2,
+  },
+  label: {
+    // color: "#a3a3a3",
+    color: "#abb8c9",
+    textTransform: "uppercase",
+    fontSize: 12,
+  },
+  content: {
+    fontSize: 16,
+  },
+});

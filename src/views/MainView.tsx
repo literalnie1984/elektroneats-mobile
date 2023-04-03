@@ -52,7 +52,7 @@ const MainView = () => {
           updateWeeklyMenu();
         } else {
           const savedLastMenuUpdateNum = Number(savedLastMenuUpdate);
-          if(!isNaN(savedLastMenuUpdateNum) && 200000000000 > currTimeInSec) {
+          if(!isNaN(savedLastMenuUpdateNum) && lastUpdate > currTimeInSec) {
             AsyncStorage.setItem('lastMenuUpdate', currTimeInSec.toString());
             updateWeeklyMenu();
           } else {
@@ -64,15 +64,15 @@ const MainView = () => {
       }
 
       // TOKENS
-      const tokens = await SecureStore.getItemAsync("tokens");
-      if(tokens) {
-        setInitialRoute("TabsView");
-        setTokens(JSON.parse(tokens));
-      } else {
-        setInitialRoute("LoginScreen");
-      }
-
-      setAppIsReady(true);
+      SecureStore.getItemAsync("tokens").then(tokens => {
+        if(tokens != 'null') {
+          setInitialRoute("LoginScreen");
+        } else {
+          setInitialRoute("TabsView");
+          setTokens(JSON.parse(tokens!));
+        }
+        setAppIsReady(true);
+      })
     })();
   }, []);
 

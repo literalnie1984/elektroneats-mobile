@@ -1,7 +1,8 @@
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
-import { newOrder } from "../tabs/OrdersView";
-import { OrderDetailsViewProps } from "../../types";
+import { OrderDetailsViewProps, RootStackParamList } from "../../types";
 import { COLORS } from "../colors";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { newOrder } from "../../styles";
 
 const orderDetails = StyleSheet.create({
   container: {
@@ -80,13 +81,15 @@ export const orderContent = StyleSheet.create({
   },
 });
 
+export type EmailConfirmationScreenProps = NativeStackScreenProps<RootStackParamList, "EmailConfirmationScreen">;
+
 interface OrderItemProps {
   navigation?: OrderDetailsViewProps["navigation"];
 }
 
-export const OrderItem = ({ navigation }: OrderItemProps) => {
+export const DinnerOrderItem = ({ navigation }: OrderItemProps) => {
   const showOrderContent = () => {
-    // navigation.navigate('DinnerView');
+    navigation.navigate('DinnerView');
   };
 
   return (
@@ -103,9 +106,8 @@ export const OrderItem = ({ navigation }: OrderItemProps) => {
   );
 };
 
-const placeholderUri = "https://images.immediate.co.uk/production/volatile/sites/30/2022/03/Speedy-stroganoff-pasta-dbb29a0.jpg?quality=90&resize=556,505";
-
 const OrderDetailsView = ({ route, navigation }: OrderDetailsViewProps) => {
+  const { id, username, collectionDate, status, data } = route.params;
   return (
     <View style={orderDetails.container}>
       <Text style={orderDetails.categoryText}>Informacje:</Text>
@@ -114,36 +116,28 @@ const OrderDetailsView = ({ route, navigation }: OrderDetailsViewProps) => {
           <View style={orderDetails.pairRow}>
             <View style={orderDetails.pairItem}>
               <Text style={orderDetails.label}>Nr zamówienia</Text>
-              <Text style={{ ...orderDetails.content, fontSize: 20 }}>0001</Text>
+              <Text style={{ ...orderDetails.content, fontSize: 20 }}>{id}</Text>
             </View>
             <View style={orderDetails.pairItem}>
-              <Text style={orderDetails.label}>Odborca</Text>
-              <Text style={orderDetails.content}>Jan Kowalski</Text>
-            </View>
-            <View style={orderDetails.pairItem}>
-              <Text style={orderDetails.label}>Kwota transakcji</Text>
-              <Text style={orderDetails.content}>16,50 zł</Text>
+              <Text style={orderDetails.label}>Odbiorca</Text>
+              <Text style={orderDetails.content}>{username}</Text>
             </View>
           </View>
           <View style={orderDetails.pairRow}>
             <View style={orderDetails.pairItem}>
               <Text style={orderDetails.label}>Status</Text>
-              <Text style={{ ...orderDetails.content, fontWeight: "bold" }}>Zarejestrowane</Text>
+              <Text style={{ ...orderDetails.content, fontWeight: "bold" }}>{status}</Text>
             </View>
             <View style={orderDetails.pairItem}>
               <Text style={orderDetails.label}>Data odbioru</Text>
-              <Text style={orderDetails.content}>03.04.23{"\n"}11:15 (pon.)</Text>
-            </View>
-            <View style={orderDetails.pairItem}>
-              <Text style={orderDetails.label}>Metoda płatności</Text>
-              <Text style={orderDetails.content}>BLIK</Text>
+              <Text style={orderDetails.content}>{collectionDate}</Text>
             </View>
           </View>
         </View>
       </View>
       <Text style={orderDetails.categoryText}>Zawartość zamówienia:</Text>
       <View style={orderDetails.center}>
-        <OrderItem navigation={navigation} />
+        <DinnerOrderItem navigation={navigation} />
       </View>
     </View>
   );

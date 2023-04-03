@@ -1,13 +1,14 @@
 import { View, Text, SectionList, ScrollView, Image, TouchableOpacity, Button, ToastAndroid } from "react-native";
 import { dinnerViewStyles } from "../../styles";
-import { useState } from "react";
-import { DinnerData, DinnerItemProps, DinnerSelectProps, DinnerViewProps, DinnerViewSelection, InnerIndex } from "../../types";
-import { cartItemsAtom, convertSelectionToCartItem } from "../utils/cart";
+import { useEffect, useState } from "react";
+import { DinnerData, DinnerItemProps, DinnerSelectProps, DinnerViewDisplayMode, DinnerViewProps, DinnerViewSelection, InnerIndex } from "../../types";
+import { calculateTotalCost, cartItemsAtom, convertSelectionToCartItem } from "../utils/cart";
 import { useRecoilState } from "recoil";
 import { API_URL } from "@env";
+import { menuAtom } from "../utils/menu";
+import { DailyMenu } from "../../api/menu/types";
 
 const baseURL = `${API_URL}image/`;
-
 const DinnerItemView = ({ item, backgroundColor, onPress }: DinnerItemProps) => {
   const { name, uri } = item;
   return (
@@ -20,7 +21,7 @@ const DinnerItemView = ({ item, backgroundColor, onPress }: DinnerItemProps) => 
   );
 };
 
-const DinnerSelect = ({ selectedIndex, setSelectedIndex, items }: DinnerSelectProps) => {
+const DinnerSelect = ({ selectedIndex, setSelectedIndex, items, isSelectable }: DinnerSelectProps) => {
   return (
     <ScrollView horizontal={true} nestedScrollEnabled={false}>
       {items.map((item, index) => {
@@ -30,6 +31,9 @@ const DinnerSelect = ({ selectedIndex, setSelectedIndex, items }: DinnerSelectPr
           <DinnerItemView
             key={item.id}
             onPress={() => {
+              console.log(selectedIndex, index)
+              if (isSelectable === false) return;
+
               if (selectedIndex === index) setSelectedIndex(null);
               else setSelectedIndex(index);
             }}
@@ -43,17 +47,65 @@ const DinnerSelect = ({ selectedIndex, setSelectedIndex, items }: DinnerSelectPr
 };
 
 const DinnerView = ({ route, navigation }: DinnerViewProps) => {
-  const { dailyMenu } = route.params;
-  const [selection, setSelection] = useState<DinnerViewSelection>([]);
-  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
+  const { mode } = route.params;
 
-  const sections: DinnerData[] = [
-    { id: 0, section: "Danie główne", data: [dailyMenu.main] },
-    { id: 1, section: "Dodatki", data: [dailyMenu.extras.fillers, dailyMenu.extras.salads, dailyMenu.extras.beverages] },
-    { id: 2, section: "Zupa", data: [[dailyMenu.soup]] },
-  ];
+  const [sections, setSections] = useState<DinnerData[]>();
+  const [selection, setSelection] = useState<DinnerViewSelection>();
+  const [dailyMenu, setDailyMenu] = useState<DailyMenu>();
+  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
+  const isSelectable = (mode !== DinnerViewDisplayMode.INFO);
+  const [menu] = useRecoilState(menuAtom);
+
+  console.log(selection);
+
+  useEffect(() => {
+    let sections: DinnerData[];
+    let defaultSelection: DinnerViewSelection = [];
+    let dailyMenu: DailyMenu;
+
+    switch(mode) {
+      case DinnerViewDisplayMode.CREATE: {
+        dailyMenu = route.params.data;
+        sections = [
+          { id: 0, section: "Danie główne", data: [dailyMenu.main] },
+          { id: 1, section: "Dodatki", data: [dailyMenu.extras.fillers, dailyMenu.extras.salads, dailyMenu.extras.beverages] },
+          { id: 2, section: "Zupa", data: [[dailyMenu.soup]] },
+        ];
+      } break;
+  
+      case DinnerViewDisplayMode.EDIT: {
+        const cartItemData = route.params.data;
+  
+        dailyMenu = menu![cartItemData.data.weekday];
+        defaultSelection = cartItemData.data.selection;
+  
+        sections = [
+          { id: 0, section: "Danie główne", data: [dailyMenu.main] },
+          { id: 1, section: "Dodatki", data: [dailyMenu.extras.fillers, dailyMenu.extras.salads, dailyMenu.extras.beverages] },
+          { id: 2, section: "Zupa", data: [[dailyMenu.soup]] },
+        ];
+      } break;
+  
+      case DinnerViewDisplayMode.INFO: {
+        const cartItemData = route.params.data;
+  
+        // sections = [
+        //   { id: 0, section: "Danie główne", data: [dailyMenu.main] },
+        //   { id: 1, section: "Dodatki", data: [dailyMenu.extras.fillers, dailyMenu.extras.salads, dailyMenu.extras.beverages] },
+        //   { id: 2, section: "Zupa", data: [[dailyMenu.soup]] },
+        // ];
+      }
+    }
+
+    setSections(sections!);
+    setSelection(defaultSelection);
+    setDailyMenu(dailyMenu!);
+  }, [])
+
+  if(!selection || !dailyMenu) return <Text>test</Text>;
 
   const handleAddToCart = () => {
+    if(mode !== DinnerViewDisplayMode.CREATE) return;
     const mainDishSelection = selection.find((i) => i[0] === 0);
     if (!mainDishSelection) return ToastAndroid.show("Musisz wybrać danie główne!", ToastAndroid.SHORT);
 
@@ -62,10 +114,42 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
     navigation.goBack();
   };
 
+  const handleEditCart = () => {
+    if(mode !== DinnerViewDisplayMode.EDIT) return;
+
+    const cartItem = route.params.data;
+    const index = cartItems.findIndex(i => i.id === cartItem.id);
+    if(index === -1 || !menu) return navigation.goBack();
+
+    cartItem.data.selection = selection;
+    const cost = calculateTotalCost(selection, menu[cartItem.data.weekday]);
+    cartItem.cost = cost;
+
+    cartItems[index] = cartItem;
+
+    setCartItems([...cartItems]);
+    navigation.goBack();
+  }
+
+  let onPress: any;
+  switch(mode) {
+    case DinnerViewDisplayMode.CREATE: {
+      onPress = handleAddToCart;
+    } break;
+
+    case DinnerViewDisplayMode.EDIT: {
+      onPress = handleEditCart;
+    } break;
+
+    case DinnerViewDisplayMode.INFO: {
+      onPress = null;
+    } break;
+  }
+
   return (
     <View style={dinnerViewStyles.container}>
       <SectionList
-        sections={sections}
+        sections={sections!}
         keyExtractor={(_, index) => index.toString()}
         renderItem={(data) => {
           const changeSelected = (innerIndex: InnerIndex) => {
@@ -74,21 +158,24 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
             if (selectedIndex === -1) {
               setSelection([...selection, [data.section.id, data.index, innerIndex]]);
             } else {
-              selection[selectedIndex][2] = innerIndex;
-              setSelection([...selection]);
+              const selectionCopy = JSON.parse(JSON.stringify(selection));
+              selectionCopy[selectedIndex][2] = innerIndex;
+              setSelection(selectionCopy);
             }
           };
 
           const selectedObj = selection.find((i) => i[0] === data.section.id && i[1] === data.index);
           const selectedIndex = selectedObj ? selectedObj[2] : null;
 
-          return <DinnerSelect selectedIndex={selectedIndex} setSelectedIndex={changeSelected} items={data.item} />;
+          return <DinnerSelect selectedIndex={selectedIndex} setSelectedIndex={changeSelected} items={data.item} isSelectable={isSelectable} />;
         }}
         renderSectionHeader={({ section: { section } }) => <Text style={dinnerViewStyles.title}>{section}</Text>}
       />
-      <View>
-        <Button title={"Dodaj do koszyka"} onPress={handleAddToCart} />
-      </View>
+      { onPress &&
+        <View>
+          <Button title={"Dodaj do koszyka"} onPress={onPress!} />
+        </View>
+      }
     </View>
   );
 };

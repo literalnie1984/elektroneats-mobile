@@ -1,10 +1,9 @@
 import { BottomTabHeaderProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faUtensils, faTableList, faBasketShopping, faEllipsisVertical, faStore, faGear } from "@fortawesome/free-solid-svg-icons";
+import { faUtensils, faTableList, faBasketShopping, faStore, faGear } from "@fortawesome/free-solid-svg-icons";
 import HeaderView from "./HeaderView";
 import OrdersScreen from "./tabs/OrdersView";
 import MenuScreen from "./tabs/MenuView";
-import ShopScreen from "./tabs/NewOrderView";
 import CartScreen from "./tabs/CartView";
 import MoreScreen from "./tabs/MoreView";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -63,7 +62,6 @@ const TabsView = ({ navigation }: any) => {
       })}
     >
       <Tab.Screen name="Jadłospis" component={MenuScreen} />
-      {/* <Tab.Screen name="Zamów" component={ShopScreen} /> */}
       <Tab.Screen name="Koszyk" component={CartScreen} />
       <Tab.Screen name="Zamówienia" component={OrdersScreen} />
       <Tab.Screen name="Ustawienia" component={MoreScreen} />

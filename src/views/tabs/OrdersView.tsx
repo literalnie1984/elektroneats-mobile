@@ -1,170 +1,68 @@
 import { useEffect, useState } from "react";
-import { View, Text, Pressable, StyleSheet, SectionList, ToastAndroid, TouchableOpacity } from "react-native";
-import ExpandableView from "../../components/ExpandableView";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { OrderProps, RootStackParamList } from "../../types";
+import { View, Text, SectionList, ToastAndroid, TouchableOpacity, RefreshControl } from "react-native";
+import { OrderProps, RootStackParamList, UserDecodedData } from "../../types";
 import { getPendingUserOrders } from "../../api";
 import { useRecoilValue } from "recoil";
 import { userTokenSelector } from "../utils/user";
 import { useNavigation } from "@react-navigation/native";
-import { COLORS } from "../colors";
+import { OrderData, OrderStatus } from "../../api/orders/types";
+import { newOrder, orderViewStyles } from "../../styles";
+import jwt_decode from "jwt-decode";
 
-export const orderViewStyles = StyleSheet.create({
-  container: {
-    // backgroundColor: '#ebf2ff',
-    // backgroundColor: '#f5f8ff',
-    paddingTop: 20,
-  },
-  title: {
-    fontSize: 20,
-    color: COLORS.colar,
-    // fontWeight: 'bold',
-    marginLeft: 20,
-    marginBottom: 10,
-  },
-  orderContainer: {
-    marginBottom: 15,
-    width: "100%",
-    flex: 1,
-    alignItems: "center",
-  },
-  topPressableContainer: {
-    backgroundColor: "#2246b6",
-    color: "#fff",
-    width: "85%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 8,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    height: 40,
-  },
-  expandableContainer: {
-    backgroundColor: "#557dfa",
-    color: "#fff",
-    width: "85%",
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-  },
-  orderText: {
-    color: "#fff",
-    fontSize: 18,
-  },
-  noBottomBorder: {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-});
+const formatDate = (timestampInSeconds: number): string => {
+  const date = new Date(timestampInSeconds * 1000);
+  const daysOfWeek = ["nd.", "pon.", "wt.", "śr.", "czw.", "pt.", "sob."];
+  const dayOfWeek = daysOfWeek[date.getUTCDay()];
+  const dayOfMonth = date.getUTCDate().toString().padStart(2, "0");
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0"); 
+  const year = date.getUTCFullYear().toString().slice(-2);
+  const hours = date.getUTCHours().toString().padStart(2, "0");
+  const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+  return `${dayOfWeek} | ${dayOfMonth}.${month}.${year} | ${hours}:${minutes}`;
+}
 
-const Order = (props: OrderProps) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+const getStatus = (status: OrderStatus): string => {
+  switch(status) {
+      case OrderStatus.Paid: return "Opłacony";
+      case OrderStatus.Prepared: return "Przygotowywany";
+      case OrderStatus.Ready: return "Gotowy do odbioru";
+      case OrderStatus.Collected: return "Odebrany";
+  }
+}
 
-  return (
-    <View style={{ ...orderViewStyles.orderContainer, ...(props.isRedeemed ? { opacity: 0.5 } : {}) }}>
-      <Pressable onPress={() => setIsExpanded(!isExpanded)} style={{ ...orderViewStyles.topPressableContainer, ...(!isExpanded ? orderViewStyles.noBottomBorder : {}) }}>
-        <Text style={orderViewStyles.orderText}>{props.id}</Text>
-        <Text style={orderViewStyles.orderText}>{props.title}</Text>
-        <FontAwesomeIcon icon={faChevronDown} color={"#fff"} size={18} />
-      </Pressable>
-      <ExpandableView expanded={isExpanded} height={200} duration={200} style={orderViewStyles.expandableContainer}>
-        <Text>TODO: OrderDetails</Text>
-      </ExpandableView>
-    </View>
-  );
-};
-
-export const newOrder = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  orderContainer: {
-    backgroundColor: "#fff",
-    // borderColor: '#afc0ed',
-    // borderWidth: 1,
-    marginBottom: 24,
-    padding: 10,
-    width: "90%",
-    borderRadius: 10,
-    shadowColor: COLORS.chestnut,
-    elevation: 6,
-  },
-  infoContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  buttonContainer: {
-    marginHorizontal: 12,
-  },
-  pairRow: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    marginHorizontal: 12,
-  },
-  pairItem: {
-    marginVertical: 8,
-  },
-  buttonText: {
-    textAlign: "right",
-    fontSize: 13,
-    color: "#525e70",
-    paddingTop: 10,
-    paddingBottom: 2,
-  },
-  label: {
-    // color: "#a3a3a3",
-    color: "#abb8c9",
-    textTransform: "uppercase",
-    fontSize: 12,
-  },
-  content: {
-    fontSize: 16,
-  },
-});
-
-export const OrderInfo = () => {
-  return (
-    <View style={newOrder.infoContainer}>
-      <View style={newOrder.pairRow}>
-        <View style={newOrder.pairItem}>
-          <Text style={newOrder.label}>Nr zamówienia</Text>
-          <Text style={{ ...newOrder.content, fontSize: 18 }}>0001</Text>
-        </View>
-        <View style={newOrder.pairItem}>
-          <Text style={newOrder.label}>Odbiorca</Text>
-          <Text style={newOrder.content}>Jan Kowalski</Text>
-        </View>
-      </View>
-      <View style={newOrder.pairRow}>
-        <View style={newOrder.pairItem}>
-          <Text style={newOrder.label}>Status</Text>
-          <Text style={{ ...newOrder.content, fontWeight: "bold" }}>Zarejestrowane</Text>
-        </View>
-        <View style={newOrder.pairItem}>
-          <Text style={newOrder.label}>Data odbioru</Text>
-          <Text style={newOrder.content}>pon. | 03.04.23 | 11:15</Text>
-        </View>
-      </View>
-    </View>
-  );
-};
-
-const NewOrder = (props: OrderProps) => {
+const Order = ({ id, username, collectionDate, status, data }: OrderProps) => {
   const navigation = useNavigation<RootStackParamList>();
 
   const showDetails = () => {
-    navigation.navigate("OrderDetailsView", {});
+    navigation.navigate("OrderDetailsView", { id, username, collectionDate, status, data });
   };
 
   return (
     <View style={newOrder.container}>
       <View style={newOrder.orderContainer}>
         <TouchableOpacity onPress={() => showDetails()} activeOpacity={0.5}>
-          <OrderInfo />
+          <View style={newOrder.infoContainer}>
+            <View style={newOrder.pairRow}>
+              <View style={newOrder.pairItem}>
+                <Text style={newOrder.label}>Nr zamówienia</Text>
+                <Text style={{ ...newOrder.content, fontSize: 18 }}>{id}</Text>
+              </View>
+              <View style={newOrder.pairItem}>
+                <Text style={newOrder.label}>Odbiorca</Text>
+                <Text style={newOrder.content}>{username}</Text>
+              </View>
+            </View>
+            <View style={newOrder.pairRow}>
+              <View style={newOrder.pairItem}>
+                <Text style={newOrder.label}>Status</Text>
+                <Text style={{ ...newOrder.content, fontWeight: "bold" }}>{status}</Text>
+              </View>
+              <View style={newOrder.pairItem}>
+                <Text style={newOrder.label}>Data odbioru</Text>
+                <Text style={newOrder.content}>{collectionDate}</Text>
+              </View>
+            </View>
+          </View>
         </TouchableOpacity>
       </View>
     </View>
@@ -172,39 +70,33 @@ const NewOrder = (props: OrderProps) => {
 };
 
 const OrdersView = () => {
+  const navigation = useNavigation<RootStackParamList>();
+  const [ordersData, setOrdersData] = useState<OrderData[] | null>(null);
+  const accessToken = useRecoilValue(userTokenSelector);
+
+  if(!accessToken || !ordersData || ordersData.length === 0) return <Text>No orders</Text>
+
+  const userData = jwt_decode(accessToken) as UserDecodedData;
+
   const DATA = [
     {
       title: "Aktywne",
-      data: [
-        { id: "#004", title: "Today: 13:50 - 14:05" },
-        { id: "#003", title: "Today: 11:00 - 11:15" },
-        { id: "#005", title: "Today: 11:00 - 11:15" },
-        { id: "#006", title: "Today: 11:00 - 11:15" },
-        { id: "#073", title: "Today: 11:00 - 11:15" },
-      ],
+      data: ordersData?.filter(order => order.status !== OrderStatus.Collected),
     },
     {
       title: "Zrealizowane",
-      data: [
-        { id: "#002", title: "Yesterday: 12:00 - 12:15" },
-        { id: "#001", title: "Yesterday: 13:50 - 14:05" },
-      ],
-    },
+      data: ordersData?.filter(order => order.status === OrderStatus.Collected),
+    }
   ];
 
-  const navigation = useNavigation<RootStackParamList>();
-  const [data, setData] = useState("");
-  const accessToken = useRecoilValue(userTokenSelector);
-
-  const getData = () => {
-    console.log(accessToken);
-    if (!accessToken) return setData("no token");
-    getPendingUserOrders(accessToken, (res) => {
+  async function getData() {
+    const data = await getPendingUserOrders(accessToken!, (res) => {
       if(res === 'logout') return navigation.navigate('LoginScreen');
+
       let error = "";
       switch (res.status) {
         case 400:
-          error = "Rejestracja nie powiodło się";
+          error = "Pobranie zamówień nie powiodło się";
           break;
         case 500:
           error = "Wystąpił błąd serwera";
@@ -213,12 +105,13 @@ const OrdersView = () => {
           error = `Wystąpił nieokreślony błąd (${res.status})`;
           break;
       }
+
       ToastAndroid.show(error, ToastAndroid.SHORT);
-    }).then((data) => {
-      if (!data) setData("no data");
-      else setData(JSON.stringify(data));
     });
-  };
+
+    if(!data || data.length === 0) return;
+    setOrdersData(data);
+  }
 
   useEffect(() => {
     getData();
@@ -226,15 +119,21 @@ const OrdersView = () => {
 
   return (
     <View style={orderViewStyles.container}>
-      {/* <Text>Pending: {data}</Text> */}
-      {/* <Button title={"get data"} onPress={() => getData()}/> */}
-
       <SectionList
         sections={DATA}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={(data) => {
-          const isRedeemed = data.section.title === "Redeemed";
-          return <NewOrder id={data.item.id} title={data.item.title} isRedeemed={isRedeemed} />;
+          const formattedId = data.item.id.toString().padStart(4, '0');
+          const formattedDate = formatDate(data.item.collectionDate);
+          const formattedStatus = getStatus(data.item.status);
+
+          return <Order 
+            id={formattedId} 
+            collectionDate={formattedDate} 
+            username={userData.username}
+            status={formattedStatus} 
+            data={data.item.data} 
+          />;
         }}
         renderSectionHeader={({ section: { title } }) => <Text style={orderViewStyles.title}>{title}</Text>}
       />

@@ -78,6 +78,8 @@ const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) =
         ToastAndroid.show("Weryfikacja przebiegła pomyślnie", ToastAndroid.SHORT);
         navigation.navigate("TabsView");
       } else ToastAndroid.show("Podany kod jest niepoprawny", ToastAndroid.SHORT);
+
+      setIsLoading(false);
   };
 
   return (
