@@ -55,6 +55,7 @@ const WalletTopUpView = ({ isDisplayed, balanceDiff, isLoading, setIsLoading, un
 
     if (error) {
       ToastAndroid.show(`Error: ${error.message}`, ToastAndroid.LONG);
+	  setBalance((balance ?? 0) + chargeValue);
       unDisplay();
     } else {
       ToastAndroid.show("Success", ToastAndroid.LONG);

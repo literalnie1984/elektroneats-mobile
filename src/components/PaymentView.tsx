@@ -48,14 +48,21 @@ const PaymentView = ({ navigation, route }: any) => {
 
   const Undisplay = async () => {
 	if(!tokens) return 'no maidens';
-
-    getBalance(tokens?.accessToken, (res) => {
+    getClientData(tokens?.accessToken, (res) => {
 		if(res !== "logout") {
       console.log(res?.status ?? "logout");
-       console.log(res?.err.status ?? res?.status ?? "logout");
+       console.log(res?.err?.status ?? res?.status ?? "logout");
 	   res.json().then( (value) => console.log(value) );
 	   }
      })
+    .then( (value) => setWallet(value) )
+    .then( () => getBalance(tokens?.accessToken, (res) => {
+		if(res !== "logout") {
+      console.log(res?.status ?? "logout");
+       console.log(res?.err?.status ?? res?.status ?? "logout");
+	   res.json().then( (value) => console.log(value) );
+	   }
+     }))
       .then((value) => {
         if (value !== null) {
           setBalance(value / 100);
@@ -74,16 +81,16 @@ const PaymentView = ({ navigation, route }: any) => {
     setIsLoading(false);
 	Alert.alert( "Dziękujemy za zakup!", "Nowe zamówienie zostało właśnie dodane, a my zajmiemy się jego realizacją :)", [
 		{ text: "OK", onPress:() => navigation.navigate("OrdersView") }
-	], { cancelable: true, onDismiss: () => navigation.navigate('OrdersView') } )
+	], { cancelable: true, onDismiss: () => navigation.navigate('Zamówienia') } )
     ToastAndroid.show("New order created!", ToastAndroid.SHORT);
   };
 
   const determinePanel = () => {
     console.log(`Wallet: ${wallet === null ? null : {...wallet} }`);
     if (wallet) {
-      if (balance !== null || (balance >= orderValue || assumeSufficientBalance)) {
+      if (balance >= orderValue || assumeSufficientBalance) {
         return "checkout";
-      } else {
+      } else if ( balance === null || balance < orderValue ) {
         return "topUp_info";
       }
     } else {
