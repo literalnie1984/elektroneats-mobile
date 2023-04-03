@@ -60,11 +60,7 @@ export const menuViewStyles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     borderRadius: 20,
-<<<<<<< HEAD
-    shadowColor: COLORS.chestnut,
-=======
     shadowColor: COLORS.colar,
->>>>>>> 67b70ad (Modified Options Views and Components.)
     elevation: 6,
   },
   menuItemSeparator: {

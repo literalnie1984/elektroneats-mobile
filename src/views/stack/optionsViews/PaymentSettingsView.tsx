@@ -1,10 +1,9 @@
-import { View, Text, Modal, Pressable, } from "react-native";
+import { View, Text, Pressable, } from "react-native";
 import { useEffect, useState } from "react";
 import { paymentSettingsStyle } from "../../../styles/OptionViewsStyles";
 import {useRecoilState} from "recoil";
 import {settingsAtom} from "../../utils/options";
 import {balanceAtom, walletAtom} from "../../utils/wallet";
-import OptionButton from "../../../components/OptionButton";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faExclamationCircle, faWallet} from "@fortawesome/free-solid-svg-icons";
 import {COLORS} from "../../colors";

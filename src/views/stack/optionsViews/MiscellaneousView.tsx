@@ -1,9 +1,5 @@
-import { SectionList } from "react-native";
-import { View, Text } from "react-native";
-import { useEffect, useState } from "react";
+import { View } from "react-native";
 import { miscellaneousViewStyle } from "../../../styles/OptionViewsStyles";
-import OptionSwitch from "../../../components/OptionSwitch";
-import { Settings } from "../../../types/OptionViewsTypes";
 import { getSettingsByMenu, parseSettingsToComponents, settingsAtom, } from "../../utils/options";
 import {useRecoilState} from "recoil";
 

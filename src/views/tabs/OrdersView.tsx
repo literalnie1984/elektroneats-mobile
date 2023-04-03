@@ -6,8 +6,10 @@ import { useRecoilValue } from "recoil";
 import { userTokenSelector } from "../utils/user";
 import { useNavigation } from "@react-navigation/native";
 import { OrderData, OrderStatus } from "../../api/orders/types";
-import { newOrder, orderViewStyles } from "../../styles";
+import { cartViewStyles, newOrder, orderViewStyles } from "../../styles";
 import jwt_decode from "jwt-decode";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faFaceMeh } from "@fortawesome/free-solid-svg-icons";
 
 const formatDate = (timestampInSeconds: number): string => {
   const date = new Date(timestampInSeconds * 1000);
@@ -69,12 +71,22 @@ const Order = ({ id, username, collectionDate, status, data }: OrderProps) => {
   );
 };
 
+const OrderPanelBlank = () => {
+  return (
+    <View style={cartViewStyles.cartPanelBlank}>
+      <FontAwesomeIcon icon={faFaceMeh} color={cartViewStyles.cartPanelBlankIcon.color} size={cartViewStyles.cartPanelBlankIcon.width} />
+      <Text style={cartViewStyles.cartPanelBlankHeader}>Nie masz jeszcze żadnych zamówień!</Text>
+      <Text style={cartViewStyles.cartPanelBlankText}>Śmiało! Dodaj swoje ulubione produkty i za nie zapłać</Text>
+    </View>
+  );
+};
+
 const OrdersView = () => {
   const navigation = useNavigation<RootStackParamList>();
   const [ordersData, setOrdersData] = useState<OrderData[] | null>(null);
   const accessToken = useRecoilValue(userTokenSelector);
 
-  if(!accessToken || !ordersData || ordersData.length === 0) return <Text>No orders</Text>
+  if(!accessToken || !ordersData || ordersData.length === 0) return <OrderPanelBlank />;
 
   const userData = jwt_decode(accessToken) as UserDecodedData;
 

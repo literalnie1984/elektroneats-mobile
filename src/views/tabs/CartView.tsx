@@ -1,6 +1,6 @@
 import { View, Text, Pressable, Alert, Image, ToastAndroid } from "react-native";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
-import { cartViewStyles } from "../../styles";
+import { cartViewStyles, orderViewStyles } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronUp, faChevronDown, faFaceMeh, faPlus, faMinus, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FlashList } from "@shopify/flash-list";
@@ -14,7 +14,6 @@ import { createOrders, getBalance, getClientData } from "../../api";
 import { userTokenSelector } from "../utils/user";
 import { menuSelector } from "../utils/menu";
 import { orderContent } from "../stack/OrderDetailsView";
-import { orderViewStyles } from "./OrdersView";
 import { balanceAtom, walletAtom } from "../utils/wallet";
 import { OrderBody } from "../../api/orders/types";
 import { useNavigation } from "@react-navigation/native";
