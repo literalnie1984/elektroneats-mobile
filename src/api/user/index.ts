@@ -18,8 +18,8 @@ const changeUsersPassword = async (body: ChangePasswordBody, token: JWT, error?:
     fetchForJSON({ path: `user/change-password`, method: "POST", token, body, error })
 );
 
-const verifyUser = async (code: string, error?: ErrorFunction): Promise<boolean> => (
-    fetchForSuccess({ path: `user/activate/${code}`, method: "POST", error })
+const verifyUser = async (code: string, body: { email: string}, error?: ErrorFunction): Promise<boolean> => (
+    fetchForSuccess({ path: `user/activate/${code}`, method: "POST", body, error })
 );
 
 export default { registerUser, loginUser, getUserData, changeUsersPassword, verifyUser };

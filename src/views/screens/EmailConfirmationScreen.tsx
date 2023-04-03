@@ -50,12 +50,12 @@ const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) =
   };
 
   const checkCode = async () => {
-    if (!code) return;
+    if (!code || !email) return;
 
     setIsLoading(true);
 
     let error = "";
-    const data = await verifyUser(code, (res) => {
+    const data = await verifyUser(code, { email }, (res) => {
       if (res === "logout") return navigation.navigate("LoginScreen");
       console.log(res.status);
 
