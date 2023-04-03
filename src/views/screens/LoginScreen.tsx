@@ -13,7 +13,7 @@ import { userTokensAtom } from "../utils/user";
 import * as SecureStore from "expo-secure-store";
 import { LoginScreenProps } from "../../types";
 import { authStyle } from "../../styles";
-import { settingsAtom } from "../utils/options";
+import { settingsAtom } from "../utils/atoms";
 
 const loginStyle = StyleSheet.create({
   rememberMeContainer: {

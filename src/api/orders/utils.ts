@@ -14,7 +14,7 @@ export const parseOrdersToOrderDatas = (fetchedOrders: FetchedOrders | null): Or
 
       fetchedDinners.push({
         dinner: actualDinner,
-        extras: actualExtras.filter((e) => e !== null) as DinnerItem[],
+        extras: actualExtras?.filter((e) => e !== null) as DinnerItem[],
       });
     });
 

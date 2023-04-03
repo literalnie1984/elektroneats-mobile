@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { OptionPickerProps, PickerItem } from "../../types/OptionComponentsTypes";
 import { optionPickerStyle } from "../../styles/OptionComponentsStyles";
 import { setDark } from "../../../global";
+import { settingsAtom } from "./atoms";
 
 const generateItemList = (itemArray: PickerItem[]): JSX.Element[] => {
   const componentArray: JSX.Element[] = itemArray.map((item: PickerItem) => {
@@ -65,8 +66,6 @@ const OptionPicker = ({ label, tag, value, onValueChange, optionsList, enabled, 
 
 export default OptionPicker;
 
-export const settingsAtom = atom<Settings>({ key: "settings", default: undefined });
-
 export const Options = () => {
   const [settings, setSettings] = useRecoilState(settingsAtom);
 
@@ -119,21 +118,21 @@ export const Options = () => {
 };
 
 export const getSettingsByMenu = (menu: string, settingsList: Settings): Settings => {
-  return settingsList.filter((setting: Setting) => setting.menu === menu);
+  return settingsList?.filter((setting: Setting) => setting.menu === menu);
 };
 
 export const getSettingsBySection = (section: string, settingsList: Settings): Settings => {
-  return settingsList.filter((setting: Setting) => setting.section === section);
+  return settingsList?.filter((setting: Setting) => setting.section === section);
 };
 
 export const getSetting = (tag: string, settings: Settings) => {
-  return settings.filter((setting: Setting) => setting.tag === tag);
+  return settings?.filter((setting: Setting) => setting.tag === tag);
 };
 
 export const setSetting = (tag: string, value: any): void => {
   const [settings, setSettings] = useRecoilState(settingsAtom);
 
-  let [setting] = settings.filter((item) => item.tag === tag);
+  let [setting] = settings?.filter((item) => item.tag === tag);
   setting.value = value;
   setSettings([...settings, setting]);
 };

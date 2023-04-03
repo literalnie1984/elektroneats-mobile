@@ -347,7 +347,7 @@ const CartScreen = ({ navigation }: any) => {
           {
             text: "Yes",
             onPress: () => {
-              setCartItems(cartList.filter((item: CartItem) => item.amount > 0));
+              setCartItems(cartList?.filter((item: CartItem) => item.amount > 0));
               return;
             },
           },

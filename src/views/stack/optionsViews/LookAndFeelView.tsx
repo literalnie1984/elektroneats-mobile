@@ -1,9 +1,10 @@
 import { View, Text } from "react-native";
 import { useEffect } from "react";
 import { lookAndFeelStyle } from "../../../styles/OptionViewsStyles";
-import { getSettingsByMenu, parseSettingsToComponents, settingsAtom } from "../../utils/options";
+import { getSettingsByMenu, parseSettingsToComponents } from "../../utils/options";
 import { useRecoilState } from "recoil";
 import { LookAndFeelViewProps } from "../../../types";
+import { settingsAtom } from "../../utils/atoms";
 
 const LookAndFeelView = ({ navigation, route }: LookAndFeelViewProps) => {
   const [settings, setSettings] = useRecoilState(settingsAtom);

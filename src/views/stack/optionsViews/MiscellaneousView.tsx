@@ -1,8 +1,9 @@
 import { View } from "react-native";
 import { miscellaneousViewStyle } from "../../../styles/OptionViewsStyles";
-import { getSettingsByMenu, parseSettingsToComponents, settingsAtom } from "../../utils/options";
+import { getSettingsByMenu, parseSettingsToComponents } from "../../utils/options";
 import { useRecoilState } from "recoil";
 import { MiscellaneousOptionsViewProps } from "../../../types";
+import { settingsAtom } from "../../utils/atoms";
 
 const MiscellaneousOptionsView = ({ navigation, route }: MiscellaneousOptionsViewProps) => {
   const [settings, setSettings] = useRecoilState(settingsAtom);

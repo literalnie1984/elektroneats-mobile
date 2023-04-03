@@ -3,7 +3,7 @@ import { useState } from "react";
 import { optionSwitchStyle } from "../styles/OptionComponentsStyles";
 import { OptionSwitchProps } from "../types/index";
 import { useRecoilState } from "recoil";
-import { settingsAtom } from "../views/utils/options";
+import { settingsAtom } from "../views/utils/atoms";
 
 const OptionSwitch = ({ label, state, tag, tagTrue, tagFalse, disabled, handleSwitch }: OptionSwitchProps) => {
   const [selected, setSelected] = useState(state);

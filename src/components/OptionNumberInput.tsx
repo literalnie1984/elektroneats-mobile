@@ -2,8 +2,8 @@ import { View, Text, TextInput } from "react-native";
 import { useState, useEffect } from "react";
 import { OptionNumberInputProps } from "../types";
 import { optionInputStyle } from "../styles/OptionComponentsStyles";
-import { settingsAtom } from "../views/utils/options";
 import { useRecoilState } from "recoil";
+import { settingsAtom } from "../views/utils/atoms";
 
 const OptionNumberInput = ({ name, value, tag, handleValueChange, maxVal, minVal, disabled }: OptionNumberInputProps) => {
   const [currentValue, setCurrentValue] = useState(value.toString());

@@ -5,7 +5,7 @@ import { faPalette, faWallet, faEllipsis, faFingerprint, faInfo } from "@fortawe
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
 import { useRecoilState } from "recoil";
-import { settingsAtom } from "../utils/options";
+import { settingsAtom } from "../utils/atoms";
 
 const options = [
   {

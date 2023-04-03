@@ -132,10 +132,10 @@ const OrdersView = () => {
   const userData = useRecoilValue(userDataSelector);
 
   const DATA = [];
-  const activeOrders = ordersData.filter((order) => order.status !== OrderStatus.Collected);
+  const activeOrders = ordersData?.filter((order) => order.status !== OrderStatus.Collected);
   if (activeOrders.length !== 0) DATA.push({ title: "Aktywne", data: activeOrders });
 
-  const finishedOrders = ordersData.filter((order) => order.status === OrderStatus.Collected);
+  const finishedOrders = ordersData?.filter((order) => order.status === OrderStatus.Collected);
   if (finishedOrders.length !== 0) DATA.push({ title: "Zrealizowane", data: finishedOrders });
 
   return (

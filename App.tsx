@@ -6,7 +6,7 @@ import MainView from "./src/views/MainView";
 import RecoilNexus from "recoil-nexus";
 import { Options } from "./src/views/utils/options";
 import { COLORS } from "./src/views/colors";
-import { isDark } from "./global.ts";
+import { isDark } from "./global";
 
 export default function App() {
   const lightTheme = {

@@ -17,7 +17,8 @@ import * as SecureStore from "expo-secure-store";
 import OrderDetailsView from "./stack/OrderDetailsView";
 import PaymentView from "../components/PaymentView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { settingsAtom } from "./utils/options";
+import { settingsAtom } from "./utils/atoms";
+import { useTheme } from "@react-navigation/native";
 
 SplashScreen.preventAutoHideAsync();
 

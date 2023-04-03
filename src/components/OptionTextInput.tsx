@@ -2,15 +2,15 @@ import { View, Text, TextInput } from "react-native";
 import { useState } from "react";
 import { OptionTextInputProps } from "../types";
 import { optionInputStyle } from "../styles/OptionComponentsStyles";
-import { settingsAtom } from "../views/utils/options";
 import { useRecoilState } from "recoil";
+import { settingsAtom } from "../views/utils/atoms";
 
 const OptionTextInput = ({ name, value, tag, handleValueChange, maxLen, disabled }: OptionTextInputProps) => {
   const [currentValue, setCurrentValue] = useState(value);
   const [settings, setSettings] = useRecoilState(settingsAtom);
 
   const setSetting = (value: string) => {
-    const newSettings = settings.map((setting) => {
+    const newSettings = settings.map((setting: any) => {
       if (setting.tag === tag) {
         setting = { ...setting, value };
       }
