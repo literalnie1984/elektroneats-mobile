@@ -1,4 +1,5 @@
-import { FetchedExtra } from "../menu/types";
+import { DinnerItem } from "../menu/types";
+import { reduceProps } from "../utils";
 import { FetchedOrders, OrderData, OrderDinner } from "./types";
 
 export const parseOrdersToOrderDatas = (fetchedOrders: FetchedOrders | null): OrderData[] => {
@@ -8,12 +9,14 @@ export const parseOrdersToOrderDatas = (fetchedOrders: FetchedOrders | null): Or
     fetchedOrders.response.forEach(order => {
         const fetchedDinners: OrderDinner[] = [];
         order.dinners.forEach(dinner => {
-            const actualDinner = fetchedOrders.dinners.find(d => d.id === dinner.dinnerId);
-            const actualExtras = dinner.extrasIds.map(e => fetchedOrders.extras.find(i => i.id === e));
+            const actualDinner = reduceProps(fetchedOrders.dinners.find(d => d.id === dinner.dinnerId)!);
+            const actualExtras = dinner.extrasIds
+                .map(e => fetchedOrders.extras.find(i => i.id === e))
+                .map(e => e ? reduceProps(e) : null);
 
             fetchedDinners.push({
-                dinner: actualDinner!,
-                extras: actualExtras as FetchedExtra[]
+                dinner: actualDinner,
+                extras: actualExtras.filter(e => e !== null) as DinnerItem[]
             });
         });
 

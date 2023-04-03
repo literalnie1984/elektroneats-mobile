@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 import { DailyMenu, DinnerItem, WeeklyMenu } from "../../api/menu/types";
 import { CartItem, CartItemDinner, CartItemType, DinnerViewSelection } from "../../types";
-import { CreateOrdersBody, OrderBody } from "../../api/orders/types";
+import { CreateOrdersBody, OrderBody, OrderDinner } from "../../api/orders/types";
 import { getDayOfWeekMnemonic } from "../../api/utils";
 import { Alert } from "react-native";
 import { DateTimePickerAndroid, DateTimePickerEvent } from "@react-native-community/datetimepicker";
@@ -89,6 +89,11 @@ const getPriceAsNumber = (item?: DinnerItem): number => {
   return !isNaN(convertedPrice) ? convertedPrice : 0;
 };
 
+const convertNumberToStr = (str: string): number => {
+  const converted = Number(str);
+  return !isNaN(converted) ? converted : 0;
+}
+
 const getId = (item?: DinnerItem): number | null => {
   return item?.id ? item.id : null;
 };
@@ -97,6 +102,15 @@ function generateId() {
   return Math.random().toString(36).substring(2) +
     (new Date()).getTime().toString(36);
 }
+
+export const calculteOrderDinnerCost = (orderDinner: OrderDinner) => {
+  const dinnerPrice = convertNumberToStr(orderDinner.dinner.price);
+  const extrasPrice =  orderDinner.extras
+    .map(extra => convertNumberToStr(extra.price))
+    .reduce((a, b) => a + b, 0);
+    
+  return dinnerPrice + extrasPrice;
+};
 
 export const calculateTotalCost = (selection: DinnerViewSelection, dailyMenu: DailyMenu) => {
   const findIndex = (sectionId: number, index: number) => {

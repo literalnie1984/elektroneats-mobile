@@ -5,5 +5,5 @@ import Wallet from "./wallet";
 
 export const { getWeeklyMenu, getLastMenuUpdate } = Menu;
 export const { registerUser, loginUser, getUserData, changeUsersPassword, verifyUser } = User;
-export const { createOrders, getPendingUserOrders, getCompletedUserOrders } = Orders;
+export const { createOrders, getOrders } = Orders;
 export const { getClientData, getBalance, setWallet, addBalance } = Wallet;

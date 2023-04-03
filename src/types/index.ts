@@ -30,6 +30,7 @@ export interface ExpandableProps {
 
 export interface OrderProps {
   id: string;
+  paymentMethod: string;
   collectionDate: string;
   username: string;
   status: string;
@@ -96,6 +97,7 @@ export interface DinnerItemProps {
   item: DinnerItem;
   backgroundColor: string;
   onPress: () => void;
+  isSelectable: boolean;
 }
 
 export type InnerIndex = number | null;
@@ -106,8 +108,8 @@ export type SelectedDinnerItem = [number, number, InnerIndex];
 export type DinnerViewSelection = SelectedDinnerItem[];
 
 export interface DinnerSelectProps {
-  selectedIndex: InnerIndex;
-  setSelectedIndex: (innerIndex: InnerIndex) => void;
+  selectedIndex?: InnerIndex;
+  setSelectedIndex?: (innerIndex: InnerIndex) => void;
   items: DinnerItem[];
   isSelectable: boolean;
 }
@@ -135,7 +137,7 @@ interface DinnerViewEdit extends DinnerViewBase {
 
 interface DinnerViewInfo extends DinnerViewBase {
   mode: DinnerViewDisplayMode.INFO;
-  data: never;
+  data: OrderDinner;
 }
 
 export type DinnerViewRoute = (DinnerViewCreate | DinnerViewEdit | DinnerViewInfo);

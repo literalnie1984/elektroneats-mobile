@@ -9,10 +9,10 @@ import { menuAtom } from "../utils/menu";
 import { DailyMenu } from "../../api/menu/types";
 
 const baseURL = `${API_URL}image/`;
-const DinnerItemView = ({ item, backgroundColor, onPress }: DinnerItemProps) => {
+const DinnerItemView = ({ item, backgroundColor, onPress, isSelectable }: DinnerItemProps) => {
   const { name, uri } = item;
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity activeOpacity={isSelectable ? 0.5 : 1} onPress={onPress}>
       <View style={[dinnerViewStyles.itemView, { backgroundColor }]}>
         <Image style={dinnerViewStyles.itemImg} source={{ uri: `${baseURL}${uri}` }} />
         <Text style={dinnerViewStyles.itemTitle}>{name}</Text>
@@ -25,17 +25,16 @@ const DinnerSelect = ({ selectedIndex, setSelectedIndex, items, isSelectable }: 
   return (
     <ScrollView horizontal={true} nestedScrollEnabled={false}>
       {items.map((item, index) => {
-        const backgroundColor = index === selectedIndex ? "#ffffff" : "#bfbdbd";
+        const backgroundColor = (index === selectedIndex || !isSelectable) ? "#ffffff" : "#bfbdbd";
 
         return (
           <DinnerItemView
+            isSelectable={isSelectable}
             key={item.id}
             onPress={() => {
-              console.log(selectedIndex, index)
-              if (isSelectable === false) return;
-
-              if (selectedIndex === index) setSelectedIndex(null);
-              else setSelectedIndex(index);
+              if (!isSelectable) return;
+              if (selectedIndex === index) setSelectedIndex!(null);
+              else setSelectedIndex!(index);
             }}
             item={item}
             backgroundColor={backgroundColor}
@@ -50,13 +49,11 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
   const { mode } = route.params;
 
   const [sections, setSections] = useState<DinnerData[]>();
-  const [selection, setSelection] = useState<DinnerViewSelection>();
-  const [dailyMenu, setDailyMenu] = useState<DailyMenu>();
+  const [selection, setSelection] = useState<DinnerViewSelection>([]);
+  const [dailyMenu, setDailyMenu] = useState<DailyMenu | null>(null);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const isSelectable = (mode !== DinnerViewDisplayMode.INFO);
   const [menu] = useRecoilState(menuAtom);
-
-  console.log(selection);
 
   useEffect(() => {
     let sections: DinnerData[];
@@ -87,25 +84,22 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
       } break;
   
       case DinnerViewDisplayMode.INFO: {
-        const cartItemData = route.params.data;
-  
-        // sections = [
-        //   { id: 0, section: "Danie główne", data: [dailyMenu.main] },
-        //   { id: 1, section: "Dodatki", data: [dailyMenu.extras.fillers, dailyMenu.extras.salads, dailyMenu.extras.beverages] },
-        //   { id: 2, section: "Zupa", data: [[dailyMenu.soup]] },
-        // ];
+        const orderDinner = route.params.data;
+
+        sections = [
+          { id: 0, section: "Dania", data: [[orderDinner.dinner]] },
+          { id: 1, section: "Dodatki", data: [orderDinner.extras] },
+        ];
       }
     }
 
-    setSections(sections!);
+    setSections(sections);
     setSelection(defaultSelection);
     setDailyMenu(dailyMenu!);
   }, [])
 
-  if(!selection || !dailyMenu) return <Text>test</Text>;
-
   const handleAddToCart = () => {
-    if(mode !== DinnerViewDisplayMode.CREATE) return;
+    if(!dailyMenu || mode !== DinnerViewDisplayMode.CREATE) return;
     const mainDishSelection = selection.find((i) => i[0] === 0);
     if (!mainDishSelection) return ToastAndroid.show("Musisz wybrać danie główne!", ToastAndroid.SHORT);
 
@@ -115,7 +109,7 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
   };
 
   const handleEditCart = () => {
-    if(mode !== DinnerViewDisplayMode.EDIT) return;
+    if(!selection || mode !== DinnerViewDisplayMode.EDIT) return;
 
     const cartItem = route.params.data;
     const index = cartItems.findIndex(i => i.id === cartItem.id);
@@ -132,13 +126,16 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
   }
 
   let onPress: any;
+  let buttonTitle = "";
   switch(mode) {
     case DinnerViewDisplayMode.CREATE: {
       onPress = handleAddToCart;
+      buttonTitle = "Dodaj do koszyka";
     } break;
 
     case DinnerViewDisplayMode.EDIT: {
       onPress = handleEditCart;
+      buttonTitle = "Zaktualizuj zawartość";
     } break;
 
     case DinnerViewDisplayMode.INFO: {
@@ -146,12 +143,18 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
     } break;
   }
 
+  if(!sections) return <Text>No sections</Text>;
+
   return (
     <View style={dinnerViewStyles.container}>
       <SectionList
         sections={sections!}
         keyExtractor={(_, index) => index.toString()}
         renderItem={(data) => {
+          if(mode === DinnerViewDisplayMode.INFO) {
+            return <DinnerSelect isSelectable={isSelectable} items={data.item}  />;
+          }
+
           const changeSelected = (innerIndex: InnerIndex) => {
             const selectedIndex = selection.findIndex((i) => i[0] === data.section.id && i[1] === data.index);
 
@@ -173,7 +176,7 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
       />
       { onPress &&
         <View>
-          <Button title={"Dodaj do koszyka"} onPress={onPress!} />
+          <Button title={buttonTitle} onPress={onPress!} />
         </View>
       }
     </View>

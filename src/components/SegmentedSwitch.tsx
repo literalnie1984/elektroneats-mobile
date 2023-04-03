@@ -34,7 +34,7 @@ const defaultStyle = StyleSheet.create({
 const SegmentedSwitch = (props: SegmentedSwitchProps) => {
   const [selectedSegment, setSelectedSegment] = useState(0);
 
-  useEffect(() => console.log(props.switchHeight), [props.switchHeight]);
+  // useEffect(() => console.log(props.switchHeight), [props.switchHeight]);
 
   return (
     <Animated.View style={[defaultStyle.switch, props.switchStyle]}>

@@ -1,4 +1,4 @@
-import { FetchedDinnerItem, FetchedExtra, FetchedMeal } from "../menu/types";
+import { DinnerItem, FetchedExtra, FetchedMeal } from "../menu/types";
 
 export interface OrderBody {
   dinnerId: number;
@@ -31,8 +31,8 @@ export interface FetchedOrders {
 }
 
 export interface OrderDinner {
-  dinner: FetchedMeal;
-  extras: FetchedExtra[];
+  dinner: DinnerItem;
+  extras: DinnerItem[];
 }
 
 export interface OrderData {

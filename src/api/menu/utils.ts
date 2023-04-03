@@ -1,13 +1,7 @@
+import { reduceProps } from "../utils";
 import { DailyMenu, DinnerItem, FetchedDinnerItem, FetchedExtra, FetchedExtraType, FetchedMealType, FetchedWeeklyMenu, WeeklyMenu } from "./types";
 
-const reduceProps = (obj: FetchedDinnerItem): DinnerItem => {
-  return {
-    id: obj.id,
-    name: obj.name,
-    price: obj.price,
-    uri: obj.image,
-  };
-};
+
 
 export const parseFetchedWeeklyMenu = ({ response, extras }: FetchedWeeklyMenu): WeeklyMenu => {
   const dailyMenus: DailyMenu[] = [];

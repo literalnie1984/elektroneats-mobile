@@ -148,7 +148,6 @@ const MenuView = () => {
         <FlashList
           data={menu}
           renderItem={({ item }) => {
-            // console.log(item)
             return <MenuItem dateSignature={getDayOfWeekMnemonic(item.weekDay)!} dailyMenu={item} containerHeight={300} switchHeight={32} />;
           }}
           estimatedItemSize={200}

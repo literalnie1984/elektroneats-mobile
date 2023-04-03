@@ -208,7 +208,7 @@ export const cartViewStyles = StyleSheet.create({
     flexWrap: "nowrap",
     alignItems: "center",
     justifyContent: "center",
-	gap: 15,
+	  gap: 15,
   },
   cartPanelBlankIcon: {
     color: COLORS.colar,
@@ -736,6 +736,7 @@ export const orderViewStyles = StyleSheet.create({
     // backgroundColor: '#ebf2ff',
     // backgroundColor: '#f5f8ff',
     paddingTop: 20,
+    height: '200%'
   },
   title: {
     fontSize: 20,

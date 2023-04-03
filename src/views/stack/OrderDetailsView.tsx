@@ -1,8 +1,10 @@
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
-import { OrderDetailsViewProps, RootStackParamList } from "../../types";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { DinnerViewDisplayMode, OrderDetailsViewProps, RootStackParamList } from "../../types";
 import { COLORS } from "../colors";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { newOrder } from "../../styles";
+import { OrderDinner } from "../../api/orders/types";
+import { calculteOrderDinnerCost } from "../utils/cart";
 
 const orderDetails = StyleSheet.create({
   container: {
@@ -84,22 +86,25 @@ export const orderContent = StyleSheet.create({
 export type EmailConfirmationScreenProps = NativeStackScreenProps<RootStackParamList, "EmailConfirmationScreen">;
 
 interface OrderItemProps {
-  navigation?: OrderDetailsViewProps["navigation"];
+  amount: number;
+  price: number;
+  orderDinner: OrderDinner;
+  navigation: OrderDetailsViewProps["navigation"];
 }
 
-export const DinnerOrderItem = ({ navigation }: OrderItemProps) => {
+export const DinnerOrderItem = ({ amount, price, orderDinner, navigation }: OrderItemProps) => {
   const showOrderContent = () => {
-    navigation.navigate('DinnerView');
+    navigation.navigate('DinnerView', { mode: DinnerViewDisplayMode.INFO, data: orderDinner });
   };
 
   return (
     <View style={orderContent.container}>
       <TouchableOpacity onPress={() => showOrderContent()} activeOpacity={0.5}>
         <View style={orderContent.firstRow}>
-          <Image style={{ width: 48, height: 48 }} source={{ uri: placeholderUri }} />
+          {/* <Image style={{ width: 48, height: 48 }} source={{ uri: placeholderUri }} /> */}
           <Text style={orderContent.orderName}>Obiad</Text>
-          <Text style={orderContent.orderPrice}>1 x 15,00 zł</Text>
-          <Text style={orderContent.orderPrice}>15,00 zł</Text>
+          <Text style={orderContent.orderPrice}>{amount} x {(price * amount).toFixed(2)} zł</Text>
+          <Text style={orderContent.orderPrice}>{price.toFixed(2)} zł</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -107,7 +112,22 @@ export const DinnerOrderItem = ({ navigation }: OrderItemProps) => {
 };
 
 const OrderDetailsView = ({ route, navigation }: OrderDetailsViewProps) => {
-  const { id, username, collectionDate, status, data } = route.params;
+  const { id, paymentMethod, username, collectionDate, status, data } = route.params;
+
+  let totalPrice = 0;
+  const dinnerOrderItems: JSX.Element[] = [];
+
+  data.forEach((orderDinner) => {
+    const orderDinnerPrice = calculteOrderDinnerCost(orderDinner);
+    totalPrice += orderDinnerPrice;
+    dinnerOrderItems.push(<DinnerOrderItem 
+        amount={1}
+        price={orderDinnerPrice}
+        orderDinner={orderDinner} 
+        navigation={navigation} 
+    />)
+  });
+
   return (
     <View style={orderDetails.container}>
       <Text style={orderDetails.categoryText}>Informacje:</Text>
@@ -122,6 +142,10 @@ const OrderDetailsView = ({ route, navigation }: OrderDetailsViewProps) => {
               <Text style={orderDetails.label}>Odbiorca</Text>
               <Text style={orderDetails.content}>{username}</Text>
             </View>
+            <View style={orderDetails.pairItem}>
+              <Text style={orderDetails.label}>Koszt transakcji</Text>
+              <Text style={orderDetails.content}>{totalPrice.toFixed(2)} zł</Text>
+            </View>
           </View>
           <View style={orderDetails.pairRow}>
             <View style={orderDetails.pairItem}>
@@ -132,12 +156,16 @@ const OrderDetailsView = ({ route, navigation }: OrderDetailsViewProps) => {
               <Text style={orderDetails.label}>Data odbioru</Text>
               <Text style={orderDetails.content}>{collectionDate}</Text>
             </View>
+            <View style={orderDetails.pairItem}>
+              <Text style={orderDetails.label}>Metoda płatności</Text>
+              <Text style={orderDetails.content}>{paymentMethod}</Text>
+            </View>
           </View>
         </View>
       </View>
       <Text style={orderDetails.categoryText}>Zawartość zamówienia:</Text>
       <View style={orderDetails.center}>
-        <DinnerOrderItem navigation={navigation} />
+          {dinnerOrderItems}
       </View>
     </View>
   );
