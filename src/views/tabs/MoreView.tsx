@@ -26,7 +26,7 @@ const options = [
   {
     name: "Pozostałe",
     icon: faEllipsis,
-    goto: "MiscellaneousView",
+    goto: "MiscellaneousOptionsView",
   },
   {
     name: "Informacje i autorzy",
