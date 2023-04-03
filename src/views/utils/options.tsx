@@ -82,22 +82,8 @@ export const Options = () => {
   };
 
   const writeSettingsToStorage = async () => {
-    try {
       const settingsJSON = JSON.stringify(settings);
       await AsyncStorage.setItem("settings", settingsJSON);
-      settings.map((setting) => {
-        AsyncStorage.setItem(`setting_${setting.tag}`, JSON.stringify(setting.value)).then(
-          () => {
-            console.log(`setting ${setting.tag} saved in storage`);
-          },
-          () => {
-            console.log(`failed saving setting ${setting.tag}!`);
-          }
-        );
-      });
-    } catch (error) {
-      ToastAndroid.show("Wystąpił błąd podczas zapisu ustawień", ToastAndroid.SHORT);
-    }
   };
 
   useEffect(() => {

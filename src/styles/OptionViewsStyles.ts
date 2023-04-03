@@ -9,6 +9,20 @@ export const paymentSettingsStyle = StyleSheet.create({
   root: {
     flex: 1,
   },
+  container: {
+		flex: 1,
+		flexDirection: 'column',
+		flexWrap: 'nowrap',
+		alignItems: 'center',
+		justifyContent: 'center',
+		gap: 25,
+  },
+  header: {
+		  fontSize: 24,
+		  color: COLORS.saffron,
+		  fontWeight: 'bold',
+		  textAlign: 'center',
+  },
   noWalletBody: {
     flexDirection: "column",
     flexWrap: "nowrap",

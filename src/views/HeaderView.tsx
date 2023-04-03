@@ -4,10 +4,7 @@ import {useRecoilValue} from "recoil";
 import { HeaderProps } from "../types";
 import {userDataSelector} from "./utils/user";
 import { API_URL } from "@env";
-import AdaptiveIcon from "../../assets/adaptive-icon.png";
 
-const baseURL = `${API_URL}/image/`
-const iconUri = Image.resolveAssetSource(AdaptiveIcon).uri;
 
 const HeaderView = (props: HeaderProps) => {
 		const user_data = useRecoilValue(userDataSelector);
@@ -15,7 +12,7 @@ const HeaderView = (props: HeaderProps) => {
 		
   return (
     <View style={props.style}>
-      <Image source={{ uri: iconUri, scale: 1.0, }} resizeMode='contain' />
+      <Text>K</Text>
       <Text style={props.titleStyle}>{props.title}</Text>
       <Pressable onPress={() => props.stackNavigation.navigate("Account")}>
         <Svg height={32} width={32}>

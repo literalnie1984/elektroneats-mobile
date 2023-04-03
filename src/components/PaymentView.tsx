@@ -13,6 +13,8 @@ import WalletTopUpView from "./WalletTopUpView";
 import { ToastAndroid } from "react-native";
 import WalletCheckout from "./WalletCheckout";
 import { paymentStyle } from "../styles";
+import {cartItemsAtom} from "../views/utils/cart";
+import {cartWeekdayAtom} from "../views/utils/atoms";
 
 // Saldo i kwoty w GROSZACH!!!
 
@@ -23,6 +25,8 @@ const PaymentView = ({ navigation, route }: any) => {
   const [balance, setBalance] = useRecoilState(balanceAtom);
   const [currentView, setCurrentView] = useState("none");
   const [assumeSufficientBalance, setASB] = useState(false);
+  const [ cart, setCart ] = useRecoilState(cartItemsAtom);
+  const [ week_day, setWeekDay ] = useRecoilState(cartWeekdayAtom);
 
   const { orderBody, orderValue, pickupDate } = route.params;
   const logout = () => {
@@ -77,10 +81,10 @@ const PaymentView = ({ navigation, route }: any) => {
   };
 
   const checkoutUndisplay = () => {
-    navigation.navigate("Orders");
     setIsLoading(false);
+    setCart([]); setWeekDay(-1);
 	Alert.alert( "Dziękujemy za zakup!", "Nowe zamówienie zostało właśnie dodane, a my zajmiemy się jego realizacją :)", [
-		{ text: "OK", onPress:() => navigation.navigate("OrdersView") }
+		{ text: "OK", onPress:() => navigation.navigate("Zamówienia") }
 	], { cancelable: true, onDismiss: () => navigation.navigate('Zamówienia') } )
     ToastAndroid.show("New order created!", ToastAndroid.SHORT);
   };
