@@ -24,7 +24,11 @@ yarn expo start
 Po tym wyświetli się w terminalu kod QR, który należy zeskanować za pomocą pobranej wcześniej aplikacji, odczekać chwilę aż się załaduje i wszystko powinno działać.
 
 # Aplikacja nie działa
-Uruchomienie aplikacji polega na stworzeniu serwera, do którego można się domyślnie połączyć wyłącznie w sieci lokalnej. Zatem jeżeli nie będzie dało się połączyć czyli kod QR nie będzie działał lub aplikacja będzie się ładować w nieskończoność, to należy wtedy wywołać poniższe polecenie:
+1. Uruchomienie aplikacji polega na stworzeniu serwera, do którego można się domyślnie połączyć wyłącznie w sieci lokalnej. Zatem jeżeli nie będzie dało się połączyć czyli kod QR nie będzie działał lub aplikacja będzie się ładować w nieskończoność, to należy wtedy wywołać poniższe polecenie:
 ```bash
 yarn expo start --tunnel -c
+```
+2. Jeżeli podczas kroku 2. wyskoczy błąd wskazujący na plik yarn.lock, należy ten plik usunąć i ponownie uruchomić komendę
+```
+yarn
 ```
