@@ -1,11 +1,48 @@
 import { StyleSheet } from "react-native";
+import { COLORS } from "../views/colors";
 
 export const lookAndFeelStyle = StyleSheet.create({
   root: {},
 });
 
 export const paymentSettingsStyle = StyleSheet.create({
-  root: {},
+		root: {
+				flex: 1,
+		},
+		noWalletBody: {
+				flexDirection: 'column',
+				flexWrap: 'nowrap',
+				alignItems: 'stretch',
+				justifyContent: 'center',
+				gap: 25,
+				backgroundColor: COLORS.whiterColar,
+		},
+		noWalletHeader: {
+				fontSize: 20,
+				color: COLORS.gunmetal,
+				fontWeight: 'bold',
+				alignSelf: 'center',
+		},
+		exclamationIcons: {
+				flexDirection: 'row',
+				flexWrap: 'nowrap',
+				alignItems: 'center',
+				justifyContent: 'center',
+				gap: 10, 
+		},
+		noWalletButton: {
+				backgroundColor: COLORS.gunmetal,
+				padding: 15,
+				flexDirection: 'row',
+				flexWrap: 'nowrap',
+				alignItems: 'center',
+				justifyContent: 'center'
+		},
+		noWalletFooter: {
+				fontSize: 20,
+				color: COLORS.saffron,
+				textAlign: "center",
+		},
 });
 
 export const miscellaneousViewStyle = StyleSheet.create({

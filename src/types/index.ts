@@ -4,6 +4,7 @@ import { SetStateAction, Dispatch } from "react";
 import { DailyMenu, DinnerItem } from "../api/menu/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { OrderBody, CreateOrdersBody } from "../api/orders/types";
+import { PickerItem } from "./OptionComponentsTypes";
 
 export type RootStackParamList = {
   [key: string]: any;
@@ -193,4 +194,88 @@ export interface WalletCheckoutProps {
   unDisplay: () => void;
   body: OrderBody;
   orderValue: number;
+}
+
+export enum SettingType {
+		Switch = 'switch',
+		Slider = 'slider',
+		InputText = 'input-text',
+		InputNum = 'input-num',
+		Dropdown = 'dropdown',
+		CheckboxList = 'checkbox-list',
+};
+
+export interface SettingSwitchProps {
+		tagTrue: string,
+		tagFalse: string,
+};
+
+export interface SettingInputNumProps {
+		maxVal: number,
+		minVal: number,
+};
+
+export interface SettingSliderProps extends SettingInputNumProps {
+		step: number,
+};
+
+export interface SettingInputTextProps {
+		maxLength: number,
+};
+
+export interface SettingDropdownProps {
+		optionsList: PickerItem[],
+		mode: "dialog" | "dropdown"
+};
+
+export interface SettingCheckboxListProps {
+		defValue: boolean[],
+		tags: string[]
+};
+
+export interface Setting {
+		name: string,
+		tag: string,
+		section: string,
+		menu: string,
+		disabled: boolean,
+		type: SettingType,
+		value: any | any[],
+		props: SettingSwitchProps | SettingSliderProps | SettingDropdownProps | SettingInputNumProps | SettingInputTextProps | SettingCheckboxListProps,
+};
+
+export type Settings = Setting[];
+
+export interface OptionNumberInputProps {
+		name: string,
+		tag: string,
+		value: number,
+		handleValueChange?: ( value: number ) => any,
+		maxVal: number,
+		minVal: number,
+		disabled: boolean,
+};
+
+export interface OptionTextInputProps {
+		name: string,
+		tag: string,
+		value: string,
+		handleValueChange?: ( value: string ) => any,
+		maxLen: number,
+		disabled: boolean,
+};
+
+export interface OptionSwitchProps {
+		label: string,
+		tag: string,
+		tagTrue: string,
+		tagFalse: string,
+		state: boolean,
+		disabled: boolean,
+		handleSwitch?: ( value: boolean ) => any,
+};
+
+export interface SettingHandlerBind {
+		tag: string,
+		handler: ( value: any ) => any,
 }

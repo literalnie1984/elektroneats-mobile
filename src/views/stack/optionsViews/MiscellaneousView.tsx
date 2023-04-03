@@ -4,71 +4,15 @@ import { useEffect, useState } from "react";
 import { miscellaneousViewStyle } from "../../../styles/OptionViewsStyles";
 import OptionSwitch from "../../../components/OptionSwitch";
 import { Settings } from "../../../types/OptionViewsTypes";
-import { setupSections } from "../../utils/options";
+import { getSettingsByMenu, parseSettingsToComponents, settingsAtom, } from "../../utils/options";
+import {useRecoilState} from "recoil";
 
-const defSettings: Settings = [
-  {
-    key: "setDebugMode",
-    name: "Enable Debug Mode",
-    value: true,
-    sectionName: "Advanced",
-  },
-  {
-    key: "enableLogging",
-    name: "Enable Logging",
-    value: true,
-    sectionName: "Advanced",
-  },
-];
-
-const MiscellaneousOptionsView = ({ navigation }: any) => {
-  const [settings, setSettings] = useState(defSettings);
-
-  let sections_data = setupSections(settings);
-
-  useEffect(() => {
-    sections_data = setupSections(settings);
-  }, [settings]);
+const MiscellaneousOptionsView = ({ navigation, route }) => {
+  const [settings, setSettings] = useRecoilState(settingsAtom);
 
   return (
     <View style={miscellaneousViewStyle.root}>
-      <SectionList
-        sections={sections_data}
-        renderItem={({ item, index }) => {
-          return (
-            <OptionSwitch
-              label={item.name}
-              state={item.value}
-              handleSwitch={(newValue) => {
-                setSettings(
-                  settings.map((setting) => {
-                    console.log(`Setting key: ${setting.key}; Item key: ${item.key}`);
-                    if (setting.key === item.key) {
-                      console.log("changed setting");
-                      setting.value = newValue;
-                    }
-                    return setting;
-                  })
-                );
-              }}
-              disabled={false}
-            />
-          );
-        }}
-        keyExtractor={(item, index) => item + String(index)}
-        renderSectionHeader={({ section: { header } }) => (
-          <View style={miscellaneousViewStyle.optionsListSectionHeader}>
-            <Text style={miscellaneousViewStyle.optionsListSectionHeaderText}>{header}</Text>
-          </View>
-        )}
-        ListEmptyComponent={
-          <View>
-            <Text>Blank</Text>
-          </View>
-        }
-        ItemSeparatorComponent={(props) => <View style={miscellaneousViewStyle.itemSeparator} />}
-        contentContainerStyle={miscellaneousViewStyle.optionsList}
-      />
+	{ parseSettingsToComponents( getSettingsByMenu("Pozostałe", settings) ) }
     </View>
   );
 };
