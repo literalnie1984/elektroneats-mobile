@@ -11,16 +11,16 @@ const HeaderView = (props: HeaderProps) => {
 
   return (
     <View style={props.style}>
-      <Text>K</Text>
+      {/* <Text>K</Text> */}
       <Text style={props.titleStyle}>{props.title}</Text>
-      <Pressable onPress={() => props.stackNavigation.navigate("Account")}>
+      {/* <Pressable onPress={() => props.stackNavigation.navigate("Account")}>
         <Svg height={32} width={32}>
           <Circle cx={16} cy={16} r={16} fill={"pink"} />
           <SvgText x={16} y={20} textAnchor={"middle"} fontSize={16} stroke={"black"}>
             {user_data?.username.charAt(0) ?? "X"}
           </SvgText>
         </Svg>
-      </Pressable>
+      </Pressable> */}
     </View>
   );
 };

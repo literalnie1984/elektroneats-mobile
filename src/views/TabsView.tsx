@@ -32,8 +32,9 @@ const TabsView = ({ navigation }: any) => {
           flexWrap: "nowrap",
           backgroundColor: theme.colors.card,
           alignItems: "center",
-          justifyContent: "space-between",
-          paddingHorizontal: 30,
+          justifyContent: "center",
+          paddingHorizontal: 50,
+          paddingVertical: 10
         },
         headerTitleStyle: {
           textAlign: "center",
