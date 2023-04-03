@@ -1,13 +1,11 @@
 import { View, Text, Pressable } from "react-native";
 import { moreViewStyles } from "../../styles";
-import { themeAtom } from "../utils/options";
-import { getRecoil } from "recoil-nexus";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faPalette, faWallet, faEllipsis, faFingerprint, faInfo, } from "@fortawesome/free-solid-svg-icons";
+import { faPalette, faWallet, faEllipsis, faFingerprint, faInfo } from "@fortawesome/free-solid-svg-icons";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
-import {useRecoilState} from "recoil";
-import {settingsAtom} from "../utils/options";
+import { useRecoilState } from "recoil";
+import { settingsAtom } from "../utils/options";
 
 const options = [
   {
@@ -40,7 +38,7 @@ const options = [
 const OptionButton = (props: any) => {
   const navigation = useNavigation<RootStackParamList>();
 
-  const [ settings, setSettings ] = useRecoilState(settingsAtom);
+  const [settings, setSettings] = useRecoilState(settingsAtom);
 
   return (
     <Pressable

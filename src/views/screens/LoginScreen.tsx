@@ -1,4 +1,4 @@
-import { View, Text, Keyboard, Alert, ToastAndroid, Pressable, StyleSheet, Image } from "react-native";
+import { View, Text, Keyboard, ToastAndroid, Pressable, StyleSheet, Image } from "react-native";
 import { useState } from "react";
 import Spinner from "react-native-loading-spinner-overlay";
 import Button from "../../components/Button";
@@ -13,10 +13,7 @@ import { userTokensAtom } from "../utils/user";
 import * as SecureStore from "expo-secure-store";
 import { LoginScreenProps } from "../../types";
 import { authStyle } from "../../styles";
-import {getSetting, settingsAtom} from "../utils/options";
-import { themeAtom } from "../utils/options";
-import { getRecoil } from "recoil-nexus";
-
+import { settingsAtom } from "../utils/options";
 
 const loginStyle = StyleSheet.create({
   rememberMeContainer: {
@@ -54,7 +51,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [tokens, setTokens] = useRecoilState(userTokensAtom);
-  const [ settings, setSettings ] = useRecoilState(settingsAtom);
+  const [settings, setSettings] = useRecoilState(settingsAtom);
 
   const handleOnChange = (text: string, input: string) => {
     setInputs((prevState) => ({ ...prevState, [input]: text }));
@@ -91,7 +88,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
     let error = "";
 
     const data = await loginUser(inputs, (res) => {
-      if(res === 'logout') return navigation.navigate('LoginScreen');
+      if (res === "logout") return navigation.navigate("LoginScreen");
       console.log(res.status);
 
       switch (res.status) {
@@ -111,7 +108,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
 
     setIsLoading(false);
 
-	navigation.navigate('TabsView');
+    navigation.navigate("TabsView");
 
     if (data) {
       setTokens(data);
@@ -121,11 +118,11 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
   };
 
   return (
-    <View style={ authStyle.container }>
+    <View style={authStyle.container}>
       <Spinner visible={isLoading} />
       <View style={authStyle.innerContainer}>
         <View style={authStyle.imageContainer}>
-          <Image style={authStyle.appName} source={require('../../../assets/cool-title.png')} />
+          <Image style={authStyle.appName} source={require("../../../assets/cool-title.png")} />
         </View>
         <Text style={{ ...authStyle.screenTitle, color: COLORS.darkGrey }}>Logowanie</Text>
         <Text style={authStyle.screenDescription}>Wprowadź swoje dane logowania</Text>

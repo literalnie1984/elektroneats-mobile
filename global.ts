@@ -1,4 +1,4 @@
 export let isDark: boolean = true;
-export const setDark = ( value: boolean ): void => {
-		isDark = value;
+export const setDark = (value: boolean): void => {
+  isDark = value;
 };

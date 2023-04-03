@@ -8,7 +8,6 @@ import { InitPaymentSheetResult, PaymentSheetError, useStripe, StripeError } fro
 import { addBalance } from "../api";
 import { userTokensAtom } from "../views/utils/user";
 import { ToastAndroid } from "react-native";
-import { text } from "@fortawesome/fontawesome-svg-core";
 import { paymentStyle } from "../styles";
 import { WalletTopUpViewProps } from "../types";
 

@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { parseDateToString } from "../views/tabs/CartView";
 import { balanceAtom, walletAtom } from "../views/utils/wallet";
 import Spinner from "react-native-loading-spinner-overlay/lib";
-import { getBalance, getClientData } from "../api";
+import { getBalance } from "../api";
 import { userTokensAtom } from "../views/utils/user";
 import { Button } from "react-native";
 import WalletFormView from "./WalletFormView";
@@ -31,11 +31,11 @@ const PaymentView = ({ navigation, route }: any) => {
   }, []);
 
   const Undisplay = async () => {
-	if(!tokens) return 'undisplay no tokens';
+    if (!tokens) return "undisplay no tokens";
 
     getBalance(tokens?.accessToken, (res) => {
       console.log(res.status);
-    //   console.log(res?.err ? res?.err.status : "pass");
+      //   console.log(res?.err ? res?.err.status : "pass");
     })
       .then((value) => {
         if (value !== null) {
@@ -57,7 +57,7 @@ const PaymentView = ({ navigation, route }: any) => {
   };
 
   const determinePanel = () => {
-	if(!balance) return 'determinePanel no balance';
+    if (!balance) return "determinePanel no balance";
     if (wallet) {
       if (balance >= orderValue || assumeSufficientBalance) {
         return "checkout";

@@ -9,9 +9,6 @@ import { userEmail } from "../utils/user";
 import { authStyle } from "../../styles";
 import { EmailConfirmationScreenProps } from "../../types";
 import { verifyUser } from "../../api";
-import { themeAtom } from "../utils/options";
-import { getRecoil } from "recoil-nexus";
-
 
 const emailStyle = StyleSheet.create({
   inputStyle: {
@@ -19,7 +16,7 @@ const emailStyle = StyleSheet.create({
   },
   buttonStyle: {
     marginTop: 40,
-  }
+  },
 });
 
 const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) => {
@@ -53,36 +50,36 @@ const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) =
   };
 
   const checkCode = async () => {
-      if(!code) return;
+    if (!code) return;
 
-      setIsLoading(true);
-      
-      let error = "";
-      const data = await verifyUser(code, (res) => {
-        if(res === 'logout') return navigation.navigate('LoginScreen');
-        console.log(res.status);
+    setIsLoading(true);
 
-        switch (res.status) {
-          case 400:
-            error = "Logowanie nie powiodło się";
-            break;
-          case 500:
-            error = "Wystąpił błąd serwera";
-            break;
-          default:
-            error = `Wystąpił nieokreślony błąd (${res.status})`;
-            break;
-        }
+    let error = "";
+    const data = await verifyUser(code, (res) => {
+      if (res === "logout") return navigation.navigate("LoginScreen");
+      console.log(res.status);
 
-        ToastAndroid.show(error, ToastAndroid.SHORT);
-      });
+      switch (res.status) {
+        case 400:
+          error = "Logowanie nie powiodło się";
+          break;
+        case 500:
+          error = "Wystąpił błąd serwera";
+          break;
+        default:
+          error = `Wystąpił nieokreślony błąd (${res.status})`;
+          break;
+      }
 
-      if (data) {
-        ToastAndroid.show("Weryfikacja przebiegła pomyślnie", ToastAndroid.SHORT);
-        navigation.navigate("TabsView");
-      } else ToastAndroid.show("Podany kod jest niepoprawny", ToastAndroid.SHORT);
+      ToastAndroid.show(error, ToastAndroid.SHORT);
+    });
 
-      setIsLoading(false);
+    if (data) {
+      ToastAndroid.show("Weryfikacja przebiegła pomyślnie", ToastAndroid.SHORT);
+      navigation.navigate("TabsView");
+    } else ToastAndroid.show("Podany kod jest niepoprawny", ToastAndroid.SHORT);
+
+    setIsLoading(false);
   };
 
   return (
@@ -90,7 +87,7 @@ const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) =
       <Spinner visible={isLoading} />
       <View style={authStyle.innerContainer}>
         <View style={authStyle.imageContainer}>
-          <Image style={authStyle.appName} source={require('../../../assets/cool-title.png')} />
+          <Image style={authStyle.appName} source={require("../../../assets/cool-title.png")} />
         </View>
         <Text style={{ ...authStyle.screenTitle, color: COLORS.darkGrey, fontSize: 28 }}>Weryfikacja adresu email</Text>
         <Text style={{ ...authStyle.screenDescription, fontSize: 16, marginTop: 10 }}>Wprowadź kod, który został wysłany twoją pocztę</Text>

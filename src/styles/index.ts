@@ -41,7 +41,7 @@ export const menuViewStyles = StyleSheet.create({
   },
   menuBlankIconStyle: {
     fontSize: 96,
-    color: COLORS.colar
+    color: COLORS.colar,
   },
   menuBlankHeadingStyle: {
     textAlign: "center",
@@ -51,7 +51,7 @@ export const menuViewStyles = StyleSheet.create({
   menuBlankTextStyle: {
     textAlign: "center",
     fontSize: 16,
-    color: COLORS.colar
+    color: COLORS.colar,
   },
   menuItem: {
     flexDirection: "column",
@@ -159,7 +159,7 @@ export const menuViewStyles = StyleSheet.create({
   },
 });
 
-export const cartViewStyles =  StyleSheet.create({
+export const cartViewStyles = StyleSheet.create({
   root: {
     flex: 1,
     gap: 15,
@@ -208,7 +208,7 @@ export const cartViewStyles =  StyleSheet.create({
     flexWrap: "nowrap",
     alignItems: "center",
     justifyContent: "center",
-	  gap: 15,
+    gap: 15,
   },
   cartPanelBlankIcon: {
     color: COLORS.colar,
@@ -469,11 +469,11 @@ export const moreViewStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     padding: "5%",
-	gap: 10,
+    gap: 10,
   },
   optionButton: {
     flex: 1,
-	width: '100%',
+    width: "100%",
     padding: 5,
     flexDirection: "row",
     flexWrap: "nowrap",
@@ -481,9 +481,9 @@ export const moreViewStyles = StyleSheet.create({
     justifyContent: "center",
     gap: 25,
     borderWidth: 1,
-	borderRadius: 10,
+    borderRadius: 10,
     borderColor: COLORS.darkerColar,
-	backgroundColor: COLORS.colar,
+    backgroundColor: COLORS.colar,
   },
   optionButtonIcon: {
     color: COLORS.whiteColar,
@@ -531,10 +531,10 @@ export const dinnerViewStyles = StyleSheet.create({
 export const authStyle = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
-    flex: 1
+    flex: 1,
   },
   innerContainer: { paddingTop: 20, paddingHorizontal: 20 },
-  imageContainer: {display: 'flex', flexDirection: 'column', alignItems: 'center'},
+  imageContainer: { display: "flex", flexDirection: "column", alignItems: "center" },
   appName: {
     marginVertical: 30,
     // fontSize: 45,
@@ -543,7 +543,7 @@ export const authStyle = StyleSheet.create({
     // textAlign: "center",
     // marginBottom: 40,
     // color: COLORS.chestnut,
-    resizeMode: 'contain',
+    resizeMode: "contain",
     width: 300,
     height: 100,
   },
@@ -736,7 +736,7 @@ export const orderViewStyles = StyleSheet.create({
     // backgroundColor: '#ebf2ff',
     // backgroundColor: '#f5f8ff',
     paddingTop: 20,
-    height: '200%'
+    height: "200%",
   },
   title: {
     fontSize: 20,
@@ -830,4 +830,3 @@ export const newOrder = StyleSheet.create({
     fontSize: 16,
   },
 });
-

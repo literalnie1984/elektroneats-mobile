@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, Keyboard, ScrollView, ToastAndroid, StyleSheet, Image } from "react-native";
+import { View, Text, Keyboard, ScrollView, ToastAndroid, Image } from "react-native";
 import Button from "../../components/Button";
 import Spinner from "react-native-loading-spinner-overlay";
 import Input from "../../components/Input";
-import { COLORS } from "../colors";
 import PressableText from "../../components/PressableText";
 import { registerUser } from "../../api";
 import { UserRegisterBody } from "../../api/user/types";
@@ -11,9 +10,6 @@ import { getErrorMsg, userEmail } from "../utils/user";
 import { useRecoilState } from "recoil";
 import { RegistrationScreenProps } from "../../types";
 import { authStyle } from "../../styles";
-import { themeAtom } from "../utils/options";
-import { getRecoil } from "recoil-nexus";
-
 
 interface Errors {
   email: string | null;
@@ -69,7 +65,7 @@ const RegistrationScreen = ({ navigation }: RegistrationScreenProps) => {
     setIsLoading(true);
 
     const hasSucceed = await registerUser(inputs, async (res) => {
-      if(res === 'logout') return navigation.navigate('LoginScreen');
+      if (res === "logout") return navigation.navigate("LoginScreen");
       const text = await res.text();
       console.log(res.status);
       console.log(text);
@@ -89,7 +85,7 @@ const RegistrationScreen = ({ navigation }: RegistrationScreenProps) => {
       <Spinner visible={isLoading} />
       <ScrollView contentContainerStyle={authStyle.innerContainer}>
         <View style={authStyle.imageContainer}>
-          <Image style={authStyle.appName} source={require('../../../assets/cool-title.png')} />
+          <Image style={authStyle.appName} source={require("../../../assets/cool-title.png")} />
         </View>
         <Text style={authStyle.screenTitle}>Rejestracja</Text>
         <Text style={authStyle.screenDescription}>Wprowadź swoje dane aby się zarejestrować</Text>

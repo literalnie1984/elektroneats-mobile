@@ -1,7 +1,5 @@
 import { View, Text, Pressable } from "react-native";
 import { menuViewStyles } from "../../styles";
-import { themeAtom } from "../utils/options";
-import { getRecoil } from "recoil-nexus";
 import { FlashList } from "@shopify/flash-list";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faFaceSadTear } from "@fortawesome/free-solid-svg-icons";
@@ -16,15 +14,11 @@ import { useNavigation } from "@react-navigation/native";
 import { useRecoilValue } from "recoil";
 import { menuSelector, generateVariantTags } from "../utils/menu";
 import { getDayOfWeekMnemonic } from "../../api/utils";
-import { DailyMenu } from "../../api/menu/types";
-
-
 
 const ANIMATION_DURATION = 300;
 
 const MenuVariant = (props: MenuVariantProps) => {
   const navigation = useNavigation<RootStackParamList>();
-
 
   const { main, soup, extras } = props.dailyMenu;
   const { beverages, fillers, salads } = extras;
@@ -145,13 +139,16 @@ const MenuBlank = (props: MenuBlankProps) => {
 
 const MenuView = () => {
   const menu = useRecoilValue(menuSelector);
-  if(!menu) return (<MenuBlank
-          containerStyle={menuViewStyles.menuBlankContainerStyle}
-          windowStyle={menuViewStyles.menuBlankWindowStyle}
-          iconStyle={menuViewStyles.menuBlankIconStyle}
-          headingStyle={menuViewStyles.menuBlankHeadingStyle}
-          textStyle={menuViewStyles.menuBlankTextStyle}
-        />);
+  if (!menu)
+    return (
+      <MenuBlank
+        containerStyle={menuViewStyles.menuBlankContainerStyle}
+        windowStyle={menuViewStyles.menuBlankWindowStyle}
+        iconStyle={menuViewStyles.menuBlankIconStyle}
+        headingStyle={menuViewStyles.menuBlankHeadingStyle}
+        textStyle={menuViewStyles.menuBlankTextStyle}
+      />
+    );
 
   return (
     <GestureHandlerRootView style={menuViewStyles.root}>

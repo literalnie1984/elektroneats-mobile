@@ -3,22 +3,22 @@ import Slider from "@react-native-community/slider";
 import { optionSliderStyle } from "../styles/OptionComponentsStyles";
 import { useState } from "react";
 import { OptionSliderProps } from "../types/OptionComponentsTypes";
-import { setSetting, settingsAtom } from "../views/utils/options";
-import {useRecoilState} from "recoil";
+import { settingsAtom } from "../views/utils/options";
+import { useRecoilState } from "recoil";
 
 const OptionSlider = ({ label, tag, maxValue, minValue, step, value, disabled, handleValueChange }: OptionSliderProps) => {
   const [currentValue, setCurrentValue] = useState(value);
-  const [ settings, setSettings ] = useRecoilState(settingsAtom);
+  const [settings, setSettings] = useRecoilState(settingsAtom);
 
-  const setSetting = ( value: number ) => {
-		  const newSettings = settings.map( setting => {
-				if(setting.tag === tag){
-						setting = { ...setting, value };
-				} 
-				return setting;
-		});
+  const setSetting = (value: number) => {
+    const newSettings = settings.map((setting) => {
+      if (setting.tag === tag) {
+        setting = { ...setting, value };
+      }
+      return setting;
+    });
 
-		setSettings(newSettings);
+    setSettings(newSettings);
   };
   const handleChange = handleValueChange ?? setSetting;
 

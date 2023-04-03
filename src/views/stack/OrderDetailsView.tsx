@@ -6,7 +6,6 @@ import { newOrder } from "../../styles";
 import { OrderDinner } from "../../api/orders/types";
 import { calculteOrderDinnerCost } from "../utils/cart";
 
-
 const orderDetails = StyleSheet.create({
   container: {
     // paddingTop: 16
@@ -95,7 +94,7 @@ interface OrderItemProps {
 
 export const DinnerOrderItem = ({ amount, price, orderDinner, navigation }: OrderItemProps) => {
   const showOrderContent = () => {
-    navigation.navigate('DinnerView', { mode: DinnerViewDisplayMode.INFO, data: orderDinner });
+    navigation.navigate("DinnerView", { mode: DinnerViewDisplayMode.INFO, data: orderDinner });
   };
 
   return (
@@ -104,7 +103,9 @@ export const DinnerOrderItem = ({ amount, price, orderDinner, navigation }: Orde
         <View style={orderContent.firstRow}>
           {/* <Image style={{ width: 48, height: 48 }} source={{ uri: placeholderUri }} /> */}
           <Text style={orderContent.orderName}>Obiad</Text>
-          <Text style={orderContent.orderPrice}>{amount} x {(price * amount).toFixed(2)} zł</Text>
+          <Text style={orderContent.orderPrice}>
+            {amount} x {(price * amount).toFixed(2)} zł
+          </Text>
           <Text style={orderContent.orderPrice}>{price.toFixed(2)} zł</Text>
         </View>
       </TouchableOpacity>
@@ -121,12 +122,7 @@ const OrderDetailsView = ({ route, navigation }: OrderDetailsViewProps) => {
   data.forEach((orderDinner) => {
     const orderDinnerPrice = calculteOrderDinnerCost(orderDinner);
     totalPrice += orderDinnerPrice;
-    dinnerOrderItems.push(<DinnerOrderItem 
-        amount={1}
-        price={orderDinnerPrice}
-        orderDinner={orderDinner} 
-        navigation={navigation} 
-    />)
+    dinnerOrderItems.push(<DinnerOrderItem amount={1} price={orderDinnerPrice} orderDinner={orderDinner} navigation={navigation} />);
   });
 
   return (
@@ -165,9 +161,7 @@ const OrderDetailsView = ({ route, navigation }: OrderDetailsViewProps) => {
         </View>
       </View>
       <Text style={orderDetails.categoryText}>Zawartość zamówienia:</Text>
-      <View style={orderDetails.center}>
-          {dinnerOrderItems}
-      </View>
+      <View style={orderDetails.center}>{dinnerOrderItems}</View>
     </View>
   );
 };

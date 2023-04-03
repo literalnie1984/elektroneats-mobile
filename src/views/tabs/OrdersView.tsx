@@ -1,40 +1,40 @@
 import { useCallback, useEffect, useState } from "react";
 import { View, Text, SectionList, ToastAndroid, TouchableOpacity, RefreshControl } from "react-native";
-import { OrderProps, RootStackParamList, UserDecodedData } from "../../types";
+import { OrderProps, RootStackParamList } from "../../types";
 import { getOrders } from "../../api";
 import { useRecoilValue } from "recoil";
-import { userTokenSelector } from "../utils/user";
+import { userDataSelector, userTokenSelector } from "../utils/user";
 import { useNavigation } from "@react-navigation/native";
 import { OrderData, OrderStatus } from "../../api/orders/types";
-import { cartViewStyles, newOrder, orderViewStyles, } from "../../styles";
-import jwt_decode from "jwt-decode";
-import { themeAtom } from "../utils/options";
-import { getRecoil } from "recoil-nexus";
+import { cartViewStyles, newOrder, orderViewStyles } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faFaceMeh } from "@fortawesome/free-solid-svg-icons";
 import { ScrollView } from "react-native-gesture-handler";
-
 
 const formatDate = (timestampInSeconds: number): string => {
   const date = new Date(timestampInSeconds * 1000);
   const daysOfWeek = ["nd.", "pon.", "wt.", "śr.", "czw.", "pt.", "sob."];
   const dayOfWeek = daysOfWeek[date.getDay()];
   const dayOfMonth = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0"); 
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const year = date.getFullYear().toString().slice(-2);
   const hours = date.getHours().toString().padStart(2, "0");
   const minutes = date.getMinutes().toString().padStart(2, "0");
   return `${dayOfWeek} | ${dayOfMonth}.${month}.${year} | ${hours}:${minutes}`;
-}
+};
 
 const getStatus = (status: OrderStatus): string => {
-  switch(status) {
-      case OrderStatus.Paid: return "Opłacone";
-      case OrderStatus.Prepared: return "Przygotowywane";
-      case OrderStatus.Ready: return "Gotowe do odbioru";
-      case OrderStatus.Collected: return "Odebrane";
+  switch (status) {
+    case OrderStatus.Paid:
+      return "Opłacone";
+    case OrderStatus.Prepared:
+      return "Przygotowywane";
+    case OrderStatus.Ready:
+      return "Gotowe do odbioru";
+    case OrderStatus.Collected:
+      return "Odebrane";
   }
-}
+};
 
 const Order = ({ id, username, collectionDate, status, paymentMethod, data }: OrderProps) => {
   const navigation = useNavigation<RootStackParamList>();
@@ -103,7 +103,7 @@ const OrdersView = () => {
 
   async function getData() {
     const data = await getOrders(accessToken!, (res) => {
-      if(res === 'logout') return navigation.navigate('LoginScreen');
+      if (res === "logout") return navigation.navigate("LoginScreen");
 
       let error = "";
       switch (res.status) {
@@ -121,41 +121,43 @@ const OrdersView = () => {
       ToastAndroid.show(error, ToastAndroid.SHORT);
     });
 
-    if(!data || data.length === 0) return;
+    if (!data || data.length === 0) return;
     setOrdersData(data);
   }
 
-  if(!accessToken || !ordersData || ordersData.length === 0) {
+  if (!accessToken || !ordersData || ordersData.length === 0) {
     return <OrderPanelBlank refreshControl={refreshControl} />;
   }
 
-  const userData = jwt_decode(accessToken) as UserDecodedData;
+  const userData = useRecoilValue(userDataSelector);
 
   const DATA = [];
-  const activeOrders = ordersData.filter(order => order.status !== OrderStatus.Collected);
-  if(activeOrders.length !== 0) DATA.push({ title: "Aktywne", data: activeOrders });
+  const activeOrders = ordersData.filter((order) => order.status !== OrderStatus.Collected);
+  if (activeOrders.length !== 0) DATA.push({ title: "Aktywne", data: activeOrders });
 
-  const finishedOrders = ordersData.filter(order => order.status === OrderStatus.Collected);
-  if(finishedOrders.length !== 0) DATA.push({ title: "Zrealizowane", data: finishedOrders });
-  
+  const finishedOrders = ordersData.filter((order) => order.status === OrderStatus.Collected);
+  if (finishedOrders.length !== 0) DATA.push({ title: "Zrealizowane", data: finishedOrders });
+
   return (
     <ScrollView style={orderViewStyles.container} refreshControl={refreshControl}>
       <SectionList
         sections={DATA}
         keyExtractor={(item) => item.id.toString()}
         renderItem={(data) => {
-          const formattedId = data.item.id.toString().padStart(4, '0');
+          const formattedId = data.item.id.toString().padStart(4, "0");
           const formattedDate = formatDate(data.item.collectionDate);
           const formattedStatus = getStatus(data.item.status);
 
-          return <Order 
-            id={formattedId} 
-            collectionDate={formattedDate} 
-            username={userData.username}
-            status={formattedStatus} 
-            paymentMethod={"Stripe"} // TODO: someday
-            data={data.item.data} 
-          />;
+          return (
+            <Order
+              id={formattedId}
+              collectionDate={formattedDate}
+              username={userData?.username ?? "brak"}
+              status={formattedStatus}
+              paymentMethod={"Stripe"} // TODO: someday
+              data={data.item.data}
+            />
+          );
         }}
         renderSectionHeader={({ section: { title } }) => <Text style={orderViewStyles.title}>{title}</Text>}
       />

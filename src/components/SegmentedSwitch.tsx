@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet } from "react-native";
-import { useEffect, useState } from "react";
+import { Text, StyleSheet } from "react-native";
+import { useState } from "react";
 import { Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 import { SegmentedSwitchProps } from "../types";

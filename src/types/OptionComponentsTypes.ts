@@ -1,5 +1,3 @@
-import { Picker } from "@react-native-picker/picker";
-
 interface OptionSwitchProps {
   label: string;
   tag: string;
@@ -10,7 +8,7 @@ interface OptionSwitchProps {
 
 interface OptionSliderProps {
   label: string;
-  tag: string,
+  tag: string;
   value: number;
   disabled?: boolean;
   maxValue: number;
@@ -27,10 +25,10 @@ type PickerItem = {
 
 interface OptionPickerProps {
   label: string;
-  tag: string,
-  value: any,
+  tag: string;
+  value: any;
   optionsList: PickerItem[];
-  onValueChange?: ( value: any ) => any,
+  onValueChange?: (value: any) => any;
   enabled?: boolean;
   mode?: "dialog" | "dropdown";
 }

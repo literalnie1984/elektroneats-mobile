@@ -16,16 +16,17 @@ import * as SplashScreen from "expo-splash-screen";
 import * as SecureStore from "expo-secure-store";
 import OrderDetailsView from "./stack/OrderDetailsView";
 import PaymentView from "../components/PaymentView";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Text } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { settingsAtom } from "./utils/options";
 
 SplashScreen.preventAutoHideAsync();
 
-let device_theme: string; 
+let device_theme: string;
 
 export const Stack = createStackNavigator<RootStackParamList>();
 const MainView = () => {
   const [menu, setMenu] = useRecoilState(menuAtom);
+  const [settings, setSettings] = useRecoilState(settingsAtom);
   const [tokens, setTokens] = useRecoilState(userTokensAtom);
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
   const [appIsReady, setAppIsReady] = useState(false);
@@ -35,10 +36,10 @@ const MainView = () => {
   }, [appIsReady]);
 
   useEffect(() => {
-    (async function(){
+    (async function () {
       const tokens = await SecureStore.getItemAsync("tokens");
       console.log(`Getting tokens from SecureStore\nValue: ${tokens}\nType: ${typeof tokens}`);
-      if (tokens && tokens !== 'null') {
+      if (tokens && tokens !== "null") {
         console.log("tokens exist -> forcing TabsView");
         setInitialRoute("TabsView");
         setTokens(JSON.parse(tokens));
@@ -50,28 +51,28 @@ const MainView = () => {
       // MENU
       async function updateWeeklyMenu() {
         const weeklyMenu = await getWeeklyMenu();
-        if(weeklyMenu) AsyncStorage.setItem('weeklyMenu', JSON.stringify(weeklyMenu));
+        if (weeklyMenu) AsyncStorage.setItem("weeklyMenu", JSON.stringify(weeklyMenu));
         setMenu(weeklyMenu);
       }
 
       const lastMenuUpdate = await getLastMenuUpdate();
-      if(lastMenuUpdate) {
+      if (lastMenuUpdate) {
         const { lastUpdate } = lastMenuUpdate;
 
-        const savedLastMenuUpdate = await AsyncStorage.getItem('lastMenuUpdate');
-        const currTimeInSec = Math.round((new Date().getTime()) / 1000);
+        const savedLastMenuUpdate = await AsyncStorage.getItem("lastMenuUpdate");
+        const currTimeInSec = Math.round(new Date().getTime() / 1000);
 
-        if(!savedLastMenuUpdate) {
-          AsyncStorage.setItem('lastMenuUpdate', currTimeInSec.toString());
+        if (!savedLastMenuUpdate) {
+          AsyncStorage.setItem("lastMenuUpdate", currTimeInSec.toString());
           updateWeeklyMenu();
         } else {
           const savedLastMenuUpdateNum = Number(savedLastMenuUpdate);
-          if(!isNaN(savedLastMenuUpdateNum) && lastUpdate > currTimeInSec) {
-            AsyncStorage.setItem('lastMenuUpdate', currTimeInSec.toString());
+          if (!isNaN(savedLastMenuUpdateNum) && lastUpdate > currTimeInSec) {
+            AsyncStorage.setItem("lastMenuUpdate", currTimeInSec.toString());
             updateWeeklyMenu();
           } else {
-            const savedWeeklyMenu = await AsyncStorage.getItem('weeklyMenu');
-            if(!savedWeeklyMenu) updateWeeklyMenu();
+            const savedWeeklyMenu = await AsyncStorage.getItem("weeklyMenu");
+            if (!savedWeeklyMenu) updateWeeklyMenu();
             else setMenu(JSON.parse(savedWeeklyMenu));
           }
         }
@@ -90,7 +91,7 @@ const MainView = () => {
         console.log("no token in securestore");
         setInitialRoute("LoginScreen");
       }
-      setTokens(JSON.parse((data ?? "{}")));
+      setTokens(JSON.parse(data ?? "{}"));
       setAppIsReady(true);
     });
   }, []);
@@ -115,11 +116,11 @@ const MainView = () => {
       <Stack.Screen name="DinnerView" component={DinnerView} />
       <Stack.Screen name="OrderDetailsView" component={OrderDetailsView} options={{ title: "Szczegóły zamówienia" }} />
       <Stack.Group>
-        <Stack.Screen name="Look and Feel" component={OptionsViews.LookAndFeelView} />
-        <Stack.Screen name="Payment Settings" component={OptionsViews.PaymentSettingsView} />
-        <Stack.Screen name="Miscellaneous" component={OptionsViews.MiscellaneousOptionsView} />
-        <Stack.Screen name="Biometrics and Security" component={OptionsViews.SecurityOptionsView} />
-        <Stack.Screen name="Informations" component={OptionsViews.InformationsView} />
+        <Stack.Screen name="LookAndFeelView" component={OptionsViews.LookAndFeelView} />
+        <Stack.Screen name="PaymentSettingsView" component={OptionsViews.PaymentSettingsView} />
+        <Stack.Screen name="MiscellaneousOptionsView" component={OptionsViews.MiscellaneousOptionsView} />
+        <Stack.Screen name="SecurityOptionsView" component={OptionsViews.SecurityOptionsView} />
+        <Stack.Screen name="InformationsView" component={OptionsViews.InformationsView} />
       </Stack.Group>
       <Stack.Screen name="PaymentView" component={PaymentView} />
     </Stack.Navigator>

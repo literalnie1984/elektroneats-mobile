@@ -8,8 +8,6 @@ const getWeeklyMenu = async (error?: ErrorFunction): Promise<WeeklyMenu | null> 
   return data ? parseFetchedWeeklyMenu(data) : data;
 };
 
-const getLastMenuUpdate = async (error?: ErrorFunction): Promise<FetchedLastUpdate | null> => (
-  fetchForJSON<FetchedLastUpdate>({ path: "menu/last-update", method: "GET", error })
-);
+const getLastMenuUpdate = async (error?: ErrorFunction): Promise<FetchedLastUpdate | null> => fetchForJSON<FetchedLastUpdate>({ path: "menu/last-update", method: "GET", error });
 
 export default { getWeeklyMenu, getLastMenuUpdate };

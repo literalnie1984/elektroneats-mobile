@@ -1,8 +1,6 @@
 import { View, Text, Pressable, Alert, Image, ToastAndroid } from "react-native";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { cartViewStyles, orderViewStyles } from "../../styles";
-import { themeAtom } from "../utils/options";
-import { getRecoil } from "recoil-nexus";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronUp, faChevronDown, faFaceMeh, faPlus, faMinus, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FlashList } from "@shopify/flash-list";
@@ -12,7 +10,7 @@ import { CartItem, CartItemProps, CartItemType, CartPanelProps, CartSummaryProps
 import { getDayOfWeekMnemonic } from "../../api/utils";
 import { calculateTotalCost, cartItemsAtom, convertCartItemsForApi } from "../utils/cart";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { createOrders, getBalance, getClientData } from "../../api";
+import { createOrders } from "../../api";
 import { userTokenSelector } from "../utils/user";
 import { menuSelector } from "../utils/menu";
 import { orderContent } from "../stack/OrderDetailsView";
@@ -23,14 +21,12 @@ import { useNavigation } from "@react-navigation/native";
 const ANIMATION_DURATION = 300;
 const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
 
-
 const CartItemView = ({ index, item, handleAmountUpdate, navigation }: CartItemProps) => {
-
   const { data, type, cost, amount } = item;
   if (type === CartItemType.Item) return <View>TODO</View>;
-  
+
   const mealEditHandler = () => {
-    navigation.navigate('DinnerView', { mode: DinnerViewDisplayMode.EDIT, data: item });
+    navigation.navigate("DinnerView", { mode: DinnerViewDisplayMode.EDIT, data: item });
   };
 
   return (
@@ -63,7 +59,6 @@ const CartItemView = ({ index, item, handleAmountUpdate, navigation }: CartItemP
 };
 
 const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded, usePayment }: CartSummaryProps) => {
- 
   const navigation = useNavigation<RootStackParamList>();
   const [cost, setCost] = useState<number | null>(summarizeCost(cartItems));
   const accessToken = useRecoilValue(userTokenSelector);
@@ -120,29 +115,29 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
 
     console.log(JSON.stringify(body));
 
-    let error = '';
+    let error = "";
     const hasSucceed = await createOrders(body, accessToken, (res) => {
-        if(res === 'logout') return;
+      if (res === "logout") return;
 
-        switch (res.status) {
-          case 400:
-            error = "Dodanie zamówienia nie powiodło się";
-            break;
-          case 500:
-            error = "Wystąpił błąd serwera";
-            break;
-          default:
-            error = `Wystąpił nieokreślony błąd (${res.status})`;
-            break;
-        }
-        ToastAndroid.show(error, ToastAndroid.SHORT);
+      switch (res.status) {
+        case 400:
+          error = "Dodanie zamówienia nie powiodło się";
+          break;
+        case 500:
+          error = "Wystąpił błąd serwera";
+          break;
+        default:
+          error = `Wystąpił nieokreślony błąd (${res.status})`;
+          break;
+      }
+      ToastAndroid.show(error, ToastAndroid.SHORT);
     });
 
     console.log(hasSucceed);
 
     if (hasSucceed) {
       setCartItems([]);
-      
+
       ToastAndroid.show("Order has been added", ToastAndroid.SHORT);
     }
   };
@@ -225,7 +220,6 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
 const CartPanelListItemSeparator = () => <View style={{ height: 20 }} />;
 
 const CartPanel = ({ cartItems, handleAmountUpdate, navigation }: CartPanelProps) => {
-
   return (
     <>
       <Text style={orderViewStyles.title}>Zawartość koszyka</Text>
@@ -247,7 +241,6 @@ const CartPanel = ({ cartItems, handleAmountUpdate, navigation }: CartPanelProps
 };
 
 const CartPanelBlank = () => {
-
   return (
     <View style={cartViewStyles.cartPanelBlank}>
       <FontAwesomeIcon icon={faFaceMeh} color={cartViewStyles.cartPanelBlankIcon.color} size={cartViewStyles.cartPanelBlankIcon.width} />
@@ -333,7 +326,6 @@ const verifyPickupDates = (data: CartItem[], newDate: Date) => {
 };
 
 const CartScreen = ({ navigation }: any) => {
-		
   const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
   const [date, setDate] = useState<Date | null>(null);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);

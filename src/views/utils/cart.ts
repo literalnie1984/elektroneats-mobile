@@ -92,23 +92,20 @@ const getPriceAsNumber = (item?: DinnerItem): number => {
 const convertNumberToStr = (str: string): number => {
   const converted = Number(str);
   return !isNaN(converted) ? converted : 0;
-}
+};
 
 const getId = (item?: DinnerItem): number | null => {
   return item?.id ? item.id : null;
 };
 
 function generateId() {
-  return Math.random().toString(36).substring(2) +
-    (new Date()).getTime().toString(36);
+  return Math.random().toString(36).substring(2) + new Date().getTime().toString(36);
 }
 
 export const calculteOrderDinnerCost = (orderDinner: OrderDinner) => {
   const dinnerPrice = convertNumberToStr(orderDinner.dinner.price);
-  const extrasPrice =  orderDinner.extras
-    .map(extra => convertNumberToStr(extra.price))
-    .reduce((a, b) => a + b, 0);
-    
+  const extrasPrice = orderDinner.extras.map((extra) => convertNumberToStr(extra.price)).reduce((a, b) => a + b, 0);
+
   return dinnerPrice + extrasPrice;
 };
 

@@ -3,7 +3,7 @@ import { AnimatableValue, AnimatedStyleProp } from "react-native-reanimated";
 import { SetStateAction, Dispatch } from "react";
 import { DailyMenu, DinnerItem } from "../api/menu/types";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { OrderBody, CreateOrdersBody, OrderDinner } from "../api/orders/types";
+import { OrderBody, OrderDinner } from "../api/orders/types";
 import { PickerItem } from "./OptionComponentsTypes";
 
 export type RootStackParamList = {
@@ -117,7 +117,7 @@ export interface DinnerSelectProps {
 export enum DinnerViewDisplayMode {
   CREATE = 1, // when creating new order for the cart
   EDIT = 2, // after clicking the gear in the cart
-  INFO = 3  // after clicking on the item in order details
+  INFO = 3, // after clicking on the item in order details
 }
 
 interface DinnerViewBase {
@@ -140,7 +140,7 @@ interface DinnerViewInfo extends DinnerViewBase {
   data: OrderDinner;
 }
 
-export type DinnerViewRoute = (DinnerViewCreate | DinnerViewEdit | DinnerViewInfo);
+export type DinnerViewRoute = DinnerViewCreate | DinnerViewEdit | DinnerViewInfo;
 
 export type DinnerViewProps = NativeStackScreenProps<RootStackParamList, "DinnerView">;
 
@@ -235,85 +235,90 @@ export interface WalletCheckoutProps {
 }
 
 export enum SettingType {
-		Switch = 'switch',
-		Slider = 'slider',
-		InputText = 'input-text',
-		InputNum = 'input-num',
-		Dropdown = 'dropdown',
-		CheckboxList = 'checkbox-list',
-};
+  Switch = "switch",
+  Slider = "slider",
+  InputText = "input-text",
+  InputNum = "input-num",
+  Dropdown = "dropdown",
+  CheckboxList = "checkbox-list",
+}
 
 export interface SettingSwitchProps {
-		tagTrue: string,
-		tagFalse: string,
-};
+  tagTrue: string;
+  tagFalse: string;
+}
 
 export interface SettingInputNumProps {
-		maxVal: number,
-		minVal: number,
-};
+  maxVal: number;
+  minVal: number;
+}
 
 export interface SettingSliderProps extends SettingInputNumProps {
-		step: number,
-};
+  step: number;
+}
 
 export interface SettingInputTextProps {
-		maxLength: number,
-};
+  maxLength: number;
+}
 
 export interface SettingDropdownProps {
-		optionsList: PickerItem[],
-		mode: "dialog" | "dropdown"
-};
+  optionsList: PickerItem[];
+  mode: "dialog" | "dropdown";
+}
 
 export interface SettingCheckboxListProps {
-		defValue: boolean[],
-		tags: string[]
-};
+  defValue: boolean[];
+  tags: string[];
+}
 
 export interface Setting {
-		name: string,
-		tag: string,
-		section: string,
-		menu: string,
-		disabled: boolean,
-		type: SettingType,
-		value: any | any[],
-		props: SettingSwitchProps | SettingSliderProps | SettingDropdownProps | SettingInputNumProps | SettingInputTextProps | SettingCheckboxListProps,
-};
+  name: string;
+  tag: string;
+  section: string;
+  menu: string;
+  disabled: boolean;
+  type: SettingType;
+  value: any | any[];
+  props: SettingSwitchProps | SettingSliderProps | SettingDropdownProps | SettingInputNumProps | SettingInputTextProps | SettingCheckboxListProps;
+}
 
 export type Settings = Setting[];
 
 export interface OptionNumberInputProps {
-		name: string,
-		tag: string,
-		value: number,
-		handleValueChange?: ( value: number ) => any,
-		maxVal: number,
-		minVal: number,
-		disabled: boolean,
-};
+  name: string;
+  tag: string;
+  value: number;
+  handleValueChange?: (value: number) => any;
+  maxVal: number;
+  minVal: number;
+  disabled: boolean;
+}
 
 export interface OptionTextInputProps {
-		name: string,
-		tag: string,
-		value: string,
-		handleValueChange?: ( value: string ) => any,
-		maxLen: number,
-		disabled: boolean,
-};
+  name: string;
+  tag: string;
+  value: string;
+  handleValueChange?: (value: string) => any;
+  maxLen: number;
+  disabled: boolean;
+}
 
 export interface OptionSwitchProps {
-		label: string,
-		tag: string,
-		tagTrue: string,
-		tagFalse: string,
-		state: boolean,
-		disabled: boolean,
-		handleSwitch?: ( value: boolean ) => any,
-};
+  label: string;
+  tag: string;
+  tagTrue: string;
+  tagFalse: string;
+  state: boolean;
+  disabled: boolean;
+  handleSwitch?: (value: boolean) => any;
+}
 
 export interface SettingHandlerBind {
-		tag: string,
-		handler: ( value: any ) => any,
+  tag: string;
+  handler: (value: any) => any;
 }
+
+export type InformationsViewProps = NativeStackScreenProps<RootStackParamList, "InformationsView">;
+export type LookAndFeelViewProps = NativeStackScreenProps<RootStackParamList, "LookAndFeelView">;
+export type MiscellaneousOptionsViewProps = NativeStackScreenProps<RootStackParamList, "MiscellaneousOptionsView">;
+export type PaymentSettingsViewProps = NativeStackScreenProps<RootStackParamList, "PaymentSettingsView">;

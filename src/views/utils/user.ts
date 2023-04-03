@@ -10,7 +10,7 @@ export const userTokenSelector = selector({
 });
 export const userEmail = atom<string | null>({ key: "userEmail", default: null });
 
-export const userDataSelector = selector({
+export const userDataSelector = selector<UserDecodedData | null | undefined>({
   key: "userData",
   get: ({ get }) => {
     const accessToken = get(userTokensAtom)!.accessToken;

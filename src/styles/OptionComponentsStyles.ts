@@ -9,9 +9,9 @@ const optionSwitchStyle = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-evenly",
     padding: 10,
-	backgroundColor: COLORS.colar,
-	borderRadius: 10,
-	marginVertical: 20,
+    backgroundColor: COLORS.colar,
+    borderRadius: 10,
+    marginVertical: 20,
   },
   label: {
     fontSize: 16,
@@ -19,21 +19,21 @@ const optionSwitchStyle = StyleSheet.create({
     textAlign: "left",
   },
   switchBody: {
-    width: 'auto',
-	flexDirection: "row",
-	flexWrap: 'nowrap',
-	alignItems: 'center',
-	justifyContent: 'center',
-	gap: 10,
+    width: "auto",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
   },
   tag: {
-		fontSize: 16,
-		paddingHorizontal: 5,
-		color: COLORS.gunmetal,
-		textAlign: 'center',
+    fontSize: 16,
+    paddingHorizontal: 5,
+    color: COLORS.gunmetal,
+    textAlign: "center",
   },
   switch: {
-		width: 40,
+    width: 40,
   },
   switchEnabled: {
     color: COLORS.whiteColar,
@@ -86,27 +86,27 @@ const optionSliderStyle = StyleSheet.create({
 
 const optionPickerStyle = StyleSheet.create({
   body: {
-    width: '90%',
+    width: "90%",
     height: 50,
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",
-	alignSelf: 'center',
+    alignSelf: "center",
     justifyContent: "space-evenly",
     paddingVertical: 5,
     paddingHorizontal: 10,
-	backgroundColor: COLORS.colar,
-	borderRadius: 10,
-	marginVertical: 30,
+    backgroundColor: COLORS.colar,
+    borderRadius: 10,
+    marginVertical: 30,
   },
   label: optionSwitchStyle.label,
   picker: {
-    height: '100%',
-	width: '40%',
-	flexDirection: 'row',
-	flexWrap: 'nowrap',
-	alignItems: 'center',
-	justifyContent: 'center',
+    height: "100%",
+    width: "40%",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "center",
     color: COLORS.gunmetal,
   },
   dropdownIcon: {
@@ -139,39 +139,39 @@ const optionButtonStyle = StyleSheet.create({
     color: COLORS.chestnut,
   },
   ripple: {
-		  color: COLORS.lighterColar,
-  }
+    color: COLORS.lighterColar,
+  },
 });
 
 const optionInputStyle = StyleSheet.create({
-		body: {
-				width: "100%",
-				paddingVertical: 5,
-				flexDirection: "row",
-				flexWrap: 'nowrap',
-				alignItems: 'center',
-				justifyContent: 'center',
-				borderWidth: 1,
-				borderStyle: 'solid',
-				borderColor: COLORS.chestnut,
-				gap: 15,
-		},
-		label: {
-				fontSize: 16,
-				color: COLORS.chestnut,
-				textAlign: 'left',
-		},
-		input: {
-				flexGrow: 1,
-				fontSize: 16,
-				color: COLORS.gunmetal,
-		},
-		underline: {
-				color: COLORS.gunmetal,
-		},
-		cursor: {
-				color: COLORS.gunmetal,
-		},
+  body: {
+    width: "100%",
+    paddingVertical: 5,
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: COLORS.chestnut,
+    gap: 15,
+  },
+  label: {
+    fontSize: 16,
+    color: COLORS.chestnut,
+    textAlign: "left",
+  },
+  input: {
+    flexGrow: 1,
+    fontSize: 16,
+    color: COLORS.gunmetal,
+  },
+  underline: {
+    color: COLORS.gunmetal,
+  },
+  cursor: {
+    color: COLORS.gunmetal,
+  },
 });
 
 export { optionSwitchStyle, optionSliderStyle, optionPickerStyle, optionButtonStyle, optionInputStyle };

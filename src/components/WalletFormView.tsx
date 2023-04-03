@@ -1,9 +1,9 @@
-import { SetStateAction, useEffect, useState, Dispatch } from "react";
+import { SetStateAction, useState, Dispatch } from "react";
 import { ToastAndroid, Text, TextInput, View, Pressable } from "react-native";
 import { paymentStyle } from "../styles";
-import { verifyNameIntegrity, verifyPostalIntegrity, verifyPhoneNumberIntegrity, verifyEmailAddressIntegrity, walletAtom, balanceAtom } from "../views/utils/wallet";
+import { verifyNameIntegrity, verifyPostalIntegrity, verifyPhoneNumberIntegrity, walletAtom } from "../views/utils/wallet";
 import { COLORS } from "../views/colors";
-import { getBalance, getClientData, setWallet } from "../api";
+import { getClientData, setWallet } from "../api";
 import { useRecoilState } from "recoil";
 import { userTokensAtom } from "../views/utils/user";
 import { WalletFormViewProps } from "../types";

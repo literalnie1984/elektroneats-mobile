@@ -10,38 +10,34 @@ const headers = {
   "Content-Type": "application/json",
 };
 
-const refreshAccessToken = async (token: JWT, error?: ErrorFunction): Promise<UserTokens | null> => (
-  fetchForJSON({ path: `user/refresh-token`, method: "POST", token, error, 
-      body: { refreshToken: token } 
-  })
-);
+const refreshAccessToken = async (token: JWT, error?: ErrorFunction): Promise<UserTokens | null> => fetchForJSON({ path: `user/refresh-token`, method: "POST", token, error, body: { refreshToken: token } });
 
 async function isAccessTokenValid(res: Response): Promise<boolean | undefined> {
   const logout = async () => {
     setRecoil(userTokensAtom, null);
-    await SecureStore.deleteItemAsync('tokens');
-    throw 'logout';
-  }
+    await SecureStore.deleteItemAsync("tokens");
+    throw "logout";
+  };
 
   if (res.status === 401) {
     const data: ErrorRes = await res.json();
 
     // if true then refresh accessToken
-    if(data.error.includes('Access')) {
+    if (data.error.includes("Access")) {
       const savedData = getRecoil(userTokensAtom);
-      if(!savedData) return logout();
+      if (!savedData) return logout();
 
       const data = await refreshAccessToken(savedData.refreshToken);
-      if(data) setRecoil(userTokensAtom, data);
+      if (data) setRecoil(userTokensAtom, data);
       else return logout();
 
       return false;
-    } 
-    
+    }
+
     // if true then force logout
-    else if(data.error.includes('Refresh')) return logout();
+    else if (data.error.includes("Refresh")) return logout();
   } else return true;
-} 
+}
 
 export async function fetchForJSON<T>({ path, method, token, body, error }: FetchParams): Promise<T | null> {
   try {
