@@ -10,6 +10,7 @@ import { cartViewStyles, newOrder, orderViewStyles } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faFaceMeh } from "@fortawesome/free-solid-svg-icons";
 import { ScrollView } from "react-native-gesture-handler";
+import jwtDecode from "jwt-decode";
 
 const formatDate = (timestampInSeconds: number): string => {
   const date = new Date(timestampInSeconds * 1000);
@@ -129,7 +130,7 @@ const OrdersView = () => {
     return <OrderPanelBlank refreshControl={refreshControl} />;
   }
 
-  const userData = useRecoilValue(userDataSelector);
+  const userData = jwtDecode(accessToken);
 
   const DATA = [];
   const activeOrders = ordersData?.filter((order) => order.status !== OrderStatus.Collected);
@@ -137,6 +138,8 @@ const OrdersView = () => {
 
   const finishedOrders = ordersData?.filter((order) => order.status === OrderStatus.Collected);
   if (finishedOrders.length !== 0) DATA.push({ title: "Zrealizowane", data: finishedOrders });
+
+  console.log('DATA', DATA)
 
   return (
     <ScrollView style={orderViewStyles.container} refreshControl={refreshControl}>

@@ -52,7 +52,7 @@ export async function fetchForJSON<T>({ path, method, token, body, error }: Fetc
       body: JSON.stringify(body),
     });
 
-    if (!(await isAccessTokenValid(res))) fetchForJSON<T>({ path, method, token, body, error });
+    // if (!(await isAccessTokenValid(res))) fetchForJSON<T>({ path, method, token, body, error });
     if (res.status !== 200) throw res;
 
     const data: T = await res.json();
@@ -76,7 +76,7 @@ export async function fetchForText({ path, method, token, body, error }: FetchPa
       body: JSON.stringify(body),
     });
 
-    if (!(await isAccessTokenValid(res))) fetchForText({ path, method, token, body, error });
+    // if (!(await isAccessTokenValid(res))) fetchForText({ path, method, token, body, error });
     if (res.status !== 200) throw res;
 
     const data = await res.text();
@@ -100,7 +100,7 @@ export async function fetchForNumber({ path, method, token, body, error }: Fetch
       body: JSON.stringify(body),
     });
 
-    if (!(await isAccessTokenValid(res))) fetchForNumber({ path, method, token, body, error });
+    // if (!(await isAccessTokenValid(res))) fetchForNumber({ path, method, token, body, error });
     if (res.status !== 200) throw res;
 
     const data = Number(await res.text());
@@ -124,7 +124,7 @@ export async function fetchForSuccess({ path, method, token, body, error }: Fetc
       body: JSON.stringify(body),
     });
 
-    if (!(await isAccessTokenValid(res))) fetchForSuccess({ path, method, token, body, error });
+    // if (!(await isAccessTokenValid(res))) fetchForSuccess({ path, method, token, body, error });
 
     return res.ok;
   } catch (err) {
