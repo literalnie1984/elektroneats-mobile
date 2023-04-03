@@ -97,5 +97,16 @@ export const securitySettingsStyle = StyleSheet.create({
 });
 
 export const informationsViewStyle = StyleSheet.create({
-  root: {},
+  root: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 100
+  },
+  authorText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginVertical: 10
+  }
 });

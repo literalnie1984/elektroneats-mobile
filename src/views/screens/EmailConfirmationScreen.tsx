@@ -26,11 +26,11 @@ const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) =
   const [email] = useRecoilState(userEmail);
 
   // Disables going back
-  useEffect(() => {
-    navigation.addListener("beforeRemove", (e: any) => {
-      e.preventDefault();
-    });
-  }, [navigation]);
+  // useEffect(() => {
+  //   navigation.addListener("beforeRemove", (e: any) => {
+  //     e.preventDefault();
+  //   });
+  // }, [navigation]);
 
   const validate = async () => {
     Keyboard.dismiss();
@@ -57,11 +57,11 @@ const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) =
     let error = "";
     const data = await verifyUser(code, { email }, (res) => {
       if (res === "logout") return navigation.navigate("LoginScreen");
-      console.log(res.status);
 
       switch (res.status) {
         case 400:
-          error = "Logowanie nie powiodło się";
+        case 401:
+          error = "Potwierdzenie kodu nie powiodło się";
           break;
         case 500:
           error = "Wystąpił błąd serwera";

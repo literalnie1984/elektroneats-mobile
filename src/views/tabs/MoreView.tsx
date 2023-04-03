@@ -19,17 +19,12 @@ const options = [
     goto: "PaymentSettingsView",
   },
   {
-    name: "Zabezpieczenia",
-    icon: faFingerprint,
-    goto: "SecurityOptionsView",
-  },
-  {
     name: "Pozostałe",
     icon: faEllipsis,
     goto: "MiscellaneousOptionsView",
   },
   {
-    name: "Informacje i autorzy",
+    name: "Autorzy",
     icon: faInfo,
     goto: "InformationsView",
   },

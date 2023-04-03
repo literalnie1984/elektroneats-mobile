@@ -12,7 +12,11 @@ const InformationsView = ({ navigation, route }: InformationsViewProps) => {
 
   return (
     <View style={informationsViewStyle.root}>
-      <Text>Informations View</Text>
+      <Text style={informationsViewStyle.authorText}>Piotr Jakóbczyk</Text>
+      <Text style={informationsViewStyle.authorText}>Marcel Maciaszczyk</Text>
+      <Text style={informationsViewStyle.authorText}>Marcin Mikuła</Text>
+      <Text style={informationsViewStyle.authorText}>Michał Mikuła</Text>
+      <Text style={informationsViewStyle.authorText}>Piotr Skóra</Text>
     </View>
   );
 };

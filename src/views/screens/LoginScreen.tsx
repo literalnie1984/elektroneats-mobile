@@ -89,11 +89,11 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
 
     const data = await loginUser(inputs, (res) => {
       if (res === "logout") return navigation.navigate("LoginScreen");
-      console.log(res.status);
 
       switch (res.status) {
         case 400:
-          error = "Logowanie nie powiodło się";
+        case 401:
+          error = "Logowanie nie powiodło się, spróbuj ponownie";
           break;
         case 500:
           error = "Wystąpił błąd serwera";

@@ -66,9 +66,6 @@ const RegistrationScreen = ({ navigation }: RegistrationScreenProps) => {
 
     const hasSucceed = await registerUser(inputs, async (res) => {
       if (res === "logout") return navigation.navigate("LoginScreen");
-      const text = await res.text();
-      console.log(res.status);
-      console.log(text);
       ToastAndroid.show(getErrorMsg(res.status), ToastAndroid.SHORT);
     });
 
