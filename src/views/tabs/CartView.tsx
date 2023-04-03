@@ -1,6 +1,8 @@
 import { View, Text, Pressable, Alert, Image, ToastAndroid } from "react-native";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { cartViewStyles, orderViewStyles } from "../../styles";
+import { themeAtom } from "../utils/options";
+import { getRecoil } from "recoil-nexus";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronUp, faChevronDown, faFaceMeh, faPlus, faMinus, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FlashList } from "@shopify/flash-list";
@@ -21,7 +23,9 @@ import { useNavigation } from "@react-navigation/native";
 const ANIMATION_DURATION = 300;
 const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
 
+
 const CartItemView = ({ index, item, handleAmountUpdate, navigation }: CartItemProps) => {
+
   const { data, type, cost, amount } = item;
   if (type === CartItemType.Item) return <View>TODO</View>;
   
@@ -59,6 +63,7 @@ const CartItemView = ({ index, item, handleAmountUpdate, navigation }: CartItemP
 };
 
 const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDateUpdate, handleCartClearingRequest, isExpanded, setIsExpanded, usePayment }: CartSummaryProps) => {
+ 
   const navigation = useNavigation<RootStackParamList>();
   const [cost, setCost] = useState<number | null>(summarizeCost(cartItems));
   const accessToken = useRecoilValue(userTokenSelector);
@@ -220,6 +225,7 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
 const CartPanelListItemSeparator = () => <View style={{ height: 20 }} />;
 
 const CartPanel = ({ cartItems, handleAmountUpdate, navigation }: CartPanelProps) => {
+
   return (
     <>
       <Text style={orderViewStyles.title}>Zawartość koszyka</Text>
@@ -241,6 +247,7 @@ const CartPanel = ({ cartItems, handleAmountUpdate, navigation }: CartPanelProps
 };
 
 const CartPanelBlank = () => {
+
   return (
     <View style={cartViewStyles.cartPanelBlank}>
       <FontAwesomeIcon icon={faFaceMeh} color={cartViewStyles.cartPanelBlankIcon.color} size={cartViewStyles.cartPanelBlankIcon.width} />
@@ -326,6 +333,7 @@ const verifyPickupDates = (data: CartItem[], newDate: Date) => {
 };
 
 const CartScreen = ({ navigation }: any) => {
+		
   const [isSummaryExpanded, setIsSummaryExpanded] = useState<boolean>(true);
   const [date, setDate] = useState<Date | null>(null);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);

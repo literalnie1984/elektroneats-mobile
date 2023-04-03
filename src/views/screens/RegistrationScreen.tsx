@@ -11,6 +11,9 @@ import { getErrorMsg, userEmail } from "../utils/user";
 import { useRecoilState } from "recoil";
 import { RegistrationScreenProps } from "../../types";
 import { authStyle } from "../../styles";
+import { themeAtom } from "../utils/options";
+import { getRecoil } from "recoil-nexus";
+
 
 interface Errors {
   email: string | null;

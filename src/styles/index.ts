@@ -41,7 +41,7 @@ export const menuViewStyles = StyleSheet.create({
   },
   menuBlankIconStyle: {
     fontSize: 96,
-    color: COLORS.colar,
+    color: COLORS.colar
   },
   menuBlankHeadingStyle: {
     textAlign: "center",
@@ -51,7 +51,7 @@ export const menuViewStyles = StyleSheet.create({
   menuBlankTextStyle: {
     textAlign: "center",
     fontSize: 16,
-    color: COLORS.colar,
+    color: COLORS.colar
   },
   menuItem: {
     flexDirection: "column",
@@ -85,12 +85,12 @@ export const menuViewStyles = StyleSheet.create({
     // paddingLeft: 25,
     // paddingRight: 25,
     // backgroundColor: COLORS.colar,
-    // color: "#fff",
+    // color: COLORS.white,
     // width: "100%",
     // height: 50,
   },
   menuItemBarDate: {
-    color: "#fff",
+    color: COLORS.white,
     textAlign: "center",
     backgroundColor: COLORS.colar,
     width: "100%",
@@ -139,7 +139,7 @@ export const menuViewStyles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   menuVariantActionButton: {
-    backgroundColor: "#2246b6",
+    backgroundColor: COLORS.chestnut,
     borderRadius: 5,
     padding: 10,
     flexDirection: "row",
@@ -149,17 +149,17 @@ export const menuViewStyles = StyleSheet.create({
   },
   menuVariantActionButtonText: {
     textAlign: "center",
-    color: "#ffffff",
+    color: COLORS.white,
     fontSize: 16,
   },
   menuVariantElement: {
     width: "70%",
     textAlign: "center",
-    color: "#000",
+    color: COLORS.gunmetal,
   },
 });
 
-export const cartViewStyles = StyleSheet.create({
+export const cartViewStyles =  StyleSheet.create({
   root: {
     flex: 1,
     gap: 15,
@@ -195,10 +195,10 @@ export const cartViewStyles = StyleSheet.create({
     textAlign: "center",
     fontSize: 32,
     fontWeight: "bold",
-    color: "#000",
+    color: COLORS.white,
   },
   cartPanelHeaderIcon: {
-    color: "#fff",
+    color: COLORS.white,
     width: 36,
   },
   cartPanelBlank: {
@@ -226,7 +226,7 @@ export const cartViewStyles = StyleSheet.create({
   },
   summary: {
     width: "100%",
-    backgroundColor: "#2347b6",
+    backgroundColor: COLORS.chestnut,
     flexDirection: "column",
     paddingVertical: 5,
     flexWrap: "nowrap",
@@ -255,11 +255,11 @@ export const cartViewStyles = StyleSheet.create({
   summaryInfoHeaderContent: {
     textAlign: "center",
     fontSize: 24,
-    color: "#fff",
+    color: COLORS.white,
     fontWeight: "bold",
   },
   summaryInfoHeaderIcon: {
-    color: "#fff",
+    color: COLORS.white,
     width: 32,
   },
   summaryInfoRows: {
@@ -281,13 +281,13 @@ export const cartViewStyles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     textAlign: "center",
-    color: "#fff",
+    color: COLORS.white,
     width: "40%",
   },
   summaryInfoRowContent: {
     fontSize: 16,
     textAlign: "center",
-    color: "#fff",
+    color: COLORS.white,
     flex: 1,
   },
   summaryActionsRow: {
@@ -299,17 +299,17 @@ export const cartViewStyles = StyleSheet.create({
   },
   summaryActionButton: {
     padding: 10,
-    backgroundColor: "#152863",
+    backgroundColor: COLORS.darkChestnut,
     borderRadius: 10,
   },
   summaryActionLabel: {
     textAlign: "center",
     fontSize: 14,
-    color: "#fff",
+    color: COLORS.white,
   },
   cartMeal: {
     borderRadius: 10,
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.white,
     overflow: "hidden",
     shadowColor: COLORS.chestnut,
     elevation: 6,
@@ -350,7 +350,7 @@ export const cartViewStyles = StyleSheet.create({
   },
   cartMealCost: {
     fontSize: 16,
-    color: "#fff",
+    color: COLORS.white,
     textAlign: "center",
   },
   cartMealInfoIcon: {
@@ -402,7 +402,7 @@ export const cartViewStyles = StyleSheet.create({
   },
   cartMealAmountLabel: {
     textAlign: "center",
-    color: "#fff",
+    color: COLORS.white,
     fontSize: 20,
   },
   cartPanelDebugButton: {
@@ -555,7 +555,7 @@ export const authStyle = StyleSheet.create({
   },
 });
 
-export const paymentStyle = StyleSheet.create({
+export const paymentStyleBuilder = StyleSheet.create({
   paymentRoot: {
     flex: 1,
     paddingVertical: "15%",
@@ -753,7 +753,7 @@ export const orderViewStyles = StyleSheet.create({
   },
   topPressableContainer: {
     backgroundColor: "#2246b6",
-    color: "#fff",
+    color: COLORS.white,
     width: "85%",
     flexDirection: "row",
     alignItems: "center",
@@ -767,13 +767,13 @@ export const orderViewStyles = StyleSheet.create({
   },
   expandableContainer: {
     backgroundColor: "#557dfa",
-    color: "#fff",
+    color: COLORS.white,
     width: "85%",
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
   },
   orderText: {
-    color: "#fff",
+    color: COLORS.white,
     fontSize: 18,
   },
   noBottomBorder: {
@@ -788,7 +788,7 @@ export const newOrder = StyleSheet.create({
     alignItems: "center",
   },
   orderContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.white,
     // borderColor: '#afc0ed',
     // borderWidth: 1,
     marginBottom: 24,
@@ -816,13 +816,13 @@ export const newOrder = StyleSheet.create({
   buttonText: {
     textAlign: "right",
     fontSize: 13,
-    color: "#525e70",
+    color: COLORS.darkColar,
     paddingTop: 10,
     paddingBottom: 2,
   },
   label: {
     // color: "#a3a3a3",
-    color: "#abb8c9",
+    color: COLORS.grey,
     textTransform: "uppercase",
     fontSize: 12,
   },
@@ -830,3 +830,4 @@ export const newOrder = StyleSheet.create({
     fontSize: 16,
   },
 });
+

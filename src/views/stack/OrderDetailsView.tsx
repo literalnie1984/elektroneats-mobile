@@ -6,6 +6,7 @@ import { newOrder } from "../../styles";
 import { OrderDinner } from "../../api/orders/types";
 import { calculteOrderDinnerCost } from "../utils/cart";
 
+
 const orderDetails = StyleSheet.create({
   container: {
     // paddingTop: 16

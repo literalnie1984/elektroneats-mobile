@@ -9,6 +9,9 @@ import { userEmail } from "../utils/user";
 import { authStyle } from "../../styles";
 import { EmailConfirmationScreenProps } from "../../types";
 import { verifyUser } from "../../api";
+import { themeAtom } from "../utils/options";
+import { getRecoil } from "recoil-nexus";
+
 
 const emailStyle = StyleSheet.create({
   inputStyle: {

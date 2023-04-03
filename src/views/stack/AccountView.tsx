@@ -3,6 +3,9 @@ import { style } from "../../styles";
 import { userTokensAtom } from "../utils/user";
 import { useRecoilState } from "recoil";
 import * as SecureStore from "expo-secure-store";
+import { themeAtom } from "../utils/options";
+import { getRecoil } from "recoil-nexus";
+
 
 const AccountView = ({ navigation }: any) => {
   const [tokens] = useRecoilState(userTokensAtom);

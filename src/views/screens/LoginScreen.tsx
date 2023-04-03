@@ -13,6 +13,10 @@ import { userTokensAtom } from "../utils/user";
 import * as SecureStore from "expo-secure-store";
 import { LoginScreenProps } from "../../types";
 import { authStyle } from "../../styles";
+import {getSetting, settingsAtom} from "../utils/options";
+import { themeAtom } from "../utils/options";
+import { getRecoil } from "recoil-nexus";
+
 
 const loginStyle = StyleSheet.create({
   rememberMeContainer: {
@@ -50,6 +54,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [tokens, setTokens] = useRecoilState(userTokensAtom);
+  const [ settings, setSettings ] = useRecoilState(settingsAtom);
 
   const handleOnChange = (text: string, input: string) => {
     setInputs((prevState) => ({ ...prevState, [input]: text }));
@@ -106,6 +111,8 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
 
     setIsLoading(false);
 
+	navigation.navigate('TabsView');
+
     if (data) {
       setTokens(data);
       if (rememberMe) await SecureStore.setItemAsync("tokens", JSON.stringify(data));
@@ -114,7 +121,7 @@ const LoginScreen = ({ navigation }: LoginScreenProps) => {
   };
 
   return (
-    <View style={authStyle.container}>
+    <View style={ authStyle.container }>
       <Spinner visible={isLoading} />
       <View style={authStyle.innerContainer}>
         <View style={authStyle.imageContainer}>

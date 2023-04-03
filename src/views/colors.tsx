@@ -12,8 +12,10 @@ export const COLORS = {
   darkColar: "#7494b0",
   darkerColar: "#66a4d4",
 
+  chestnut: "#21559e",
+  darkChestnut: "#152863",
+
   gunmetal: "#292f36",
   saffron: "#f2c14e",
-  chestnut: "#21559e",
   magnolia: "#f3eff5",
 };
