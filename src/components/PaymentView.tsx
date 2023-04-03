@@ -1,10 +1,11 @@
-import { Text, View } from "react-native";
+import { Text, View, Alert } from "react-native";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { parseDateToString } from "../views/tabs/CartView";
 import { balanceAtom, walletAtom } from "../views/utils/wallet";
 import Spinner from "react-native-loading-spinner-overlay/lib";
-import { getBalance } from "../api";
+import { getBalance, getClientData } from "../api";
+import * as SecureStore from 'expo-secure-store';
 import { userTokensAtom } from "../views/utils/user";
 import { Button } from "react-native";
 import WalletFormView from "./WalletFormView";
@@ -24,19 +25,37 @@ const PaymentView = ({ navigation, route }: any) => {
   const [assumeSufficientBalance, setASB] = useState(false);
 
   const { orderBody, orderValue, pickupDate } = route.params;
+  const logout = () => {
+		SecureStore.deleteItemAsync("tokens").then(() => {
+				navigation.navigate("LoginScreen");
+		});
+  };
 
   useEffect(() => {
+    console.log(`Body: ${orderBody}`);
+	console.log(`value: ${orderValue}`);
+	console.log(`pickupDate: ${pickupDate.toString()}`);
+    if( !tokens?.accessToken ) {
+	Alert.alert( "Błąd konta", "Sesja wygasła, zaloguj się ponownie", [ 
+		{ text: "OK", onPress: () => logout(), }
+	], {
+		cancelable: false,
+	} )
+    }
     setCurrentView(determinePanel());
     setIsLoading(false);
   }, []);
 
   const Undisplay = async () => {
-    if (!tokens) return "undisplay no tokens";
+	if(!tokens) return 'no maidens';
 
     getBalance(tokens?.accessToken, (res) => {
-      console.log(res.status);
-      //   console.log(res?.err ? res?.err.status : "pass");
-    })
+		if(res !== "logout") {
+      console.log(res?.status ?? "logout");
+       console.log(res?.err.status ?? res?.status ?? "logout");
+	   res.json().then( (value) => console.log(value) );
+	   }
+     })
       .then((value) => {
         if (value !== null) {
           setBalance(value / 100);
@@ -53,13 +72,16 @@ const PaymentView = ({ navigation, route }: any) => {
   const checkoutUndisplay = () => {
     navigation.navigate("Orders");
     setIsLoading(false);
+	Alert.alert( "Dziękujemy za zakup!", "Nowe zamówienie zostało właśnie dodane, a my zajmiemy się jego realizacją :)", [
+		{ text: "OK", onPress:() => navigation.navigate("OrdersView") }
+	], { cancelable: true, onDismiss: () => navigation.navigate('OrdersView') } )
     ToastAndroid.show("New order created!", ToastAndroid.SHORT);
   };
 
   const determinePanel = () => {
-    if (!balance) return "determinePanel no balance";
+    console.log(`Wallet: ${wallet === null ? null : {...wallet} }`);
     if (wallet) {
-      if (balance >= orderValue || assumeSufficientBalance) {
+      if (balance !== null || (balance >= orderValue || assumeSufficientBalance)) {
         return "checkout";
       } else {
         return "topUp_info";
@@ -100,7 +122,7 @@ const PaymentView = ({ navigation, route }: any) => {
           />
         </View>
         <WalletTopUpView isDisplayed={currentView === "topUp"} setIsLoading={setIsLoading} isLoading={isLoading} unDisplay={Undisplay} balanceDiff={Number((orderValue - Number(balance)).toFixed(2))} />
-        <WalletCheckout isDisplayed={currentView === "checkout"} setIsLoading={setIsLoading} body={orderBody} orderValue={Number((orderValue - Number(balance)).toFixed(2))} unDisplay={checkoutUndisplay} />
+        <WalletCheckout isDisplayed={currentView === "checkout"} setIsLoading={setIsLoading} body={orderBody} orderValue={orderValue} unDisplay={checkoutUndisplay} />
       </View>
     </View>
   );

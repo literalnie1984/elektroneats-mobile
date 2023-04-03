@@ -27,8 +27,8 @@ const WalletTopUpView = ({ isDisplayed, balanceDiff, isLoading, setIsLoading, un
 
   const initializePayment = async () => {
     const intent_data = await addBalance(tokens?.accessToken, chargeValue, (res) => {
-      console.log(res.status);
-      console.log(res?.err.status);
+      console.log(res?.status);
+      console.log(res?.err?.status);
     });
 
     console.log(intent_data);

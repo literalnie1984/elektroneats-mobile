@@ -10,13 +10,13 @@ import { CartItem, CartItemProps, CartItemType, CartPanelProps, CartSummaryProps
 import { getDayOfWeekMnemonic } from "../../api/utils";
 import { calculateTotalCost, cartItemsAtom, convertCartItemsForApi } from "../utils/cart";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { createOrders } from "../../api";
 import { userTokenSelector } from "../utils/user";
 import { menuSelector } from "../utils/menu";
 import { orderContent } from "../stack/OrderDetailsView";
 import { balanceAtom, walletAtom } from "../utils/wallet";
 import { OrderBody } from "../../api/orders/types";
 import { useNavigation } from "@react-navigation/native";
+import { getClientData, getBalance } from "../../api";
 
 const ANIMATION_DURATION = 300;
 const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
@@ -95,27 +95,33 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
     if (!totalCost) return console.log("ddd");
 
     if (!body) return console.log("convertion went wrong");
-    if (!accessToken) return console.log("no token");
+    if (!accessToken) return console.log("no token"); 
 
-    // await getClientData(accessToken, (res) => {
-    //   if(res === 'logout') return navigation.navigate('LoginScreen');
-    //   console.log(res.status);
-    //   // console.log(res?.err ? res?.err.status : 'pass');
-    // })
-    //   .then((value) => setWallet(value))
-    //   .then(() =>
-    //     getBalance(accessToken, (res) => {
-    //       if(res === 'logout') return navigation.navigate('LoginScreen');
-    //       console.log(res.status);
-    //       // console.log(res?.err ? res?.err.status : 'pass');
-    //     })
-    //   )
-    //   .then((value) => setBalance(value !== null ? value / 100 : value))
-    //   .then(() => usePayment(body, totalCost, cartPickupDate));
+    await getClientData(accessToken, (res) => {
+       if(res === 'logout') return navigation.navigate('LoginScreen');
+	   else { 
+				console.log(res.status);
+				console.log(res?.err?.status ?? res?.status ?? "logout" );
+				res.text().then( (value) => console.log(value) );
+		};
+     })
+       .then((value) => { console.log(value); setWallet(value); })
+       .then(() =>
+         getBalance(accessToken, (res) => {
+           if(res === 'logout') return navigation.navigate('LoginScreen');
+		   else { 
+				console.log(res?.status);
+				console.log(res?.err?.status ?? res?.status ?? "logout" );
+				res.text().then( (value) => console.log(value) );
+		 };
+         })
+       )
+       .then((value) => setBalance(value !== null ? value / 100 : value))
+       .then(() => usePayment( body, totalCost, cartPickupDate));
 
     console.log(JSON.stringify(body));
-
-    let error = "";
+    /*let error = '';
+>>>>>>> Stashed changes
     const hasSucceed = await createOrders(body, accessToken, (res) => {
       if (res === "logout") return;
 
@@ -139,7 +145,7 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
       setCartItems([]);
 
       ToastAndroid.show("Order has been added", ToastAndroid.SHORT);
-    }
+    }*/
   };
 
   const containerAnimatedStyle = useAnimatedStyle(() => {

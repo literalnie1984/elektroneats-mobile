@@ -8,9 +8,13 @@ import CartScreen from "./tabs/CartView";
 import MoreScreen from "./tabs/MoreView";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { useEffect } from "react";
+import {useTheme} from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 const TabsView = ({ navigation }: any) => {
+
+  const theme = useTheme();
+
   useEffect(() => {
     navigation.addListener("beforeRemove", (e: any) => {
       e.preventDefault();
@@ -24,10 +28,10 @@ const TabsView = ({ navigation }: any) => {
           return <HeaderView title={route.name} style={options.headerStyle as any} titleStyle={options.headerTitleStyle as any} stackNavigation={navigation} />;
         },
         headerStyle: {
-          height: 60,
+          height: "auto",
           flexDirection: "row",
           flexWrap: "nowrap",
-          backgroundColor: "#fff",
+          backgroundColor: theme.colors.card,
           alignItems: "center",
           justifyContent: "space-between",
           paddingHorizontal: 30,
@@ -35,7 +39,8 @@ const TabsView = ({ navigation }: any) => {
         headerTitleStyle: {
           textAlign: "center",
           fontWeight: "bold",
-          fontSize: 16,
+          fontSize: 20,
+		  color: theme.colors.text,
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: IconProp;
