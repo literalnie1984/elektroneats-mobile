@@ -12,11 +12,12 @@ import { calculateTotalCost, cartItemsAtom, convertCartItemsForApi } from "../ut
 import { useRecoilState, useRecoilValue } from "recoil";
 import { createOrders } from "../../api";
 import { userTokenSelector } from "../utils/user";
-import { menuSelector } from "../utils/menu";
+import { getDayOfWeek, menuSelector } from "../utils/menu";
 import { orderContent } from "../stack/OrderDetailsView";
 import { balanceAtom, walletAtom } from "../utils/wallet";
 import { OrderBody } from "../../api/orders/types";
 import { useNavigation } from "@react-navigation/native";
+import { cartWeekdayAtom } from "../utils/atoms";
 
 const ANIMATION_DURATION = 300;
 const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
@@ -64,6 +65,7 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
   const accessToken = useRecoilValue(userTokenSelector);
   const [wallet, setWallet] = useRecoilState(walletAtom);
   const [balance, setBalance] = useRecoilState(balanceAtom);
+  const [cartWeekday, setCartWeekday] = useRecoilState(cartWeekdayAtom);
   const menu = useRecoilValue(menuSelector);
 
   useEffect(() => {
@@ -137,6 +139,7 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
 
     if (hasSucceed) {
       setCartItems([]);
+      setCartWeekday(-1);
 
       ToastAndroid.show("Order has been added", ToastAndroid.SHORT);
     }
@@ -250,42 +253,42 @@ const CartPanelBlank = () => {
   );
 };
 
-const showDatePicker = (currentDate: Date | null, setDate: Dispatch<SetStateAction<Date | null>>, cartItems: CartItem[]) => {
+const showDatePicker = (weekday: number, setDate: Dispatch<SetStateAction<Date | null>>, cartItems: CartItem[]) => {
+  const date = new Date();
+  const currentDayOfWeek = (date.getDay() + 6) % 7;
+  const daysToAdd = (weekday - currentDayOfWeek + 7) % 7
+  date.setDate(date.getDate() + daysToAdd);
+  
+  const alertWrongDate = (max?: number) => {
+    Alert.alert(
+      "Niepoprawna godzina", 
+      `W ${getDayOfWeek(weekday)} Kantyna jest otwarta od 12:00 do ${max}:00`, 
+      [{ text: "OK" }], 
+      { cancelable: true }
+    );
+  }
+
+  date.setHours(12);
+  date.setMinutes(0);
+
   DateTimePickerAndroid.open({
-    value: currentDate || new Date(),
-    mode: "date",
+    value: date,
+    mode: "time",
     is24Hour: true,
-    onChange: (event: DateTimePickerEvent, date?: Date | undefined) => {
+    onChange: (event: DateTimePickerEvent, time?: Date | undefined) => {
       if (event.type === "set") {
-        if (date) {
-          if (date.getDay() === 0) {
-            Alert.alert("Date error", "Date exceeds range Monday - Saturday", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
-            return;
-          }
-          if (!verifyPickupDates(cartItems, date)) {
-            Alert.alert("Date error", "You cannot select this date: week days mismatch", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
-            return;
-          }
-          DateTimePickerAndroid.open({
-            mode: "time",
-            value: date,
-            is24Hour: true,
-            onChange: (event: DateTimePickerEvent, time?: Date | undefined) => {
-              if (event.type === "set") {
-                if (time) setDate(time);
-              } else {
-                Alert.alert("Date error", "Time picking dismissed", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
-                return;
-              }
-            },
-          });
-        }
+        if (time) setDate(time);
       } else {
-        Alert.alert("Date error", "Date picking dismissed", [{ text: "OK", onPress: () => console.log("ok") }], { cancelable: true });
-        return;
+        if(!time) return alertWrongDate();
+        const dayOfWeek = time.getDay();
+        const hour = time.getHours();
+        if (dayOfWeek === 0) return alertWrongDate();
+        else if (dayOfWeek === 6 && hour < 12 || hour > 15) return alertWrongDate(15);
+        else if (hour < 12 || hour > 16) return alertWrongDate(16);
       }
     },
   });
+
   return;
 };
 
@@ -331,6 +334,7 @@ const CartScreen = ({ navigation }: any) => {
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [cartOrder, setCartOrder] = useState<{ order: CartItem[]; pickupDate: Date } | null>(null);
+  const [cartWeekday, setCartWeekday] = useRecoilState(cartWeekdayAtom);
 
   const updateItemAmount = (index: number, amountUpdate: number) => {
     const cartList = JSON.parse(JSON.stringify(cartItems));
@@ -377,6 +381,8 @@ const CartScreen = ({ navigation }: any) => {
   const clearCart = () => {
     console.log("Cart cleared");
     setCartItems([]);
+    setCartWeekday(-1);
+    setDate(null);
   };
 
   return (
@@ -388,7 +394,7 @@ const CartScreen = ({ navigation }: any) => {
             cartItems={cartItems}
             setCartItems={setCartItems}
             cartPickupDate={date}
-            handlePickupDateUpdate={() => showDatePicker(date, setDate, cartItems)}
+            handlePickupDateUpdate={() => showDatePicker(cartWeekday, setDate, cartItems)}
             handleCartClearingRequest={clearCart}
             isExpanded={isSummaryExpanded}
             setIsExpanded={setIsSummaryExpanded}

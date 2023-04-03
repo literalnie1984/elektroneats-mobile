@@ -76,7 +76,7 @@ const EmailConfirmationScreen = ({ navigation }: EmailConfirmationScreenProps) =
 
     if (data) {
       ToastAndroid.show("Weryfikacja przebiegła pomyślnie", ToastAndroid.SHORT);
-      navigation.navigate("TabsView");
+      navigation.navigate("LoginScreen");
     } else ToastAndroid.show("Podany kod jest niepoprawny", ToastAndroid.SHORT);
 
     setIsLoading(false);

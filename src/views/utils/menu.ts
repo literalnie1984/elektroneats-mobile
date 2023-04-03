@@ -13,3 +13,22 @@ export const generateVariantTags = function (dailyMenu: DailyMenu) {
 
   return variantTags;
 };
+
+export const getDayOfWeek = (day: number) => {
+  switch (day) {
+    case 0:
+      return "poniedziałek";
+    case 1:
+      return "wtorek";
+    case 2:
+      return "środę";
+    case 3:
+      return "czwartek";
+    case 4:
+      return "piątek";
+    case 5:
+      return "sobotę";
+    default:
+      return null;
+  }
+}

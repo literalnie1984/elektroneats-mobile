@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Alert } from "react-native";
 import { menuViewStyles } from "../../styles";
 import { FlashList } from "@shopify/flash-list";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -11,14 +11,18 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { withTiming, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import Animated from "react-native-reanimated";
 import { useNavigation } from "@react-navigation/native";
-import { useRecoilValue } from "recoil";
-import { menuSelector, generateVariantTags } from "../utils/menu";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { menuSelector, generateVariantTags, getDayOfWeek } from "../utils/menu";
 import { getDayOfWeekMnemonic } from "../../api/utils";
+import { cartWeekdayAtom } from "../utils/atoms";
+import { cartItemsAtom } from "../utils/cart";
 
 const ANIMATION_DURATION = 300;
 
 const MenuVariant = (props: MenuVariantProps) => {
   const navigation = useNavigation<RootStackParamList>();
+  const [cartWeekday, setCartWeekday] = useRecoilState(cartWeekdayAtom);
+  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
 
   const { main, soup, extras } = props.dailyMenu;
   const { beverages, fillers, salads } = extras;
@@ -26,6 +30,43 @@ const MenuVariant = (props: MenuVariantProps) => {
 
   const allExtrasStr = allExtras.map((i) => i.name).join(", ");
   const beveragesStr = beverages.map((i) => i.name).join(", ");
+
+  const onPress = () => {
+    if(cartWeekday !== -1 && props.dailyMenu.weekDay !== cartWeekday) {
+      Alert.alert(
+        "Nie możesz złożyć zamówienia na inny dzień",
+        `Obecnie w koszyku masz dodany obiad na ${getDayOfWeek(cartWeekday)}. Czy chcesz wyczyścić koszyk i kontynuować?`,
+        [
+          {
+            text: "Wyczyść",
+            onPress: () => {
+              setCartItems([]);
+              setCartWeekday(-1);
+              navigation.navigate("DinnerView", { 
+                mode: DinnerViewDisplayMode.CREATE, 
+                data: props.dailyMenu 
+              });
+              return;
+            },
+          },
+          {
+            text: "Anuluj",
+            onPress: () => {
+              return;
+            },
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
+    } else {
+      navigation.navigate("DinnerView", { 
+        mode: DinnerViewDisplayMode.CREATE, 
+        data: props.dailyMenu 
+      });
+    }
+  }
 
   return (
     <Animated.View style={[menuViewStyles.menuVariant, props.style]}>
@@ -48,7 +89,7 @@ const MenuVariant = (props: MenuVariantProps) => {
       <Animated.View style={[menuViewStyles.menuVariantActionRow, props.actionButtonStyle]}>
         <Pressable
           style={menuViewStyles.menuVariantActionButton}
-          onPress={() => navigation.navigate("DinnerView", { mode: DinnerViewDisplayMode.CREATE, data: props.dailyMenu })}
+          onPress={onPress}
           android_ripple={{
             color: "#5376df",
             borderless: false,

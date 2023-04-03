@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil";
 import { API_URL } from "@env";
 import { menuAtom } from "../utils/menu";
 import { DailyMenu } from "../../api/menu/types";
+import { cartWeekdayAtom } from "../utils/atoms";
 
 const baseURL = `${API_URL}image/`;
 const DinnerItemView = ({ item, backgroundColor, onPress, isSelectable }: DinnerItemProps) => {
@@ -47,13 +48,15 @@ const DinnerSelect = ({ selectedIndex, setSelectedIndex, items, isSelectable }: 
 
 const DinnerView = ({ route, navigation }: DinnerViewProps) => {
   const { mode } = route.params;
+  const isSelectable = (mode !== DinnerViewDisplayMode.INFO);
 
   const [sections, setSections] = useState<DinnerData[]>();
   const [selection, setSelection] = useState<DinnerViewSelection>([]);
   const [dailyMenu, setDailyMenu] = useState<DailyMenu | null>(null);
-  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
-  const isSelectable = mode !== DinnerViewDisplayMode.INFO;
+  
   const [menu] = useRecoilState(menuAtom);
+  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
+  const [cartWeekday, setCartWeekday] = useRecoilState(cartWeekdayAtom);
 
   useEffect(() => {
     let sections: DinnerData[];
@@ -105,11 +108,16 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
   const handleAddToCart = () => {
     if (!dailyMenu || mode !== DinnerViewDisplayMode.CREATE) return;
     const mainDishSelection = selection.find((i) => i[0] === 0);
-    if (!mainDishSelection) return ToastAndroid.show("Musisz wybrać danie główne!", ToastAndroid.SHORT);
+    if (!mainDishSelection || mainDishSelection[2] === null) return ToastAndroid.show("Musisz wybrać danie główne!", ToastAndroid.SHORT);
 
     const cartItem = convertSelectionToCartItem(selection, dailyMenu);
-    setCartItems([...cartItems, cartItem]);
-    navigation.goBack();
+    if(cartItems.length === 0) {
+      setCartWeekday(dailyMenu.weekDay);
+      setCartItems([cartItem]);
+    } else {
+      setCartItems([...cartItems, cartItem]);
+    }
+    navigation.navigate('Koszyk');
   };
 
   const handleEditCart = () => {
