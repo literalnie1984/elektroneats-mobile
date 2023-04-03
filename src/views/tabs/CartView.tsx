@@ -32,9 +32,7 @@ const CartItemView = ({ index, item, handleAmountUpdate, navigation }: CartItemP
   return (
     <View style={cartViewStyles.cartMeal}>
       <View style={cartViewStyles.cartMealInfoBar}>
-        <View style={cartViewStyles.cartMealImageContainer}>
-          {/* <FontAwesomeIcon icon={faUtensils} color={"black"} size={10} />; */}
-        </View>
+        <View style={cartViewStyles.cartMealImageContainer}>{/* <FontAwesomeIcon icon={faUtensils} color={"black"} size={10} />; */}</View>
         <Text style={orderContent.orderName}>Obiad</Text>
         <Text style={orderContent.orderPrice}>
           {amount} x {cost.toFixed(2)} zł
@@ -96,29 +94,32 @@ const CartSummary = ({ cartItems, setCartItems, cartPickupDate, handlePickupDate
     if (!totalCost) return console.log("ddd");
 
     if (!body) return console.log("convertion went wrong");
-    if (!accessToken) return console.log("no token"); 
+    if (!accessToken) return console.log("no token");
 
     await getClientData(accessToken, (res) => {
-       if(res === 'logout') return navigation.navigate('LoginScreen');
-	   else { 
-				console.log(res.status);
-				console.log(res?.err?.status ?? res?.status ?? "logout" );
-				res.text().then( (value) => console.log(value) );
-		};
-     })
-       .then((value) => { console.log(value); setWallet(value); })
-       .then(() =>
-         getBalance(accessToken, (res) => {
-           if(res === 'logout') return navigation.navigate('LoginScreen');
-		   else { 
-				console.log(res?.status);
-				console.log(res?.err?.status ?? res?.status ?? "logout" );
-				res.text().then( (value) => console.log(value) );
-		 };
-         })
-       )
-       .then((value) => setBalance(value !== null ? value / 100 : value))
-       .then(() => usePayment( body, totalCost, cartPickupDate));
+      if (res === "logout") return navigation.navigate("LoginScreen");
+      else {
+        console.log(res.status);
+        console.log(res?.err?.status ?? res?.status ?? "logout");
+        res.text().then((value) => console.log(value));
+      }
+    })
+      .then((value) => {
+        console.log(value);
+        setWallet(value);
+      })
+      .then(() =>
+        getBalance(accessToken, (res) => {
+          if (res === "logout") return navigation.navigate("LoginScreen");
+          else {
+            console.log(res?.status);
+            console.log(res?.err?.status ?? res?.status ?? "logout");
+            res.text().then((value) => console.log(value));
+          }
+        })
+      )
+      .then((value) => setBalance(value !== null ? value / 100 : value))
+      .then(() => usePayment(body, totalCost, cartPickupDate));
 
     console.log(JSON.stringify(body));
     /*let error = '';
@@ -261,17 +262,12 @@ const CartPanelBlank = () => {
 const showDatePicker = (weekday: number, setDate: Dispatch<SetStateAction<Date | null>>, cartItems: CartItem[]) => {
   const date = new Date();
   const currentDayOfWeek = (date.getDay() + 6) % 7;
-  const daysToAdd = (weekday - currentDayOfWeek + 7) % 7
+  const daysToAdd = (weekday - currentDayOfWeek + 7) % 7;
   date.setDate(date.getDate() + daysToAdd);
-  
+
   const alertWrongDate = (max?: number) => {
-    Alert.alert(
-      "Niepoprawna godzina", 
-      `W ${getDayOfWeek(weekday)} Kantyna jest otwarta od 12:00 do ${max}:00`, 
-      [{ text: "OK" }], 
-      { cancelable: true }
-    );
-  }
+    Alert.alert("Niepoprawna godzina", `W ${getDayOfWeek(weekday)} Kantyna jest otwarta od 12:00 do ${max}:00`, [{ text: "OK" }], { cancelable: true });
+  };
 
   date.setHours(12);
   date.setMinutes(0);
@@ -284,11 +280,11 @@ const showDatePicker = (weekday: number, setDate: Dispatch<SetStateAction<Date |
       if (event.type === "set") {
         if (time) setDate(time);
       } else {
-        if(!time) return alertWrongDate();
+        if (!time) return alertWrongDate();
         const dayOfWeek = time.getDay();
         const hour = time.getHours();
         if (dayOfWeek === 0) return alertWrongDate();
-        else if (dayOfWeek === 6 && hour < 12 || hour > 15) return alertWrongDate(15);
+        else if ((dayOfWeek === 6 && hour < 12) || hour > 15) return alertWrongDate(15);
         else if (hour < 12 || hour > 16) return alertWrongDate(16);
       }
     },

@@ -31,4 +31,4 @@ export const getDayOfWeek = (day: number) => {
     default:
       return null;
   }
-}
+};

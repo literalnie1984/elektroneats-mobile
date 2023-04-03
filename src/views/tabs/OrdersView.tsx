@@ -139,7 +139,7 @@ const OrdersView = () => {
   const finishedOrders = ordersData?.filter((order) => order.status === OrderStatus.Collected);
   if (finishedOrders.length !== 0) DATA.push({ title: "Zrealizowane", data: finishedOrders });
 
-  console.log('DATA', DATA)
+  console.log("DATA", DATA);
 
   return (
     <ScrollView style={orderViewStyles.container} refreshControl={refreshControl}>

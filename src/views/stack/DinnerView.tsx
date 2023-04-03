@@ -50,11 +50,17 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
   const { mode } = route.params;
 
   useEffect(() => {
-    let title = 'Zamówienie';
+    let title = "Zamówienie";
     switch (mode) {
-      case DinnerViewDisplayMode.CREATE: title = 'Złóż zamówienie'; break;
-      case DinnerViewDisplayMode.EDIT: title = 'Aktualizacja zamówienia'; break;
-      case DinnerViewDisplayMode.INFO: title = 'Skład obiadu'; break;
+      case DinnerViewDisplayMode.CREATE:
+        title = "Złóż zamówienie";
+        break;
+      case DinnerViewDisplayMode.EDIT:
+        title = "Aktualizacja zamówienia";
+        break;
+      case DinnerViewDisplayMode.INFO:
+        title = "Skład obiadu";
+        break;
     }
 
     navigation.setOptions({
@@ -62,17 +68,15 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
     });
   }, []);
 
-  const isSelectable = (mode !== DinnerViewDisplayMode.INFO);
+  const isSelectable = mode !== DinnerViewDisplayMode.INFO;
 
   const [sections, setSections] = useState<DinnerData[]>();
   const [selection, setSelection] = useState<DinnerViewSelection>([]);
   const [dailyMenu, setDailyMenu] = useState<DailyMenu | null>(null);
-  
+
   const [menu] = useRecoilState(menuAtom);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const [cartWeekday, setCartWeekday] = useRecoilState(cartWeekdayAtom);
-
-
 
   useEffect(() => {
     let sections: DinnerData[];
@@ -127,13 +131,13 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
     if (!mainDishSelection || mainDishSelection[2] === null) return ToastAndroid.show("Musisz wybrać danie główne!", ToastAndroid.SHORT);
 
     const cartItem = convertSelectionToCartItem(selection, dailyMenu);
-    if(cartItems.length === 0) {
+    if (cartItems.length === 0) {
       setCartWeekday(dailyMenu.weekDay);
       setCartItems([cartItem]);
     } else {
       setCartItems([...cartItems, cartItem]);
     }
-    navigation.navigate('Koszyk');
+    navigation.navigate("Koszyk");
   };
 
   const handleEditCart = () => {

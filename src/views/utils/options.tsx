@@ -82,8 +82,8 @@ export const Options = () => {
   };
 
   const writeSettingsToStorage = async () => {
-      const settingsJSON = JSON.stringify(settings);
-      await AsyncStorage.setItem("settings", settingsJSON);
+    const settingsJSON = JSON.stringify(settings);
+    await AsyncStorage.setItem("settings", settingsJSON);
   };
 
   useEffect(() => {

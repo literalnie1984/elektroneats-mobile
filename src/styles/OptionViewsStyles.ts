@@ -10,18 +10,18 @@ export const paymentSettingsStyle = StyleSheet.create({
     flex: 1,
   },
   container: {
-		flex: 1,
-		flexDirection: 'column',
-		flexWrap: 'nowrap',
-		alignItems: 'center',
-		justifyContent: 'center',
-		gap: 25,
+    flex: 1,
+    flexDirection: "column",
+    flexWrap: "nowrap",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 25,
   },
   header: {
-		  fontSize: 24,
-		  color: COLORS.saffron,
-		  fontWeight: 'bold',
-		  textAlign: 'center',
+    fontSize: 24,
+    color: COLORS.saffron,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   noWalletBody: {
     flexDirection: "column",
@@ -116,11 +116,11 @@ export const informationsViewStyle = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 100
+    marginBottom: 100,
   },
   authorText: {
     fontSize: 24,
     fontWeight: "bold",
-    marginVertical: 10
-  }
+    marginVertical: 10,
+  },
 });

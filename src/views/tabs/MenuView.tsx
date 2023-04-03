@@ -32,7 +32,7 @@ const MenuVariant = (props: MenuVariantProps) => {
   const beveragesStr = beverages.map((i) => i.name).join(", ");
 
   const onPress = () => {
-    if(cartWeekday !== -1 && props.dailyMenu.weekDay !== cartWeekday) {
+    if (cartWeekday !== -1 && props.dailyMenu.weekDay !== cartWeekday) {
       Alert.alert(
         "Nie możesz złożyć zamówienia na inny dzień",
         `Obecnie w koszyku masz dodany obiad na ${getDayOfWeek(cartWeekday)}. Czy chcesz wyczyścić koszyk i kontynuować?`,
@@ -42,9 +42,9 @@ const MenuVariant = (props: MenuVariantProps) => {
             onPress: () => {
               setCartItems([]);
               setCartWeekday(-1);
-              navigation.navigate("DinnerView", { 
-                mode: DinnerViewDisplayMode.CREATE, 
-                data: props.dailyMenu 
+              navigation.navigate("DinnerView", {
+                mode: DinnerViewDisplayMode.CREATE,
+                data: props.dailyMenu,
               });
               return;
             },
@@ -61,12 +61,12 @@ const MenuVariant = (props: MenuVariantProps) => {
         }
       );
     } else {
-      navigation.navigate("DinnerView", { 
-        mode: DinnerViewDisplayMode.CREATE, 
-        data: props.dailyMenu 
+      navigation.navigate("DinnerView", {
+        mode: DinnerViewDisplayMode.CREATE,
+        data: props.dailyMenu,
       });
     }
-  }
+  };
 
   return (
     <Animated.View style={[menuViewStyles.menuVariant, props.style]}>

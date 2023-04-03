@@ -8,11 +8,10 @@ import CartScreen from "./tabs/CartView";
 import MoreScreen from "./tabs/MoreView";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { useEffect } from "react";
-import {useTheme} from "@react-navigation/native";
+import { useTheme } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 const TabsView = ({ navigation }: any) => {
-
   const theme = useTheme();
 
   useEffect(() => {
@@ -40,7 +39,7 @@ const TabsView = ({ navigation }: any) => {
           textAlign: "center",
           fontWeight: "bold",
           fontSize: 20,
-		  color: theme.colors.text,
+          color: theme.colors.text,
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: IconProp;

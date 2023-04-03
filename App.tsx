@@ -42,7 +42,7 @@ export default function App() {
       <RecoilNexus />
       <StripeProvider publishableKey="pk_test_51MpCAID80hN9rXmTDAfEgiTv1MQlBADcKXS2Q0UQsbEms15Xwg9F0vBg5HSPol3VThIJrzr6RGtJfhyPbgUt7irN00VakiDrLD">
         <Options />
-        <NavigationContainer>  
+        <NavigationContainer>
           <MainView />
           <StatusBar style="auto" translucent={false} hidden={false} animated={true} backgroundColor={"transparent"} />
         </NavigationContainer>

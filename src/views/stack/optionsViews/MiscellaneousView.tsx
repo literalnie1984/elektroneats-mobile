@@ -14,7 +14,7 @@ const MiscellaneousOptionsView = ({ navigation, route }: MiscellaneousOptionsVie
       title: route.params?.title,
     });
   }, []);
-  
+
   const children = parseSettingsToComponents(getSettingsByMenu("Pozostałe", settings));
   return <View style={miscellaneousViewStyle.root}>{children}</View>;
 };

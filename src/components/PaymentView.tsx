@@ -5,7 +5,7 @@ import { parseDateToString } from "../views/tabs/CartView";
 import { balanceAtom, walletAtom } from "../views/utils/wallet";
 import Spinner from "react-native-loading-spinner-overlay/lib";
 import { getBalance, getClientData } from "../api";
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 import { userTokensAtom } from "../views/utils/user";
 import { Button } from "react-native";
 import WalletFormView from "./WalletFormView";
@@ -13,8 +13,8 @@ import WalletTopUpView from "./WalletTopUpView";
 import { ToastAndroid } from "react-native";
 import WalletCheckout from "./WalletCheckout";
 import { paymentStyle } from "../styles";
-import {cartItemsAtom} from "../views/utils/cart";
-import {cartWeekdayAtom} from "../views/utils/atoms";
+import { cartItemsAtom } from "../views/utils/cart";
+import { cartWeekdayAtom } from "../views/utils/atoms";
 
 // Saldo i kwoty w GROSZACH!!!
 
@@ -25,48 +25,48 @@ const PaymentView = ({ navigation, route }: any) => {
   const [balance, setBalance] = useRecoilState(balanceAtom);
   const [currentView, setCurrentView] = useState("none");
   const [assumeSufficientBalance, setASB] = useState(false);
-  const [ cart, setCart ] = useRecoilState(cartItemsAtom);
-  const [ week_day, setWeekDay ] = useRecoilState(cartWeekdayAtom);
+  const [cart, setCart] = useRecoilState(cartItemsAtom);
+  const [week_day, setWeekDay] = useRecoilState(cartWeekdayAtom);
 
   const { orderBody, orderValue, pickupDate } = route.params;
   const logout = () => {
-		SecureStore.deleteItemAsync("tokens").then(() => {
-				navigation.navigate("LoginScreen");
-		});
+    SecureStore.deleteItemAsync("tokens").then(() => {
+      navigation.navigate("LoginScreen");
+    });
   };
 
   useEffect(() => {
     console.log(`Body: ${orderBody}`);
-	console.log(`value: ${orderValue}`);
-	console.log(`pickupDate: ${pickupDate.toString()}`);
-    if( !tokens?.accessToken ) {
-	Alert.alert( "Błąd konta", "Sesja wygasła, zaloguj się ponownie", [ 
-		{ text: "OK", onPress: () => logout(), }
-	], {
-		cancelable: false,
-	} )
+    console.log(`value: ${orderValue}`);
+    console.log(`pickupDate: ${pickupDate.toString()}`);
+    if (!tokens?.accessToken) {
+      Alert.alert("Błąd konta", "Sesja wygasła, zaloguj się ponownie", [{ text: "OK", onPress: () => logout() }], {
+        cancelable: false,
+      });
     }
     setCurrentView(determinePanel());
     setIsLoading(false);
   }, []);
 
   const Undisplay = async () => {
-	if(!tokens) return 'no maidens';
+    if (!tokens) return "no maidens";
     getClientData(tokens?.accessToken, (res) => {
-		if(res !== "logout") {
-      console.log(res?.status ?? "logout");
-       console.log(res?.err?.status ?? res?.status ?? "logout");
-	   res.json().then( (value) => console.log(value) );
-	   }
-     })
-    .then( (value) => setWallet(value) )
-    .then( () => getBalance(tokens?.accessToken, (res) => {
-		if(res !== "logout") {
-      console.log(res?.status ?? "logout");
-       console.log(res?.err?.status ?? res?.status ?? "logout");
-	   res.json().then( (value) => console.log(value) );
-	   }
-     }))
+      if (res !== "logout") {
+        console.log(res?.status ?? "logout");
+        console.log(res?.err?.status ?? res?.status ?? "logout");
+        res.json().then((value) => console.log(value));
+      }
+    })
+      .then((value) => setWallet(value))
+      .then(() =>
+        getBalance(tokens?.accessToken, (res) => {
+          if (res !== "logout") {
+            console.log(res?.status ?? "logout");
+            console.log(res?.err?.status ?? res?.status ?? "logout");
+            res.json().then((value) => console.log(value));
+          }
+        })
+      )
       .then((value) => {
         if (value !== null) {
           setBalance(value / 100);
@@ -82,19 +82,21 @@ const PaymentView = ({ navigation, route }: any) => {
 
   const checkoutUndisplay = () => {
     setIsLoading(false);
-    setCart([]); setWeekDay(-1);
-	Alert.alert( "Dziękujemy za zakup!", "Nowe zamówienie zostało właśnie dodane, a my zajmiemy się jego realizacją :)", [
-		{ text: "OK", onPress:() => navigation.navigate("Zamówienia") }
-	], { cancelable: true, onDismiss: () => navigation.navigate('Zamówienia') } )
+    setCart([]);
+    setWeekDay(-1);
+    Alert.alert("Dziękujemy za zakup!", "Nowe zamówienie zostało właśnie dodane, a my zajmiemy się jego realizacją :)", [{ text: "OK", onPress: () => navigation.navigate("Zamówienia") }], {
+      cancelable: true,
+      onDismiss: () => navigation.navigate("Zamówienia"),
+    });
     ToastAndroid.show("New order created!", ToastAndroid.SHORT);
   };
 
   const determinePanel = () => {
-    console.log(`Wallet: ${wallet === null ? null : {...wallet} }`);
+    console.log(`Wallet: ${wallet === null ? null : { ...wallet }}`);
     if (wallet) {
       if (balance >= orderValue || assumeSufficientBalance) {
         return "checkout";
-      } else if ( balance === null || balance < orderValue ) {
+      } else if (balance === null || balance < orderValue) {
         return "topUp_info";
       }
     } else {
