@@ -48,6 +48,20 @@ const DinnerSelect = ({ selectedIndex, setSelectedIndex, items, isSelectable }: 
 
 const DinnerView = ({ route, navigation }: DinnerViewProps) => {
   const { mode } = route.params;
+
+  useEffect(() => {
+    let title = 'Zamówienie';
+    switch (mode) {
+      case DinnerViewDisplayMode.CREATE: title = 'Złóż zamówienie'; break;
+      case DinnerViewDisplayMode.EDIT: title = 'Aktualizacja zamówienia'; break;
+      case DinnerViewDisplayMode.INFO: title = 'Skład obiadu'; break;
+    }
+
+    navigation.setOptions({
+      title: title,
+    });
+  }, []);
+
   const isSelectable = (mode !== DinnerViewDisplayMode.INFO);
 
   const [sections, setSections] = useState<DinnerData[]>();
@@ -57,6 +71,8 @@ const DinnerView = ({ route, navigation }: DinnerViewProps) => {
   const [menu] = useRecoilState(menuAtom);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const [cartWeekday, setCartWeekday] = useRecoilState(cartWeekdayAtom);
+
+
 
   useEffect(() => {
     let sections: DinnerData[];

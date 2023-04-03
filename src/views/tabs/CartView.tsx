@@ -2,7 +2,7 @@ import { View, Text, Pressable, Alert, Image, ToastAndroid } from "react-native"
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { cartViewStyles, orderViewStyles } from "../../styles";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faChevronUp, faChevronDown, faFaceMeh, faPlus, faMinus, faGear } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp, faChevronDown, faFaceMeh, faPlus, faMinus, faGear, faUtensils } from "@fortawesome/free-solid-svg-icons";
 import { FlashList } from "@shopify/flash-list";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { DateTimePickerAndroid, DateTimePickerEvent } from "@react-native-community/datetimepicker";
@@ -20,7 +20,6 @@ import { getClientData, getBalance } from "../../api";
 import { cartWeekdayAtom } from "../utils/atoms";
 
 const ANIMATION_DURATION = 300;
-const placeholderUri = "https://i.imgur.com/ejtUaJJ.png";
 
 const CartItemView = ({ index, item, handleAmountUpdate, navigation }: CartItemProps) => {
   const { data, type, cost, amount } = item;
@@ -34,7 +33,7 @@ const CartItemView = ({ index, item, handleAmountUpdate, navigation }: CartItemP
     <View style={cartViewStyles.cartMeal}>
       <View style={cartViewStyles.cartMealInfoBar}>
         <View style={cartViewStyles.cartMealImageContainer}>
-          <Image style={{ width: 48, height: 48 }} source={{ uri: placeholderUri }} />
+          {/* <FontAwesomeIcon icon={faUtensils} color={"black"} size={10} />; */}
         </View>
         <Text style={orderContent.orderName}>Obiad</Text>
         <Text style={orderContent.orderPrice}>
