@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Keyboard, ScrollView, ToastAndroid, StyleSheet } from "react-native";
+import { View, Text, Keyboard, ScrollView, ToastAndroid, StyleSheet, Image } from "react-native";
 import Button from "../../components/Button";
 import Spinner from "react-native-loading-spinner-overlay";
 import Input from "../../components/Input";
@@ -85,7 +85,9 @@ const RegistrationScreen = ({ navigation }: RegistrationScreenProps) => {
     <View style={authStyle.container}>
       <Spinner visible={isLoading} />
       <ScrollView contentContainerStyle={authStyle.innerContainer}>
-        <Text style={authStyle.appName}>Kantyna App</Text>
+        <View style={authStyle.imageContainer}>
+          <Image style={authStyle.appName} source={require('../../../assets/cool-title.png')} />
+        </View>
         <Text style={authStyle.screenTitle}>Rejestracja</Text>
         <Text style={authStyle.screenDescription}>Wprowadź swoje dane aby się zarejestrować</Text>
         <View style={{ marginBottom: 0 }}>

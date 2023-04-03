@@ -529,16 +529,20 @@ export const dinnerViewStyles = StyleSheet.create({
 export const authStyle = StyleSheet.create({
   container: {
     backgroundColor: COLORS.white,
-    flex: 1,
+    flex: 1
   },
-  innerContainer: { paddingTop: 50, paddingHorizontal: 20 },
+  innerContainer: { paddingTop: 20, paddingHorizontal: 20 },
+  imageContainer: {display: 'flex', flexDirection: 'column', alignItems: 'center'},
   appName: {
-    fontSize: 45,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-    textAlign: "center",
-    marginBottom: 40,
-    color: COLORS.chestnut,
+    // fontSize: 45,
+    // fontWeight: "bold",
+    // textTransform: "uppercase",
+    // textAlign: "center",
+    // marginBottom: 40,
+    // color: COLORS.chestnut,
+    resizeMode: 'contain',
+    width: 300,
+    height: 100,
   },
   screenTitle: { color: COLORS.black, fontSize: 30, fontWeight: "bold" },
   screenDescription: { color: COLORS.grey, fontSize: 18, marginVertical: 10 },
