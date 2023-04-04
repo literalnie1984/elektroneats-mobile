@@ -43,3 +43,13 @@ yarn expo start --tunnel -c
 ```
 yarn
 ```
+# Testowanie płatności
+
+Platforma do obsługi płatności Stripe uruchomiona jest w trybie testowym - zwykłe karty kredytowe nie działają. 
+
+W zamian oferowane są numery testowe - karty te mają zaimplementowane określone funkcje:
+- ``` 4242 4242 4242 4242 ``` - karta akceptowana, zawierająca wymaganą ilość funduszy
+- ``` 4000 0025 0000 3155 ``` - karta wymagająca potwierdzenia 3D Secure
+- ``` 4000 0000 0000 9995 ``` - karta odrzucana, nie posiada funduszy
+
+Numery CVC oraz daty ważności kart można wprowadzić własne - nie mają one znaczenia. 
