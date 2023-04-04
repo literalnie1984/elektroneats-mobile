@@ -1,3 +1,4 @@
+import { registerRootComponent } from 'expo';
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { RecoilRoot } from "recoil";
@@ -50,3 +51,5 @@ export default function App() {
     </RecoilRoot>
   );
 }
+
+registerRootComponent(App);
